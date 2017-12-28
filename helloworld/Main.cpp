@@ -1,88 +1,25 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <stdio.h>
-#include <stdlib.h>
-#include "Core/GameModels.h";
-#include "Managers/Shader_Manager.h";
+#pragma once
+#include "Core\Init\Init_GLUT.h"
+#include "Managers\SceneManager.h"
 
-Managers::Shader_Manager* shaderManager;
+using namespace Core;
 
-// using namespace Core;
+int main(int argc, char **argv)
+{
+	WindowInfo window(std::string("in2gpu OpenGL Beginner Tutorial "),
+		400, 200,//position
+		800, 600, //size
+		true);//reshape
 
-Models::GameModels* gameModels;
-GLuint program;
+	ContextInfo context(3, 3, true);
+	FramebufferInfo frameBufferInfo(true, true, true, true);
+	Init::Init_GLUT::init(window, context, frameBufferInfo);
 
-void renderScene(void) {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.0, 0.3, 0.3, 1.0);
+	IListener* scene = new Managers::SceneManager();
+	Init::Init_GLUT::setListener(scene);
 
-	glBindVertexArray(gameModels->GetModel("triangle1"));
-	glUseProgram(program);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	Init::Init_GLUT::run();
 
-	glBindVertexArray(gameModels->GetModel("triangle2"));
-	glUseProgram(program);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
-
-	glBindVertexArray(gameModels->GetModel("triangle3"));
-	glUseProgram(program);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
-
-	glutSwapBuffers();
-}
-
-void closeCallback() {
-
-	std::cout << "GLUT:\t Finished" << std::endl;
-	glutLeaveMainLoop();
-}
-
-void Init() {
-
-	glEnable(GL_DEPTH_TEST);
-
-	gameModels = new Models::GameModels();
-	gameModels->CreateTriangleModel("triangle1");
-	gameModels->CreateTriangleModel("triangle2");
-	gameModels->CreateTriangleModel("triangle3");
-
-	// load and compile shaders
-	shaderManager = new Managers::Shader_Manager();
-	shaderManager->CreateProgram("myProgram",
-	"Shaders\\Vertex_Shader.glsl",
-	"Shaders\\Fragment_Shader.glsl"
-	);
-	program = shaderManager->GetProgram("myProgram");
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-}
-
-int main(int argc, char **argv) {
-
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-	glutInitWindowPosition(100, 100);
-	glutInitWindowSize(800, 600);
-	glutCreateWindow("My First Triangle");
-
-	glewInit();
-	if (glewIsSupported("GL_VERSION_3_3")) {
-		std::cout << " GLEW Version is 3.3\n ";
-	}
-	else {
-		std::cout << "GLEW 3.3 not supported\n ";
-	}
-
-	Init();
-
-	// register callbacks
-	glutDisplayFunc(renderScene);
-	glutCloseFunc(closeCallback);
-	glutMainLoop();
-
-	delete gameModels;
-	delete shaderManager;
-	glDeleteProgram(program);
-
+	delete scene;
 	return 0;
 }
