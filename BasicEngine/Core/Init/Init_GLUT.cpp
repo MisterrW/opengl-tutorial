@@ -1,13 +1,13 @@
 #include "Init_GLUT.h"
 
-using namespace Core::Init;
+using namespace BasicEngine::Core::Init;
 
-Core::IListener* Init_GLUT::listener = NULL;
-Core::WindowInfo Init_GLUT::windowInformation;
+BasicEngine::Core::IListener* Init_GLUT::listener = NULL;
+BasicEngine::Core::WindowInfo Init_GLUT::windowInformation;
 
-void Init_GLUT::init(const Core::WindowInfo& windowInfo,
-	const Core::ContextInfo& contextInfo,
-	const Core::FramebufferInfo& framebufferInfo)
+void Init_GLUT::init(const BasicEngine::Core::WindowInfo& windowInfo,
+	const BasicEngine::Core::ContextInfo& contextInfo,
+	const BasicEngine::Core::FramebufferInfo& framebufferInfo)
 {
 	//we need to create these fake arguments
 	int fakeargc = 1;
@@ -66,7 +66,7 @@ void Init_GLUT::init(const Core::WindowInfo& windowInfo,
 }
 
 //starts the rendering Loop
-void Init_GLUT::run()
+void Init_GLUT::Run()
 {
 	std::cout << "GLUT:\t Start Running " << std::endl;
 	glutMainLoop();
@@ -113,7 +113,7 @@ void Init_GLUT::reshapeCallback(int width, int height)
 	}
 }
 
-void Init_GLUT::setListener(Core::IListener*& iListener)
+void Init_GLUT::SetListener(BasicEngine::Core::IListener* iListener)
 {
 	listener = iListener;
 }
@@ -133,8 +133,8 @@ void Init_GLUT::exitFullscreen()
 	glutLeaveFullScreen();
 }
 
-void Init_GLUT::printOpenGLInfo(const Core::WindowInfo& windowInfo,
-	const Core::ContextInfo& contextInfo) {
+void Init_GLUT::printOpenGLInfo(const BasicEngine::Core::WindowInfo& windowInfo,
+	const BasicEngine::Core::ContextInfo& contextInfo) {
 
 	const unsigned char* renderer = glGetString(GL_RENDERER);
 	const unsigned char* vendor = glGetString(GL_VENDOR);

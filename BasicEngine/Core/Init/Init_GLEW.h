@@ -3,14 +3,18 @@
 #include <iostream>
 #include "../../../Dependencies/include/glew/glew.h"
 #include "../../../Dependencies/include/freeglut/freeglut.h"
-namespace Core {
-	//notice that I added another namespace here(optional)
-	namespace Init {
 
-		class Init_GLEW
-		{
-		public:
-			static void Init();
-		};
+namespace BasicEngine
+{
+	namespace Core {
+		//notice that I added another namespace here(optional)
+		namespace Init {
+
+			class Init_GLEW
+			{
+			public:
+				static void Init();
+			};
+		}
 	}
 }

@@ -1,6 +1,6 @@
 #include "Triangle.h"
-using namespace Rendering;
-using namespace Models;
+using namespace BasicEngine::Rendering;
+using namespace BasicEngine::Rendering::Models;
 
 Triangle::Triangle()
 {

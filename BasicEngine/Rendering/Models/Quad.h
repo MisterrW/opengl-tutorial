@@ -1,18 +1,21 @@
 #pragma once
 #include "Model.h"
-namespace Rendering
+namespace BasicEngine
 {
-	namespace Models
+	namespace Rendering
 	{
-		class Quad : public Models::Model
+		namespace Models
 		{
-		public:
-			Quad();
-			~Quad();
+			class Quad : public Models::Model
+			{
+			public:
+				Quad();
+				~Quad();
 
-			void Create();
-			virtual void Draw() override final;
-			virtual void Update() override final;
-		};
+				void Create();
+				virtual void Draw() override final;
+				virtual void Update() override final;
+			};
+		}
 	}
 }

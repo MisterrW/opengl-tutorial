@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasicEngine", "BasicEngine\BasicEngine.vcxproj", "{7CCF35A7-CE09-4162-B07B-DAB5078439F0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "c2_1_DrawCube", "c2_1_DrawCube\c2_1_DrawCube.vcxproj", "{58CF3799-A13E-4DD0-A56B-89D6724385FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,14 @@ Global
 		{7CCF35A7-CE09-4162-B07B-DAB5078439F0}.Release|x64.Build.0 = Release|x64
 		{7CCF35A7-CE09-4162-B07B-DAB5078439F0}.Release|x86.ActiveCfg = Release|Win32
 		{7CCF35A7-CE09-4162-B07B-DAB5078439F0}.Release|x86.Build.0 = Release|Win32
+		{58CF3799-A13E-4DD0-A56B-89D6724385FD}.Debug|x64.ActiveCfg = Debug|x64
+		{58CF3799-A13E-4DD0-A56B-89D6724385FD}.Debug|x64.Build.0 = Debug|x64
+		{58CF3799-A13E-4DD0-A56B-89D6724385FD}.Debug|x86.ActiveCfg = Debug|Win32
+		{58CF3799-A13E-4DD0-A56B-89D6724385FD}.Debug|x86.Build.0 = Debug|Win32
+		{58CF3799-A13E-4DD0-A56B-89D6724385FD}.Release|x64.ActiveCfg = Release|x64
+		{58CF3799-A13E-4DD0-A56B-89D6724385FD}.Release|x64.Build.0 = Release|x64
+		{58CF3799-A13E-4DD0-A56B-89D6724385FD}.Release|x86.ActiveCfg = Release|Win32
+		{58CF3799-A13E-4DD0-A56B-89D6724385FD}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

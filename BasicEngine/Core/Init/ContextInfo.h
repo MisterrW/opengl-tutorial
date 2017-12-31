@@ -1,44 +1,47 @@
-namespace Core {
+namespace BasicEngine
+{
+	namespace Core {
 
-	//OpenGL versions
-	struct ContextInfo
-	{
-		int major_version, minor_version;
-		bool core;
-
-		ContextInfo()//default
+		//OpenGL versions
+		struct ContextInfo
 		{
-			major_version = 3;
-			minor_version = 3;
-			core = true;
-		}
+			int major_version, minor_version;
+			bool core;
 
-		ContextInfo(int major_version, int minor_version, bool core)
-		{
-			this->major_version = major_version;
-			this->minor_version = minor_version;
-			this->core = core;
-		}
+			ContextInfo()//default
+			{
+				major_version = 3;
+				minor_version = 3;
+				core = true;
+			}
 
-		//just like windowInfo.h
-		//implement copy constructor
-		//implement assignment operator
-		//these implementations are optional because are special functions
-		//http://en.wikipedia.org/wiki/Special_member_functions
+			ContextInfo(int major_version, int minor_version, bool core)
+			{
+				this->major_version = major_version;
+				this->minor_version = minor_version;
+				this->core = core;
+			}
 
-		//copy constructor
-		ContextInfo(ContextInfo& contextInfo) {
-			this->major_version = contextInfo.major_version;
-			this->minor_version = contextInfo.minor_version;
-			this->core = contextInfo.core;
-		}
+			//just like windowInfo.h
+			//implement copy constructor
+			//implement assignment operator
+			//these implementations are optional because are special functions
+			//http://en.wikipedia.org/wiki/Special_member_functions
 
-		//operator equals
-		void operator=(ContextInfo& contextInfo) {
-			this->major_version = contextInfo.major_version;
-			this->minor_version = contextInfo.minor_version;
-			this->core = contextInfo.core;
+			//copy constructor
+			ContextInfo(ContextInfo& contextInfo) {
+				this->major_version = contextInfo.major_version;
+				this->minor_version = contextInfo.minor_version;
+				this->core = contextInfo.core;
+			}
 
-		}
-	};
+			//operator equals
+			void operator=(ContextInfo& contextInfo) {
+				this->major_version = contextInfo.major_version;
+				this->minor_version = contextInfo.minor_version;
+				this->core = contextInfo.core;
+
+			}
+		};
+	}
 }

@@ -5,22 +5,41 @@
 #include "../Rendering/Models/Triangle.h"
 #include "../Rendering/Models/Quad.h"
 
-using namespace Rendering;
-namespace Managers
+using namespace BasicEngine::Rendering;
+
+namespace BasicEngine
 {
-	class ModelsManager
+	namespace Managers
 	{
-	public:
-		ModelsManager();
-		~ModelsManager();
+		class ModelsManager
+		{
+		public:
+			ModelsManager();
+			~ModelsManager();
 
-		void Draw();
-		void Update();
-		void DeleteModel(const std::string& gameModelName);
-		const IGameObject& GetModel(const std::string& gameModelName) const;
+			void Update();
+			
+			// 3D
+			void Draw(const glm::mat4& projection_matrix, const glm::mat4& view_matrix);
+			const IGameObject& GetModel(const std::string& gameModelName) const;
+			void DeleteModel(const std::string& gameModelName);
+			
 
-	private:
-		// NOTE this may become a bottleneck, better to use vector
-		std::map<std::string, IGameObject*> gameModelList;
-	};
+			// NDC
+			void Draw();
+			void DeleteModel_NDC(const std::string& gameModelName);
+			const IGameObject& GetModel_NDC(const std::string& gameModelName) const;
+
+			void SetModel(const std::string& gameObjectName, IGameObject* gameObject);
+
+		private:
+			// NOTE this may become a bottleneck, better to use vector
+
+			// 3D
+			std::map<std::string, IGameObject*> gameModelList;
+
+			// NDC
+			std::map<std::string, IGameObject*> gameModelList_NDC;
+		};
+	}
 }

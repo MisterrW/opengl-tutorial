@@ -1,6 +1,6 @@
 #include "Model.h"
-using namespace Rendering;
-using namespace Models;
+using namespace BasicEngine::Rendering;
+using namespace BasicEngine::Rendering::Models;
 
 Model::Model() {}
 
@@ -11,7 +11,12 @@ Model::~Model()
 
 void Model::Draw()
 {
-	//this will be again overridden
+	// NDC
+}
+
+void Model::Draw(const glm::mat4& projection_matrix, const glm::mat4& view_matrix)
+{
+	// 3D
 }
 
 void Model::Update()

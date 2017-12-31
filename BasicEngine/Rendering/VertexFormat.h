@@ -4,20 +4,23 @@
 # pragma once
 #include "../../../Dependencies/include/glm/glm.hpp"
 
-namespace Rendering {
-	struct VertexFormat
-	{
-		glm::vec3 position;//our first vertex attribute
-		glm::vec4 color;//our first vertex attribute
-
-		VertexFormat(const glm::vec3 &pos, const glm::vec4 &col)
+namespace BasicEngine
+{
+	namespace Rendering {
+		struct VertexFormat
 		{
-			position = pos;
-			color = col;
-		}
+			glm::vec3 position;//our first vertex attribute
+			glm::vec4 color;//our first vertex attribute
 
-		VertexFormat() {}
-	};
+			VertexFormat(const glm::vec3 &pos, const glm::vec4 &col)
+			{
+				position = pos;
+				color = col;
+			}
+
+			VertexFormat() {}
+		};
+	}
 }
 
 // #endif

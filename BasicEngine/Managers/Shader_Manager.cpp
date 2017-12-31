@@ -4,7 +4,7 @@
 #include<vector>
 #include<map>
 
-using namespace Managers;
+using namespace BasicEngine::Managers;
 
 // this is the Shader_Manager class file. It contains functions related to reading shaders from files,
 // and creating programs from those shaders.

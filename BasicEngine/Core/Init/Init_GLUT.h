@@ -8,38 +8,42 @@
 #include "IListener.h"
 #include "DebugOutput.h"
 
-namespace Core {
-	namespace Init {//two namespaces
+namespace BasicEngine
+{
+	namespace Core {
+		namespace Init { //two namespaces
 
-		class Init_GLUT {
+			class Init_GLUT {
 
-		private:
-			static Core::IListener* listener;
-			static Core::WindowInfo windowInformation;
+			private:
+				static Core::IListener* listener;
+				static Core::WindowInfo windowInformation;
 
-		public:             //use the structures from Part II
-			static void init(const Core::WindowInfo& window,
-				const Core::ContextInfo& context,
-				const Core::FramebufferInfo& framebufferInfo);
+			public:             //use the structures from Part II
+				static void init(
+					const Core::WindowInfo& window,
+					const Core::ContextInfo& context,
+					const Core::FramebufferInfo& framebufferInfo);
 
-		public:
-			static void run();//called from outside
-			static void close();
+				static void Run();//called from outside
+				static void close();
 
-			void enterFullscreen();
-			void exitFullscreen();
+				void enterFullscreen();
+				void exitFullscreen();
 
-			//used to print info about GL
-			static void printOpenGLInfo(const Core::WindowInfo& windowInfo,
-				const Core::ContextInfo& context);
+				//used to print info about GL
+				static void printOpenGLInfo(
+					const Core::WindowInfo& windowInfo,
+					const Core::ContextInfo& context);
 
-			static void setListener(Core::IListener*& iListener);
+				static void SetListener(Core::IListener* iListener);
 
-		private:
-			static void idleCallback(void);
-			static void displayCallback(void);
-			static void reshapeCallback(int width, int height);
-			static void closeCallback();
-		};
+			private:
+				static void idleCallback(void);
+				static void displayCallback(void);
+				static void reshapeCallback(int width, int height);
+				static void closeCallback();
+			};
+		}
 	}
 }

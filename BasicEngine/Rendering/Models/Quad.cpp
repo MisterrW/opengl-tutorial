@@ -1,6 +1,6 @@
 #include "Quad.h"
-using namespace Rendering;
-using namespace Models;
+using namespace BasicEngine::Rendering;
+using namespace BasicEngine::Rendering::Models;
 
 Quad::Quad()
 {}

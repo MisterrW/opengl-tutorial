@@ -1,7 +1,6 @@
-//Init_GLEW.cpp
 #include "Init_GLEW.h"
-using namespace Core;
-using namespace Core::Init;
+
+using namespace BasicEngine::Core::Init;
 
 void Init_GLEW::Init() {
 
