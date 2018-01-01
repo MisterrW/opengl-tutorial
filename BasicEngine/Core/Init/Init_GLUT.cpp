@@ -55,6 +55,10 @@ void Init_GLUT::init(const BasicEngine::Core::WindowInfo& windowInfo,
 	glutDisplayFunc(displayCallback);
 	glutReshapeFunc(reshapeCallback);
 
+	//this callback gets keyboard information from glut
+
+	glutKeyboardFunc(KeyPressCallback);
+	glutKeyboardUpFunc(KeyUpCallback);
 
 	//cleanup
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,
@@ -111,6 +115,14 @@ void Init_GLUT::reshapeCallback(int width, int height)
 		windowInformation.width = width;
 		windowInformation.height = height;
 	}
+}
+
+void Init_GLUT::KeyPressCallback(unsigned char key, int x, int y) {
+	listener->notifyKeyPress(key, x, y);
+}
+
+void Init_GLUT::KeyUpCallback(unsigned char key, int x, int y) {
+	listener->notifyKeyUp(key, x, y);
 }
 
 void Init_GLUT::SetListener(BasicEngine::Core::IListener* iListener)

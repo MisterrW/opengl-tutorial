@@ -42,6 +42,8 @@ namespace BasicEngine
 				static void idleCallback(void);
 				static void displayCallback(void);
 				static void reshapeCallback(int width, int height);
+				static void KeyPressCallback(unsigned char key, int x, int y);
+				static void KeyUpCallback(unsigned char key, int x, int y);
 				static void closeCallback();
 			};
 		}

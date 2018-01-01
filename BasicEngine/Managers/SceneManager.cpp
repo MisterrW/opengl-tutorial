@@ -9,21 +9,17 @@ SceneManager::SceneManager()
 	//shader_manager->CreateProgram("colorShader",
 	//	"Shaders\\Vertex_Shader.glsl",
 	//	"Shaders\\Fragment_Shader.glsl");
-	
-	// move this definition to camera class
-	view_matrix = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, -1.0f, 0.0f,
-		0.0f, 0.0f, 10.0f, 1.0f);
 
 	
 	modelsManager = new ModelsManager();
+	PositionManager = new BasicEngine::Movement::PositionManager();
 }
 
 SceneManager::~SceneManager()
 {
 	delete shader_manager;
 	delete modelsManager;
+	delete PositionManager;
 }
 
 void SceneManager::SetModelsManager(BasicEngine::Managers::ModelsManager*& models_m)
@@ -39,11 +35,12 @@ void SceneManager::notifyBeginFrame()
 void SceneManager::notifyDisplayFrame()
 {
 	// call camera.cpp getViewMatrix here
+	glm::mat4 viewMatrix = PositionManager->GetViewMatrix();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 
 	modelsManager->Draw();
-	modelsManager->Draw(projection_matrix, view_matrix);
+	modelsManager->Draw(projection_matrix, viewMatrix);
 }
 
 void SceneManager::notifyEndFrame()
@@ -64,3 +61,11 @@ void SceneManager::notifyReshape(int width, int height,
 	projection_matrix[2][3] = 1.0f;
 	projection_matrix[3][2] = 2.0f * near1 * far1 / (near1 - far1);
 }
+
+void SceneManager::notifyKeyPress(char key, int x, int y) {
+	PositionManager->notifyKeyPress(key, x, y);
+}
+
+void SceneManager::notifyKeyUp(char key, int x, int y) {
+	PositionManager->notifyKeyUp(key, x, y);
+};

@@ -17,6 +17,9 @@ namespace BasicEngine
 				int height,
 				int previous_width,
 				int previous_height) = 0;
+			virtual void notifyKeyPress(char key, int x, int y) = 0;
+			virtual void notifyKeyUp(char key, int x, int y) = 0;
+
 		};
 
 		inline IListener::~IListener() {

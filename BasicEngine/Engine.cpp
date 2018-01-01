@@ -64,12 +64,14 @@ Managers::ModelsManager* Engine::GetModels_Manager() const
 
 Engine::~Engine()
 {
+
+	if (m_models_manager && !m_scene_manager)
+		delete m_models_manager; 
+
+	if (m_shader_manager && !m_scene_manager)
+		delete m_shader_manager;
+	
 	if (m_scene_manager)
 		delete m_scene_manager;
 
-	if (m_shader_manager)
-		delete m_shader_manager;
-
-	if (m_models_manager)
-		delete m_models_manager;
 }
