@@ -136,7 +136,7 @@ void Cube::Update()
 void Cube::Draw(const glm::mat4& projection_matrix,
 	const glm::mat4& view_matrix)
 {
-	rotation = 0.01f * rotation_speed + rotation;
+	rotation = 0.0005f * rotation_speed + rotation;
 
 	glm::vec3 rotation_sin = glm::vec3(rotation.x * PI / 180, rotation.y * PI / 180, rotation.z * PI / 180);
 

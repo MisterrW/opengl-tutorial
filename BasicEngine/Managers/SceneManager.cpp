@@ -10,6 +10,7 @@ SceneManager::SceneManager()
 	//	"Shaders\\Vertex_Shader.glsl",
 	//	"Shaders\\Fragment_Shader.glsl");
 	
+	// move this definition to camera class
 	view_matrix = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, -1.0f, 0.0f,
@@ -37,6 +38,7 @@ void SceneManager::notifyBeginFrame()
 
 void SceneManager::notifyDisplayFrame()
 {
+	// call camera.cpp getViewMatrix here
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 
