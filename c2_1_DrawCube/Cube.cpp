@@ -123,7 +123,8 @@ void Cube::Create()
 	this->vao = vao;
 	this->vbos.push_back(vbo);
 
-	rotation_speed = glm::vec3(90.0, 90.0, 90.0);
+	//rotation_speed = glm::vec3(90.0, 90.0, 90.0);
+	rotation_speed = glm::vec3(0.0, 0.0, 0.0);
 	rotation = glm::vec3(0.0, 0.0, 0.0);
 
 }

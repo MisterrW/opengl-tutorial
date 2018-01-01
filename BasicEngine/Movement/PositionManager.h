@@ -15,6 +15,14 @@ namespace BasicEngine {
 
 		private:
 			glm::mat4 ViewMatrix;
+			bool* KeyStates;
+			bool* OldKeyStates;
+			
+			glm::mat4 GetMoveMatrix();
+			glm::mat4 GetOrientationMatrix();
+			glm::mat4 GetXYZRotMat(float x, float y, float z);
+
+			void UpdateViewMatrix();
 		};
 	}
 }
