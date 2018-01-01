@@ -103,18 +103,18 @@ glm::mat4 PositionManager::GetOrientationMatrix() {
 
 		// look up / down
 		if (KeyStates['o'] == true) {
-			orientX = -0.015f;
+			orientX = -0.0015f;
 		}
 		else if (KeyStates['l'] == true) {
-			orientX = +0.015f;
+			orientX = +0.0015f;
 		}
 
 			// bank left / right (yaw)
 			if (KeyStates['k'] == true) {
-				orientZ = +0.015f;
+				orientZ = +0.0015f;
 			}
 			else if (KeyStates[';'] == true) {
-				orientZ = -0.015f;
+				orientZ = -0.0015f;
 			}
 			
 			glm::mat4 rotMat = GetXYZRotMat(orientX, orientY, orientZ);
@@ -133,12 +133,10 @@ void PositionManager::UpdateViewMatrix() {
 void PositionManager::notifyKeyPress(char key, int x, int y) {
 	OldKeyStates[key] = KeyStates[key];
 	KeyStates[key] = true;
-	UpdateViewMatrix();
 };
 
 void PositionManager::notifyKeyUp(char key, int x, int y) {
 	OldKeyStates[key] = KeyStates[key];
 	KeyStates[key] = false;
-	UpdateViewMatrix();
 };
 

@@ -13,6 +13,8 @@ namespace BasicEngine {
 			void notifyKeyPress(char key, int x, int y);
 			void notifyKeyUp(char key, int x, int y);
 
+			void UpdateViewMatrix();
+
 		private:
 			glm::mat4 ViewMatrix;
 			bool* KeyStates;
@@ -22,7 +24,6 @@ namespace BasicEngine {
 			glm::mat4 GetOrientationMatrix();
 			glm::mat4 GetXYZRotMat(float x, float y, float z);
 
-			void UpdateViewMatrix();
 		};
 	}
 }

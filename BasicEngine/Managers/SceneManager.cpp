@@ -34,7 +34,7 @@ void SceneManager::notifyBeginFrame()
 
 void SceneManager::notifyDisplayFrame()
 {
-	// call camera.cpp getViewMatrix here
+	PositionManager->UpdateViewMatrix();
 	glm::mat4 viewMatrix = PositionManager->GetViewMatrix();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0, 0.0, 0.0, 1.0);
