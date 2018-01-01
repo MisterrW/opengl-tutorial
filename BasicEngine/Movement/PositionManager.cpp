@@ -27,7 +27,7 @@ PositionManager::~PositionManager() {
 glm::mat4 PositionManager::GetViewMatrix() {
 	return this->ViewMatrix;
 };
-	
+
 void PositionManager::SetViewMatrix(glm::mat4 viewMatrix) {
 	this->ViewMatrix = viewMatrix;
 };
@@ -36,30 +36,31 @@ glm::mat4 PositionManager::GetMoveMatrix() {
 	// keys control camera position
 	glm::mat4 updatedViewMatrix = glm::mat4(ViewMatrix);
 
-		// forward (w s)
+	// forward (w s)
 	if (KeyStates['w'] == true) {
 		updatedViewMatrix[3][2] -= 0.01f;
-	} else if (KeyStates['s'] == true) {
+	}
+	else if (KeyStates['s'] == true) {
 		updatedViewMatrix[3][2] += 0.01f;
 	}
 
-		// sideways (a d)
-		if (KeyStates['a'] == true) {
-			updatedViewMatrix[3][0] += 0.01f;
-		}
-		else if (KeyStates['d'] == true) {
-			updatedViewMatrix[3][0] -= 0.01f;
-		}
+	// sideways (a d)
+	if (KeyStates['a'] == true) {
+		updatedViewMatrix[3][0] += 0.01f;
+	}
+	else if (KeyStates['d'] == true) {
+		updatedViewMatrix[3][0] -= 0.01f;
+	}
 
-		// up/down (x c)
-		if (KeyStates['x'] == true) {
-			updatedViewMatrix[3][1] -= 0.01f;
-		}
-		else if (KeyStates['c'] == true) {
-			updatedViewMatrix[3][1] += 0.01f;
-		}
+	// up/down (x c)
+	if (KeyStates['x'] == true) {
+		updatedViewMatrix[3][1] -= 0.01f;
+	}
+	else if (KeyStates['c'] == true) {
+		updatedViewMatrix[3][1] += 0.01f;
+	}
 
-		return updatedViewMatrix;
+	return updatedViewMatrix;
 }
 
 glm::mat4 PositionManager::GetXYZRotMat(float x, float y, float z) {
@@ -78,21 +79,21 @@ glm::mat4 PositionManager::GetXYZRotMat(float x, float y, float z) {
 		0, sinX, cosX, 0,
 		0, 0, 0, 1);
 
-rotY = glm::mat4(
-	cosY, 0, sinY, 0,
-	0, 1, 0, 0,
-	-sinY, 0, cosY, 0,
-	0, 0, 0, 1
-);
+	rotY = glm::mat4(
+		cosY, 0, sinY, 0,
+		0, 1, 0, 0,
+		-sinY, 0, cosY, 0,
+		0, 0, 0, 1
+	);
 
-rotZ = glm::mat4(
-	cosZ, -sinZ, 0, 0,
-	sinZ, cosZ, 0, 0,
-	0, 0, 1, 0,
-	0, 0, 0, 1
-);
+	rotZ = glm::mat4(
+		cosZ, -sinZ, 0, 0,
+		sinZ, cosZ, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
 
-return rotX * rotZ * rotY;
+	return rotX * rotZ * rotY;
 }
 
 glm::mat4 PositionManager::GetOrientationMatrix() {
@@ -101,25 +102,25 @@ glm::mat4 PositionManager::GetOrientationMatrix() {
 	float orientY = 0.0f;
 	float orientZ = 0.0f;
 
-		// look up / down
-		if (KeyStates['o'] == true) {
-			orientX = -0.0015f;
-		}
-		else if (KeyStates['l'] == true) {
-			orientX = +0.0015f;
-		}
+	// look up / down
+	if (KeyStates['o'] == true) {
+		orientX = -0.0015f;
+	}
+	else if (KeyStates['l'] == true) {
+		orientX = +0.0015f;
+	}
 
-			// bank left / right (yaw)
-			if (KeyStates['k'] == true) {
-				orientZ = +0.0015f;
-			}
-			else if (KeyStates[';'] == true) {
-				orientZ = -0.0015f;
-			}
-			
-			glm::mat4 rotMat = GetXYZRotMat(orientX, orientY, orientZ);
+	// bank left / right (yaw)
+	if (KeyStates['k'] == true) {
+		orientZ = +0.0015f;
+	}
+	else if (KeyStates[';'] == true) {
+		orientZ = -0.0015f;
+	}
 
-			return rotMat;
+	glm::mat4 rotMat = GetXYZRotMat(orientX, orientY, orientZ);
+
+	return rotMat;
 }
 
 void PositionManager::UpdateViewMatrix() {

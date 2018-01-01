@@ -10,7 +10,7 @@ SceneManager::SceneManager()
 	//	"Shaders\\Vertex_Shader.glsl",
 	//	"Shaders\\Fragment_Shader.glsl");
 
-	
+
 	modelsManager = new ModelsManager();
 	PositionManager = new BasicEngine::Movement::PositionManager();
 }
