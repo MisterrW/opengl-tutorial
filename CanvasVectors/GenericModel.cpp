@@ -2,22 +2,70 @@
 
 #define PI 3.14159265
 
+
+std::vector<std::vector<glm::vec3>> GenericModel::GetNormals(std::vector<std::vector<glm::vec3>> vertexArrays, GLenum renderFormat) {
+	std::vector<std::vector<glm::vec3>> normalsArrays = std::vector<std::vector<glm::vec3>>();
+	if (renderFormat == GL_TRIANGLES) {
+
+	}
+	else if (renderFormat == GL_TRIANGLE_STRIP) {
+		for (unsigned i = 0; i < vertexArrays.size(); i++) {
+			std::vector<glm::vec3> normalsArray = std::vector<glm::vec3>();
+
+			int size = vertexArrays[i].size();
+
+			std::vector<glm::vec3> vertexArray = vertexArrays[i];
+			for (unsigned j = 0; j < size; j++) {
+				std::vector<glm::vec3> triangleNormals = std::vector<glm::vec3>();
+				if (j > 1) {
+					glm::vec3 edge1 = glm::vec3(vertexArray[j - 2] - vertexArray[j - 1]);
+					glm::vec3 edge2 = glm::vec3(vertexArray[j - 1] - vertexArray[j]);
+					triangleNormals.push_back(glm::normalize(glm::cross(edge1, edge2)));
+				}
+				if (j > 0 && j < size - 1) {
+					glm::vec3 edge1 = glm::vec3(vertexArray[j - 1] - vertexArray[j]);
+					glm::vec3 edge2 = glm::vec3(vertexArray[j] - vertexArray[j + 1]);
+					triangleNormals.push_back(glm::normalize(glm::cross(edge1, edge2)));
+				}
+				if (j < size - 2) {
+					glm::vec3 edge1 = glm::vec3(vertexArray[j] - vertexArray[j + 1]);
+					glm::vec3 edge2 = glm::vec3(vertexArray[j + 1] - vertexArray[j + 2]);
+					triangleNormals.push_back(glm::normalize(glm::cross(edge1, edge2)));
+				}
+				glm::vec3 vertexNormal = glm::vec3(0, 0, 0);
+				for (unsigned k = 0; k < triangleNormals.size(); k++) {
+					vertexNormal = vertexNormal + triangleNormals[k];
+				}
+				vertexNormal = glm::normalize(vertexNormal);
+				normalsArray.push_back(vertexNormal);
+			}
+			normalsArrays.push_back(normalsArray);
+		}
+	}
+	else {
+		//can't calculate normals
+	}
+	return normalsArrays;
+}
+
 GenericModel::GenericModel(std::vector<std::vector<glm::vec3>> vertexArrays, GLenum renderFormat = GL_TRIANGLE_STRIP)
 {
 	VertexArrays = vertexArrays;
 	RenderFormat = renderFormat;
+	NormalsArrays = GetNormals(VertexArrays, RenderFormat);
 }
 
 GenericModel::GenericModel(std::vector<std::vector<glm::vec3>> vertexArrays)
 {
 	VertexArrays = vertexArrays;
 	RenderFormat = GL_TRIANGLE_STRIP;
+	NormalsArrays = GetNormals(VertexArrays, RenderFormat);
 }
-
 
 GenericModel::~GenericModel()
 {
 }
+
 
 void GenericModel::Create()
 {
@@ -47,9 +95,24 @@ void GenericModel::Create()
 		glVertexAttribPointer((i * 2) + 1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), (void*)(offsetof(VertexFormat, VertexFormat::color)));*/
 
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), (void*)0);
+		glVertexAttribPointer(
+			0,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			sizeof(VertexFormat),
+			(void*)0
+		);
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), (void*)(offsetof(VertexFormat, VertexFormat::color)));
+		glVertexAttribPointer(
+			1,
+			4,
+			GL_FLOAT,
+			GL_FALSE,
+			sizeof(VertexFormat),
+			(void*)(offsetof(VertexFormat,
+				VertexFormat::color))
+		);
 
 		glBindVertexArray(0);
 		this->vbos.push_back(vbo);

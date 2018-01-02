@@ -21,8 +21,10 @@ public:
 	virtual void Update() override final;
 
 private:
+	std::vector<std::vector<glm::vec3>> GetNormals(std::vector<std::vector<glm::vec3>> vertexArrays, GLenum renderFormat);
 	glm::vec3 rotation, rotation_speed;
 	std::vector<std::vector<glm::vec3>> VertexArrays;
+	std::vector<std::vector<glm::vec3>> NormalsArrays;
 	time_t timer;
 	std::vector<GLuint> Vaos;
 	GLenum RenderFormat;
