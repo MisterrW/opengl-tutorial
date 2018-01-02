@@ -2,11 +2,18 @@
 
 #define PI 3.14159265
 
+GenericModel::GenericModel(std::vector<std::vector<glm::vec3>> vertexArrays, GLenum renderFormat = GL_TRIANGLE_STRIP)
+{
+	VertexArrays = vertexArrays;
+	RenderFormat = renderFormat;
+}
+
 GenericModel::GenericModel(std::vector<std::vector<glm::vec3>> vertexArrays)
 {
 	VertexArrays = vertexArrays;
-	//DrawType = drawType
+	RenderFormat = GL_TRIANGLE_STRIP;
 }
+
 
 GenericModel::~GenericModel()
 {
@@ -72,9 +79,11 @@ void GenericModel::Draw(const glm::mat4& projection_matrix,
 		false, &view_matrix[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(program, "projection_matrix"), 1, false, &projection_matrix[0][0]);
 
+
 	for (int i = 0; i < Vaos.size(); i++) {
 		glBindVertexArray(Vaos[i]);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, VertexArrays[i].size());
+		glDrawArrays(RenderFormat, 0, VertexArrays[i].size());
+		//glDrawArrays(RenderFormat, 0, 100); - adds lines to origin when GL_TRIANGLE_STRIP - quite a nice effect :)
 	}
 }
 

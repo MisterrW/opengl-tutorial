@@ -10,6 +10,7 @@ using namespace BasicEngine::Rendering::Models;
 class GenericModel : public Model
 {
 public:
+	GenericModel(std::vector<std::vector<glm::vec3>> vertexArrays, GLenum renderFormat);
 	GenericModel(std::vector<std::vector<glm::vec3>> vertexArrays);
 	~GenericModel();
 
@@ -24,4 +25,5 @@ private:
 	std::vector<std::vector<glm::vec3>> VertexArrays;
 	time_t timer;
 	std::vector<GLuint> Vaos;
+	GLenum RenderFormat;
 };

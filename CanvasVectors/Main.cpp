@@ -31,7 +31,7 @@ void makeStars(Engine* engine) {
 
 			starVertexArrays.push_back(starVertices);
 		//}
-		GenericModel* star = new GenericModel(starVertexArrays);
+		GenericModel* star = new GenericModel(starVertexArrays, GL_TRIANGLES);
 		star->SetProgram(engine->GetShader_Manager()->GetProgram("cubeShader"));
 		star->Create();
 
