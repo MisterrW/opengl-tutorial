@@ -5,6 +5,7 @@
 using namespace BasicEngine;
 int main(int argc, char **argv)
 {
+	srand(time(0));
 	Engine* engine = new Engine();
 	engine->Init();
 

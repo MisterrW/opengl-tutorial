@@ -23,7 +23,7 @@ namespace BasicEngine {
 			glm::mat4 GetMoveMatrix();
 			glm::mat4 GetOrientationMatrix();
 			glm::mat4 GetXYZRotMat(float x, float y, float z);
-
+			float ScaleFactor;
 		};
 	}
 }

@@ -7,17 +7,11 @@ PositionManager::PositionManager() {
 	ViewMatrix = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 10.0f, 1.0f);
+		0.0f, 0.0f, 300.0f, 1.0f);
 
-	glm::mat4 newMatrix = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		3.0f, 0.0f, 0.0f, 1.0f);
-
-	glm::mat4 anothernewmatrix = ViewMatrix * newMatrix;
-	ViewMatrix = anothernewmatrix;
 	OldKeyStates = new bool[256];
 	KeyStates = new bool[256];
+	ScaleFactor = 10.0;
 }
 
 PositionManager::~PositionManager() {
@@ -38,26 +32,26 @@ glm::mat4 PositionManager::GetMoveMatrix() {
 
 	// forward (w s)
 	if (KeyStates['w'] == true) {
-		updatedViewMatrix[3][2] -= 0.01f;
+		updatedViewMatrix[3][2] -= 0.01f * ScaleFactor;
 	}
 	else if (KeyStates['s'] == true) {
-		updatedViewMatrix[3][2] += 0.01f;
+		updatedViewMatrix[3][2] += 0.01f * ScaleFactor;
 	}
 
 	// sideways (a d)
 	if (KeyStates['a'] == true) {
-		updatedViewMatrix[3][0] += 0.01f;
+		updatedViewMatrix[3][0] += 0.01f * ScaleFactor;
 	}
 	else if (KeyStates['d'] == true) {
-		updatedViewMatrix[3][0] -= 0.01f;
+		updatedViewMatrix[3][0] -= 0.01f * ScaleFactor;
 	}
 
 	// up/down (x c)
 	if (KeyStates['x'] == true) {
-		updatedViewMatrix[3][1] -= 0.01f;
+		updatedViewMatrix[3][1] -= 0.01f * ScaleFactor;
 	}
 	else if (KeyStates['c'] == true) {
-		updatedViewMatrix[3][1] += 0.01f;
+		updatedViewMatrix[3][1] += 0.01f * ScaleFactor;
 	}
 
 	return updatedViewMatrix;
@@ -104,18 +98,18 @@ glm::mat4 PositionManager::GetOrientationMatrix() {
 
 	// look up / down
 	if (KeyStates['o'] == true) {
-		orientX = -0.0015f;
+		orientX = -0.0015f * ScaleFactor;
 	}
 	else if (KeyStates['l'] == true) {
-		orientX = +0.0015f;
+		orientX = +0.0015f * ScaleFactor;
 	}
 
 	// bank left / right (yaw)
 	if (KeyStates['k'] == true) {
-		orientZ = +0.0015f;
+		orientZ = +0.0015f * ScaleFactor;
 	}
 	else if (KeyStates[';'] == true) {
-		orientZ = -0.0015f;
+		orientZ = -0.0015f * ScaleFactor;
 	}
 
 	glm::mat4 rotMat = GetXYZRotMat(orientX, orientY, orientZ);
