@@ -11,8 +11,8 @@ Engine::Engine()
 bool Engine::Init()
 {
 	WindowInfo window(std::string("in2gpu OpenGL Chapter 2 tutorial"),
-		400, 200,
-		800, 600, true);
+		0, 0,
+		1920, 1080, true);
 	ContextInfo context(4, 3, true);
 	FramebufferInfo frameBufferInfo(true, true, true, true);
 

@@ -73,6 +73,7 @@ void Init_GLUT::init(const BasicEngine::Core::WindowInfo& windowInfo,
 void Init_GLUT::Run()
 {
 	std::cout << "GLUT:\t Start Running " << std::endl;
+	glutFullScreen();
 	glutMainLoop();
 }
 
