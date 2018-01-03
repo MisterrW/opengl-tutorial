@@ -18,7 +18,7 @@ bool Engine::Init()
 
 	Init::Init_GLUT::init(window, context, frameBufferInfo);
 
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 
 	m_scene_manager = new Managers::SceneManager();
 

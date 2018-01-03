@@ -19,7 +19,7 @@ void main()
 
   // out_color = MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance*distance);
   // out_color = LightColor * LightPower * cosTheta / (distance*distance);
-  vec4 color = LightColor * LightPower * cosTheta / (distance / 2000);
+  vec4 color = LightColor * LightPower * cosTheta / (distance / 100);
   if (color.x > 1.0) {
       color.x = 1.0;
   }

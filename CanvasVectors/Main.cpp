@@ -11,32 +11,50 @@ float GetRandom() {
 }
 
 void makeStars(Engine* engine) {
+
+	vector<vector<glm::vec3>> starVertexArrays = vector<vector<glm::vec3>>();
+
+	vector<glm::vec3> starVertices = vector<glm::vec3>();
+
+	starVertices.push_back(glm::vec3(0, 10, 0));
+	starVertices.push_back(glm::vec3(-20, -20, 20));
+	starVertices.push_back(glm::vec3(0, -20, 0));
+
+	starVertexArrays.push_back(starVertices);
+	//}
+	GenericModel* star = new GenericModel(starVertexArrays, GL_TRIANGLES);
+	star->SetProgram(engine->GetShader_Manager()->GetProgram("cubeShader"));
+	star->Create();
+
+	engine->GetModels_Manager()->SetModel("star", star);
+
+
 	int starRadius = 500;
 	int starCount = 5000;
 	int starSize = 2;
 
-	for (unsigned i = 0; i < starCount; i++) {
-		vector<vector<glm::vec3>> starVertexArrays = vector<vector<glm::vec3>>();
+	//for (unsigned i = 0; i < starCount; i++) {
+	//	vector<vector<glm::vec3>> starVertexArrays = vector<vector<glm::vec3>>();
 
-		//for (int i = 0; i < 2; i++) {
-			vector<glm::vec3> starVertices = vector<glm::vec3>();
+	//	//for (int i = 0; i < 2; i++) {
+	//		vector<glm::vec3> starVertices = vector<glm::vec3>();
 
-			int sx = -starRadius + GetRandom() * 2 * starRadius;
-			int sy = -starRadius + GetRandom() * 2 * starRadius;
-			int sz = -starRadius + GetRandom() * 2 * starRadius;
+	//		int sx = -starRadius + GetRandom() * 2 * starRadius;
+	//		int sy = -starRadius + GetRandom() * 2 * starRadius;
+	//		int sz = -starRadius + GetRandom() * 2 * starRadius;
 
-			starVertices.push_back(glm::vec3(sx, sy, sz));
-			starVertices.push_back(glm::vec3(sx + GetRandom() * starSize, sy + GetRandom() * starSize, sz + GetRandom() * starSize));
-			starVertices.push_back(glm::vec3(sx + GetRandom() * starSize, sy + GetRandom() * starSize, sz + GetRandom() * starSize));
+	//		starVertices.push_back(glm::vec3(sx, sy, sz));
+	//		starVertices.push_back(glm::vec3(sx + GetRandom() * starSize, sy + GetRandom() * starSize, sz + GetRandom() * starSize));
+	//		starVertices.push_back(glm::vec3(sx + GetRandom() * starSize, sy + GetRandom() * starSize, sz + GetRandom() * starSize));
 
-			starVertexArrays.push_back(starVertices);
-		//}
-		GenericModel* star = new GenericModel(starVertexArrays, GL_TRIANGLES);
-		star->SetProgram(engine->GetShader_Manager()->GetProgram("cubeShader"));
-		star->Create();
+	//		starVertexArrays.push_back(starVertices);
+	//	//}
+	//	GenericModel* star = new GenericModel(starVertexArrays, GL_TRIANGLES);
+	//	star->SetProgram(engine->GetShader_Manager()->GetProgram("cubeShader"));
+	//	star->Create();
 
-		engine->GetModels_Manager()->SetModel("star" + i, star);
-	}
+	//	engine->GetModels_Manager()->SetModel("star" + i, star);
+	//}
 }
 
 void makeTrees(Engine* engine) {
@@ -65,18 +83,53 @@ void makeGround(Engine* engine) {
 	vector<vector<glm::vec3>> ground;
 
 	ground.push_back(vector<glm::vec3>());
+
+	// right - counter-clockwise (from above)
+	//ground[0].push_back(glm::vec3(-200, -20, -200));
+	//ground[0].push_back(glm::vec3(200, -20, -200));
+	//ground[0].push_back(glm::vec3(-200, -20, 200));
+	//ground[0].push_back(glm::vec3(200, -20, 200));
+
+
+	/*
+
+	ground.push_back(vector<glm::vec3>());
 	ground.push_back(vector<glm::vec3>());
 
+	// right - counter-clockwise (from above)
 	ground[0].push_back(glm::vec3(-200, -20, -200));
-	ground[0].push_back(glm::vec3(-200, -20, 200));
 	ground[0].push_back(glm::vec3(200, -20, -200));
+	ground[0].push_back(glm::vec3(-200, -20, 200));
 
 	ground[1].push_back(glm::vec3(-200, -20, 200));
 	ground[1].push_back(glm::vec3(200, -20, -200));
 	ground[1].push_back(glm::vec3(200, -20, 200));
 
-	GenericModel* groundModel = new GenericModel(ground);
-	groundModel->SetProgram(engine->GetShader_Manager()->GetProgram("cubeShader"));
+	// wrong - clockwise (from above)
+	//ground[0].push_back(glm::vec3(-200, -20, -200));
+	//ground[0].push_back(glm::vec3(-200, -20, 200));
+	//ground[0].push_back(glm::vec3(200, -20, -200));
+
+	*/
+
+	int x = -200;
+	int y = -20;
+	int z = -200;
+
+	for (int i = 0; i < 20; i++) {
+		z = -200;
+		for (int j = 0; j < 20; j++) {
+			ground[0].push_back(glm::vec3(x, y, z));
+			ground[0].push_back(glm::vec3(x + 20, y, z));
+			ground[0].push_back(glm::vec3(x, y, z + 20));
+			ground[0].push_back(glm::vec3(x + 20, y, z + 20));
+			z += 20;
+		}
+		x += 20;
+	}
+
+	GenericModel* groundModel = new GenericModel(ground, GL_TRIANGLE_STRIP);
+	groundModel->SetProgram(engine->GetShader_Manager()->GetProgram("genericWithLighting"));
 	groundModel->Create();
 
 	engine->GetModels_Manager()->SetModel("ground", groundModel);

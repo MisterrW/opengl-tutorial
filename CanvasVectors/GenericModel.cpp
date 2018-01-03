@@ -16,29 +16,57 @@ std::vector<std::vector<glm::vec3>> GenericModel::GetNormals(std::vector<std::ve
 			int size = vertexArrays[i].size();
 
 			std::vector<glm::vec3> vertexArray = vertexArrays[i];
+
+			glm::vec3 edge1;
+			glm::vec3 edge2;
+			glm::vec3 not_normalised;
+			glm::vec3 normalised;
+			glm::vec3 nullVector = glm::vec3();
+
 			for (unsigned j = 0; j < size; j++) {
 				std::vector<glm::vec3> triangleNormals = std::vector<glm::vec3>();
 				if (j > 1) {
-					glm::vec3 edge1 = glm::vec3(vertexArray[j - 2] - vertexArray[j - 1]);
-					glm::vec3 edge2 = glm::vec3(vertexArray[j - 1] - vertexArray[j]);
-					triangleNormals.push_back(glm::normalize(glm::cross(edge1, edge2)));
+					edge1 = glm::vec3(vertexArray[j - 2] - vertexArray[j - 1]);
+					edge2 = glm::vec3(vertexArray[j - 1] - vertexArray[j]);
+					not_normalised = glm::cross(edge1, edge2);
+					if (not_normalised.x != 0 || not_normalised.y != 0 || not_normalised.z != 0) {
+						normalised = glm::normalize(not_normalised);
+						triangleNormals.push_back(normalised);
+						//triangleNormals.push_back(glm::normalize(glm::cross(edge1, edge2)));
+					}
 				}
 				if (j > 0 && j < size - 1) {
-					glm::vec3 edge1 = glm::vec3(vertexArray[j - 1] - vertexArray[j]);
-					glm::vec3 edge2 = glm::vec3(vertexArray[j] - vertexArray[j + 1]);
-					triangleNormals.push_back(glm::normalize(glm::cross(edge1, edge2)));
+					edge1 = glm::vec3(vertexArray[j - 1] - vertexArray[j]);
+					edge2 = glm::vec3(vertexArray[j] - vertexArray[j + 1]);
+					not_normalised = glm::cross(edge1, edge2);
+					if (not_normalised.x != 0 || not_normalised.y != 0 || not_normalised.z != 0) {
+						normalised = glm::normalize(not_normalised);
+						triangleNormals.push_back(normalised);
+						//triangleNormals.push_back(glm::normalize(glm::cross(edge1, edge2)));
+					}
 				}
 				if (j < size - 2) {
-					glm::vec3 edge1 = glm::vec3(vertexArray[j] - vertexArray[j + 1]);
-					glm::vec3 edge2 = glm::vec3(vertexArray[j + 1] - vertexArray[j + 2]);
-					triangleNormals.push_back(glm::normalize(glm::cross(edge1, edge2)));
+					edge1 = glm::vec3(vertexArray[j] - vertexArray[j + 1]);
+					edge2 = glm::vec3(vertexArray[j + 1] - vertexArray[j + 2]);
+					not_normalised = glm::cross(edge1, edge2);
+					if (not_normalised.x != 0 || not_normalised.y != 0 || not_normalised.z != 0) {
+						normalised = glm::normalize(not_normalised);
+						triangleNormals.push_back(normalised);
+						//triangleNormals.push_back(glm::normalize(glm::cross(edge1, edge2)));
+					}
 				}
 				glm::vec3 vertexNormal = glm::vec3(0, 0, 0);
 				for (unsigned k = 0; k < triangleNormals.size(); k++) {
 					vertexNormal = vertexNormal + triangleNormals[k];
 				}
-				vertexNormal = glm::normalize(vertexNormal);
+				if (vertexNormal != nullVector) {
+					vertexNormal = glm::normalize(vertexNormal);
+				}
+
+				// this is nonsense
+				vertexNormal = glm::vec3(0.0, 1.0, 0.0);
 				normalsArray.push_back(vertexNormal);
+				
 			}
 			normalsArrays.push_back(normalsArray);
 		}
@@ -49,7 +77,7 @@ std::vector<std::vector<glm::vec3>> GenericModel::GetNormals(std::vector<std::ve
 	return normalsArrays;
 }
 
-GenericModel::GenericModel(std::vector<std::vector<glm::vec3>> vertexArrays, GLenum renderFormat = GL_TRIANGLE_STRIP)
+GenericModel::GenericModel(std::vector<std::vector<glm::vec3>> vertexArrays, GLenum renderFormat)
 {
 	VertexArrays = vertexArrays;
 	RenderFormat = renderFormat;
