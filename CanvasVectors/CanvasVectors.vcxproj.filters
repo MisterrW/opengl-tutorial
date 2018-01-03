@@ -45,5 +45,7 @@
   <ItemGroup>
     <None Include="Shaders\CubeFragmentShader.glsl" />
     <None Include="Shaders\CubeVertexShader.glsl" />
+    <None Include="Shaders\GenericLightedVertexShader.glsl" />
+    <None Include="Shaders\GenericLightedFragmentShader.glsl" />
   </ItemGroup>
 </Project>

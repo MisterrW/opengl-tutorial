@@ -28,4 +28,5 @@ private:
 	time_t timer;
 	std::vector<GLuint> Vaos;
 	GLenum RenderFormat;
+	bool UseNormals;
 };

@@ -9,6 +9,7 @@ std::vector<std::vector<glm::vec3>> GenericModel::GetNormals(std::vector<std::ve
 
 	}
 	else if (renderFormat == GL_TRIANGLE_STRIP) {
+		UseNormals = true;
 		for (unsigned i = 0; i < vertexArrays.size(); i++) {
 			std::vector<glm::vec3> normalsArray = std::vector<glm::vec3>();
 
@@ -114,6 +115,25 @@ void GenericModel::Create()
 				VertexFormat::color))
 		);
 
+		if (UseNormals == true) {
+			GLuint normalbuffer;
+			glGenBuffers(1, &normalbuffer);
+			glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+			glBufferData(GL_ARRAY_BUFFER, NormalsArrays[i].size() * sizeof(glm::vec3), &NormalsArrays[i][0], GL_STATIC_DRAW);
+
+			// 3rd attribute buffer : normals
+			glEnableVertexAttribArray(2);
+			glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+			glVertexAttribPointer(
+				2,                                // attribute
+				3,                                // size
+				GL_FLOAT,                         // type
+				GL_FALSE,                         // normalized?
+				0,                                // stride
+				(void*)0                          // array buffer offset
+			);
+		}
+
 		glBindVertexArray(0);
 		this->vbos.push_back(vbo);
 		this->Vaos.push_back(vao);
@@ -141,6 +161,10 @@ void GenericModel::Draw(const glm::mat4& projection_matrix,
 	glUniformMatrix4fv(glGetUniformLocation(program, "view_matrix"), 1,
 		false, &view_matrix[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(program, "projection_matrix"), 1, false, &projection_matrix[0][0]);
+
+	glm::mat4 Model = glm::mat4(1.0f);
+	glUniformMatrix4fv(glGetUniformLocation(program, "model_matrix"), 1, false, &projection_matrix[0][0]);
+
 
 
 	for (int i = 0; i < Vaos.size(); i++) {

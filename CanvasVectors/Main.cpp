@@ -40,8 +40,8 @@ void makeStars(Engine* engine) {
 }
 
 void makeTrees(Engine* engine) {
-	for (int i = 0; i < 30; i++) {
-		TreeMaker treeMaker = ModelMakers::TreeMaker();
+	TreeMaker treeMaker = ModelMakers::TreeMaker();
+	for (int i = 0; i < 10; i++) {
 
 		float randX = GetRandom();
 		float randZ = GetRandom();
@@ -54,7 +54,7 @@ void makeTrees(Engine* engine) {
 		glm::vec3 seed = glm::vec3(x, y, z);
 		vector<vector<glm::vec3>> treeVertexArrays = treeMaker.GetTree(seed);
 		GenericModel* tree = new GenericModel(treeVertexArrays);
-		tree->SetProgram(engine->GetShader_Manager()->GetProgram("cubeShader"));
+		tree->SetProgram(engine->GetShader_Manager()->GetProgram("genericWithLighting"));
 		tree->Create();
 
 		engine->GetModels_Manager()->SetModel("tree" + i, tree);
@@ -92,6 +92,10 @@ int main(int argc, char **argv)
 	engine->GetShader_Manager()->CreateProgram("cubeShader",
 		"Shaders\\CubeVertexShader.glsl",
 		"Shaders\\CubeFragmentShader.glsl");
+
+	engine->GetShader_Manager()->CreateProgram("genericWithLighting", 
+		"Shaders\\GenericLightedVertexShader.glsl",
+		"Shaders\\GenericLightedFragmentShader.glsl");
 
 	makeStars(engine);
 	makeTrees(engine);

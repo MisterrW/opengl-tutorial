@@ -11,7 +11,7 @@ PositionManager::PositionManager() {
 
 	OldKeyStates = new bool[256];
 	KeyStates = new bool[256];
-	ScaleFactor = 10.0;
+	ScaleFactor = 100.0;
 }
 
 PositionManager::~PositionManager() {
