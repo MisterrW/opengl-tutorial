@@ -13,13 +13,13 @@ void main()
   vec3 n = normalize( normal_cameraspace );
   vec3 l = normalize( lightDirection_cameraspace );
   float cosTheta = clamp(dot( n, l), 0, 1);
-  vec4 LightColor = vec4(1, 1, 1, 1);
+  vec4 LightColor = vec4(0.2, 0.4, 0.7, 1);
   vec4 MaterialDiffuseColor = vec4(1, 1, 1, 1);
-  float LightPower = 0.9;
+  float LightPower = 600000;
 
   // out_color = MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance*distance);
   // out_color = LightColor * LightPower * cosTheta / (distance*distance);
-  vec4 color = LightColor * LightPower * cosTheta / (distance / 100);
+  vec4 color = LightColor * LightPower * cosTheta / (distance * distance);
   if (color.x > 1.0) {
       color.x = 1.0;
   }

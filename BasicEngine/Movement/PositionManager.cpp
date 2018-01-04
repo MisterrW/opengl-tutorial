@@ -3,11 +3,10 @@
 using namespace BasicEngine::Movement;
 
 PositionManager::PositionManager() {
-	// move this definition to PositionManager class
 	ViewMatrix = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 300.0f, 1.0f);
+		0.0f, -20.0f, 300.0f, 1.0f);
 
 	OldKeyStates = new bool[256];
 	KeyStates = new bool[256];
