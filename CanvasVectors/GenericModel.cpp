@@ -174,20 +174,18 @@ void GenericModel::Update()
 
 }
 
-void GenericModel::Draw(const glm::mat4& projection_matrix,
-	const glm::mat4& view_matrix)
+void GenericModel::Draw(const glm::mat4& projection_matrix, const glm::mat4& view_matrix)
 {
-	rotation = 0.0005f * rotation_speed + rotation;
+	//rotation = 0.0005f * rotation_speed + rotation;
 
-	glm::vec3 rotation_sin = glm::vec3(rotation.x * PI / 180, rotation.y * PI / 180, rotation.z * PI / 180);
+	//glm::vec3 rotation_sin = glm::vec3(rotation.x * PI / 180, rotation.y * PI / 180, rotation.z * PI / 180);
 
 	glUseProgram(program);
-	glUniform3f(glGetUniformLocation(program, "rotation"),
-		rotation_sin.x,
-		rotation_sin.y,
-		rotation_sin.z);
-	glUniformMatrix4fv(glGetUniformLocation(program, "view_matrix"), 1,
-		false, &view_matrix[0][0]);
+	//glUniform3f(glGetUniformLocation(program, "rotation"),
+	//	rotation_sin.x,
+	//	rotation_sin.y,
+	//	rotation_sin.z);
+	glUniformMatrix4fv(glGetUniformLocation(program, "view_matrix"), 1, false, &view_matrix[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(program, "projection_matrix"), 1, false, &projection_matrix[0][0]);
 
 	glm::mat4 modelMatrix = glm::mat4(1.0f);

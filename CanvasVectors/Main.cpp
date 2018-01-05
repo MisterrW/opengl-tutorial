@@ -2,6 +2,7 @@
 #include <BasicEngine\Engine.h>
 #include "GenericModel.h"
 #include "ModelMakers\TreeMaker.h"
+#include <thread>
 
 using namespace BasicEngine;
 using namespace ModelMakers;
@@ -13,9 +14,9 @@ float GetRandom() {
 vector<GenericModel*> makeStars(Engine* engine) {
 	vector<GenericModel*> stars = vector<GenericModel*>();
 
-	int starRadius = 2000;
+	int starRadius = 20000;
 	int starCount = 5000;
-	int starSize = 5;
+	int starSize = 50;
 
 	for (unsigned i = 0; i < starCount; i++) {
 		vector<vector<glm::vec3>> starVertexArrays = vector<vector<glm::vec3>>();
@@ -24,8 +25,8 @@ vector<GenericModel*> makeStars(Engine* engine) {
 			vector<glm::vec3> starVertices = vector<glm::vec3>();
 
 			int sx = -starRadius + GetRandom() * 2 * starRadius;
-			int sy = 600 + GetRandom() * 0.2 * starRadius;
 			int sz = -starRadius + GetRandom() * 2 * starRadius;
+			int sy = abs(sx) < 10000 && abs(sz) < 10000 ? 10000 + (GetRandom() * 0.5 * starRadius) : GetRandom() * starRadius;
 
 			starVertices.push_back(glm::vec3(sx, sy, sz));
 			starVertices.push_back(glm::vec3(sx + GetRandom() * starSize, sy + GetRandom() * starSize, sz + GetRandom() * starSize));
@@ -44,16 +45,17 @@ vector<GenericModel*> makeStars(Engine* engine) {
 	return stars;
 }
 
-void makeTrees(Engine* engine) {
+void makeSomeTrees(Engine* engine, int i_min, int i_max) {
 	TreeMaker treeMaker = ModelMakers::TreeMaker();
-	for (int i = 0; i < 10; i++) {
+	vector<GenericModel*> trees = vector<GenericModel*>();
+	for (int i = i_min; i < i_max; i++) {
 
 		float randX = GetRandom();
 		float randZ = GetRandom();
 
-		float x = -100 + (randX * 200);
-		float y = -20;
-		float z = -100 + (randZ * 200);
+		float x = -400 + (randX * 500);
+		float y = -4;
+		float z = -400 + (randZ * 500);
 
 
 		glm::vec3 seed = glm::vec3(x, y, z);
@@ -64,6 +66,27 @@ void makeTrees(Engine* engine) {
 
 		engine->GetModels_Manager()->SetModel("tree" + i, tree);
 	}
+	int thing = 1;
+}
+
+void makeTrees(Engine* engine) {
+	
+	// Constructs the new thread and runs it. Does not block execution.
+	/*thread t1(makeSomeTrees, engine, 0, 10);
+	thread t2(makeSomeTrees, engine, 10, 20);
+	thread t3(makeSomeTrees, engine, 20, 30);*/
+
+	TreeMaker treeMaker = ModelMakers::TreeMaker();
+	makeSomeTrees(engine, 375, 500);
+
+	// Makes the main thread wait for the new thread to finish execution, therefore blocks its own execution.
+	//t1.join();
+	//t2.join();
+	//t3.join();
+
+
+
+	int trees = 1;
 }
 
 void makePyramid(Engine* engine) {
@@ -86,11 +109,14 @@ void makePyramid(Engine* engine) {
 	vector<int> absols = vector<int>();
 
 	for (int i = 0; i < 200; i++) {
-		z = 0;
+		bool evens = i % 2 == 0 ? 0 : 1000;
+			
+		z = evens ? 0 : 1000;
+
 		for (int j = 0; j < 200; j++) {
 			XHeight = (half_x - abs(x - (half_x)));
 			ZHeight = (half_z - abs(z - (half_z)));
-			YHeight = (XHeight * ZHeight) * 1000 / (max_x * max_z);
+			YHeight = (XHeight * ZHeight) * 2000 / (max_x * max_z);
 
 			y = YHeight;
 				ground[0].push_back(glm::vec3(x, y, z));
@@ -100,7 +126,12 @@ void makePyramid(Engine* engine) {
 				ground[0].push_back(glm::vec3(x, y, z + 20));
 				y = -5 + (GetRandom() * 10) + YHeight;
 				ground[0].push_back(glm::vec3(x + 20, y, z + 20));
-				z += 5;
+				if (evens) {
+					z += 5;
+				}
+				else {
+					z -= 5;
+				}
 		}
 		x += 5;
 	}

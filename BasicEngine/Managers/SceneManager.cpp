@@ -53,7 +53,7 @@ void SceneManager::notifyReshape(int width, int height,
 {
 	float ar = (float)glutGet(GLUT_WINDOW_WIDTH) /
 		(float)glutGet(GLUT_WINDOW_HEIGHT);
-	float angle = 45.0f, near1 = 0.1f, far1 = 2000.0f;
+	float angle = 45.0f, near1 = 0.1f, far1 = 20000.0f;
 
 	projection_matrix[0][0] = 1.0f / (ar * tan(angle / 2.0f));
 	projection_matrix[1][1] = 1.0f / tan(angle / 2.0f);

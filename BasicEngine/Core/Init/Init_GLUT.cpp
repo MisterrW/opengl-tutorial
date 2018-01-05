@@ -36,11 +36,11 @@ void Init_GLUT::init(const BasicEngine::Core::WindowInfo& windowInfo,
 		windowInfo.position_y);
 	glutInitWindowSize(windowInfo.width, windowInfo.height);
 
-	glutInitContextFlags(GLUT_DEBUG);
+	// glutInitContextFlags(GLUT_DEBUG);
 	glutCreateWindow(windowInfo.name.c_str());
 	std::cout << "GLUT:initialized" << std::endl;
 
-	glEnable(GL_DEBUG_OUTPUT);
+	// glEnable(GL_DEBUG_OUTPUT);
 
 	//init GLEW, this can be called in main.cpp
 	Init::Init_GLEW::Init();

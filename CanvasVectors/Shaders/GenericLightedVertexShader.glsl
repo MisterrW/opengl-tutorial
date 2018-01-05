@@ -4,7 +4,7 @@ layout(location = 1) in vec4 in_color;
 layout(location = 2) in vec3 vertex_normal_modelspace;
  
 uniform mat4 projection_matrix, view_matrix, model_matrix;
-uniform vec3 rotation;
+// uniform vec3 rotation;
 // uniform vec3 LightPosition_worldspace;
 
 out vec3 normal_cameraspace;
