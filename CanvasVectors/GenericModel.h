@@ -21,11 +21,14 @@ public:
 	virtual void Update() override final;
 
 private:
+	std::vector<glm::vec3> getBoundingBox(std::vector<std::vector<glm::vec3>> vertexArrays);
 	std::vector<std::vector<glm::vec3>> GetNormals(std::vector<std::vector<glm::vec3>> vertexArrays, GLenum renderFormat);
-	glm::vec3 rotation, rotation_speed;
+
 	std::vector<std::vector<glm::vec3>> VertexArrays;
 	std::vector<std::vector<glm::vec3>> NormalsArrays;
+	std::vector<glm::vec3> boundingBox;
 	time_t timer;
+	glm::vec3 rotation, rotation_speed;
 	std::vector<GLuint> Vaos;
 	GLenum RenderFormat;
 	bool UseNormals;

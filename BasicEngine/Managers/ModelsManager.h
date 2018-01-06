@@ -1,7 +1,7 @@
 /*
 =================
-The models manager maintains lists of models which make up the scene.
-In a draw cycle, it returns its model list to the scene manager
+The models manager maintains a list of models which make up the scene.
+In a draw cycle, it returns its model list to the scene manager,
 which passes them to the renderer to be drawn.
 =================
 */

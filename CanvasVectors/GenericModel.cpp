@@ -1,8 +1,5 @@
 #include "GenericModel.h"
 
-#define PI 3.14159265
-
-
 std::vector<std::vector<glm::vec3>> GenericModel::GetNormals(std::vector<std::vector<glm::vec3>> vertexArrays, GLenum renderFormat) {
 	std::vector<std::vector<glm::vec3>> normalsArrays = std::vector<std::vector<glm::vec3>>();
 	if (renderFormat == GL_TRIANGLES) {
@@ -92,10 +89,47 @@ std::vector<std::vector<glm::vec3>> GenericModel::GetNormals(std::vector<std::ve
 	return normalsArrays;
 }
 
+// move this to the base model class
+std::vector<glm::vec3> GenericModel::getBoundingBox(std::vector<std::vector<glm::vec3>> vertexArrays) {
+	std::vector<glm::vec3> boundingBox = std::vector<glm::vec3>();
+	
+	// actually we don't need a box, just 2 vectors representing the smallest and largest xyz corners of a box containing the model, for basic axis-aligned AABB collision / frustrum checks
+	glm::vec3 minXYZ = vertexArrays[0][0];
+	glm::vec3 maxXYZ = vertexArrays[0][0];
+
+	for (unsigned i = 0; i < vertexArrays.size(); i++) {
+		for (unsigned y = 0; y < vertexArrays[i].size(); y++) {
+			if (vertexArrays[i][y].x < minXYZ.x) {
+				minXYZ.x = vertexArrays[i][y].x;
+			} else if (vertexArrays[i][y].x > maxXYZ.x) {
+				maxXYZ.x = vertexArrays[i][y].x;
+			}
+			if (vertexArrays[i][y].y < minXYZ.y) {
+				minXYZ.y = vertexArrays[i][y].y;
+			}
+			else if (vertexArrays[i][y].y > maxXYZ.y) {
+				maxXYZ.y = vertexArrays[i][y].y;
+			}
+			if (vertexArrays[i][y].z < minXYZ.z) {
+				minXYZ.z = vertexArrays[i][y].z;
+			}
+			else if (vertexArrays[i][y].z > maxXYZ.z) {
+				maxXYZ.z = vertexArrays[i][y].z;
+			}
+		}
+	}
+
+	boundingBox.push_back(minXYZ);
+	boundingBox.push_back(maxXYZ);
+
+	return boundingBox;
+}
+
 GenericModel::GenericModel(std::vector<std::vector<glm::vec3>> vertexArrays, GLenum renderFormat)
 {
 	VertexArrays = vertexArrays;
 	RenderFormat = renderFormat;
+	boundingBox = getBoundingBox(vertexArrays);
 	NormalsArrays = GetNormals(VertexArrays, RenderFormat);
 }
 
@@ -191,15 +225,9 @@ void GenericModel::Update()
 
 void GenericModel::Draw(const glm::mat4& projection_matrix, const glm::mat4& view_matrix)
 {
-	//rotation = 0.0005f * rotation_speed + rotation;
-
-	//glm::vec3 rotation_sin = glm::vec3(rotation.x * PI / 180, rotation.y * PI / 180, rotation.z * PI / 180);
 
  	glUseProgram(program);
-	//glUniform3f(glGetUniformLocation(program, "rotation"),
-	//	rotation_sin.x,
-	//	rotation_sin.y,
-	//	rotation_sin.z);
+
 	glUniformMatrix4fv(glGetUniformLocation(program, "view_matrix"), 1, false, &view_matrix[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(program, "projection_matrix"), 1, false, &projection_matrix[0][0]);
 
