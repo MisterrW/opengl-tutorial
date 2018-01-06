@@ -1,6 +1,7 @@
 #pragma once
 #include "Core\Init\Init_GLUT.h"
 #include "Managers\SceneManager.h"
+#include "Rendering\renderer.h"
 namespace BasicEngine
 {
 	class Engine

@@ -29,28 +29,35 @@ glm::mat4 PositionManager::GetMoveMatrix() {
 	// keys control camera position
 	glm::mat4 updatedViewMatrix = glm::mat4(ViewMatrix);
 
+	if (KeyStates[205] == true) {
+		ScaleFactor = 300;
+	}
+	else {
+		ScaleFactor = 100;
+	}
+
 	// forward (w s)
 	if (KeyStates['w'] == true) {
-		updatedViewMatrix[3][2] -= 0.01f * ScaleFactor;
+		updatedViewMatrix[3][2] -= 0.02f * ScaleFactor;
 	}
 	else if (KeyStates['s'] == true) {
-		updatedViewMatrix[3][2] += 0.01f * ScaleFactor;
+		updatedViewMatrix[3][2] += 0.02f * ScaleFactor;
 	}
 
 	// sideways (a d)
 	if (KeyStates['a'] == true) {
-		updatedViewMatrix[3][0] += 0.01f * ScaleFactor;
+		updatedViewMatrix[3][0] += 0.02f * ScaleFactor;
 	}
 	else if (KeyStates['d'] == true) {
-		updatedViewMatrix[3][0] -= 0.01f * ScaleFactor;
+		updatedViewMatrix[3][0] -= 0.02f * ScaleFactor;
 	}
 
 	// up/down (x c)
 	if (KeyStates['x'] == true) {
-		updatedViewMatrix[3][1] -= 0.01f * ScaleFactor;
+		updatedViewMatrix[3][1] -= 0.02f * ScaleFactor;
 	}
 	else if (KeyStates['c'] == true) {
-		updatedViewMatrix[3][1] += 0.01f * ScaleFactor;
+		updatedViewMatrix[3][1] += 0.02f * ScaleFactor;
 	}
 
 	return updatedViewMatrix;
@@ -97,18 +104,18 @@ glm::mat4 PositionManager::GetOrientationMatrix() {
 
 	// look up / down
 	if (KeyStates['o'] == true) {
-		orientX = -0.0015f * ScaleFactor;
+		orientX = -0.00015f * ScaleFactor;
 	}
 	else if (KeyStates['l'] == true) {
-		orientX = +0.0015f * ScaleFactor;
+		orientX = +0.00015f * ScaleFactor;
 	}
 
 	// bank left / right (yaw)
 	if (KeyStates['k'] == true) {
-		orientZ = +0.0015f * ScaleFactor;
+		orientZ = +0.00015f * ScaleFactor;
 	}
 	else if (KeyStates[';'] == true) {
-		orientZ = -0.0015f * ScaleFactor;
+		orientZ = -0.00015f * ScaleFactor;
 	}
 
 	glm::mat4 rotMat = GetXYZRotMat(orientX, orientY, orientZ);

@@ -1,11 +1,21 @@
+/*
+=================
+The models manager maintains lists of models which make up the scene.
+In a draw cycle, it returns its model list to the scene manager
+which passes them to the renderer to be drawn.
+=================
+*/
+
 #pragma once
 #include <map>
 #include "Shader_Manager.h"
 #include "../Rendering/IGameObject.h"
+#include "../Rendering/Models/Model.h"
 #include "../Rendering/Models/Triangle.h"
 #include "../Rendering/Models/Quad.h"
 
 using namespace BasicEngine::Rendering;
+using namespace BasicEngine::Rendering::Models;
 
 namespace BasicEngine
 {
@@ -17,29 +27,20 @@ namespace BasicEngine
 			ModelsManager();
 			~ModelsManager();
 
-			void Update();
-			
-			// 3D
-			void Draw(const glm::mat4& projection_matrix, const glm::mat4& view_matrix);
-			const IGameObject& GetModel(const std::string& gameModelName) const;
-			void DeleteModel(const std::string& gameModelName);
-			
+			void update();
 
-			// NDC
-			void Draw();
-			void DeleteModel_NDC(const std::string& gameModelName);
-			const IGameObject& GetModel_NDC(const std::string& gameModelName) const;
+			// void Draw(const glm::mat4& projection_matrix, const glm::mat4& view_matrix);
+			
+			// returns all models for rendering
+			std::map<std::string, Model*> getModels();
+			const Model& getModel(const std::string& gameModelName) const;
+			void deleteModel(const std::string& gameModelName);
 
-			void SetModel(const std::string& gameObjectName, IGameObject* gameObject);
+			void setModel(const std::string& gameObjectName, Model* gameObject);
 
 		private:
 			// NOTE this may become a bottleneck, better to use vector
-
-			// 3D
-			std::map<std::string, IGameObject*> gameModelList;
-
-			// NDC
-			std::map<std::string, IGameObject*> gameModelList_NDC;
+			std::map<std::string, Model*> gameModelList;
 		};
 	}
 }

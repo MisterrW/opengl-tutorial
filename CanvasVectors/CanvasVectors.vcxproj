@@ -132,12 +132,14 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ModelMakers\StarMaker.cpp" />
     <ClCompile Include="ModelMakers\TreeMaker.cpp" />
+    <ClCompile Include="Models\MeshStrip.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GenericModel.h" />
     <ClInclude Include="ModelMakers\RandomGen.h" />
     <ClInclude Include="ModelMakers\StarMaker.h" />
     <ClInclude Include="ModelMakers\TreeMaker.h" />
+    <ClInclude Include="Models\MeshStrip.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\CubeFragmentShader.glsl" />

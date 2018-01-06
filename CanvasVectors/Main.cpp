@@ -1,11 +1,13 @@
 #pragma once
 #include <BasicEngine\Engine.h>
 #include "GenericModel.h"
+#include "Models\MeshStrip.h"
 #include "ModelMakers\TreeMaker.h"
 #include <thread>
 
 using namespace BasicEngine;
 using namespace ModelMakers;
+using namespace LocalModels;
 
 float GetRandom() {
 	return (std::rand() / float(RAND_MAX));
@@ -15,7 +17,8 @@ vector<GenericModel*> makeStars(Engine* engine) {
 	vector<GenericModel*> stars = vector<GenericModel*>();
 
 	int starRadius = 20000;
-	int starCount = 5000;
+	//int starCount = 50000;
+	int starCount = 1000;
 	int starSize = 50;
 
 	for (unsigned i = 0; i < starCount; i++) {
@@ -26,7 +29,7 @@ vector<GenericModel*> makeStars(Engine* engine) {
 
 			int sx = -starRadius + GetRandom() * 2 * starRadius;
 			int sz = -starRadius + GetRandom() * 2 * starRadius;
-			int sy = abs(sx) < 10000 && abs(sz) < 10000 ? 10000 + (GetRandom() * 0.5 * starRadius) : GetRandom() * starRadius;
+			int sy = abs(sx) < 10000 && abs(sz) < 10000 ? 10000 + (GetRandom() * 0.5 * starRadius) : -2000 + GetRandom() * starRadius;
 
 			starVertices.push_back(glm::vec3(sx, sy, sz));
 			starVertices.push_back(glm::vec3(sx + GetRandom() * starSize, sy + GetRandom() * starSize, sz + GetRandom() * starSize));
@@ -37,8 +40,9 @@ vector<GenericModel*> makeStars(Engine* engine) {
 		GenericModel* star = new GenericModel(starVertexArrays, GL_TRIANGLES);
 		star->SetProgram(engine->GetShader_Manager()->GetProgram("cubeShader"));
 		star->Create();
+		string modelName = "star_" + std::to_string(i);
 
-		engine->GetModels_Manager()->SetModel("star" + i, star);
+		engine->GetModels_Manager()->setModel(modelName, star);
 		stars.push_back(star);
 		
 	}
@@ -64,7 +68,7 @@ void makeSomeTrees(Engine* engine, int i_min, int i_max) {
 		tree->SetProgram(engine->GetShader_Manager()->GetProgram("genericWithLighting"));
 		tree->Create();
 
-		engine->GetModels_Manager()->SetModel("tree" + i, tree);
+		engine->GetModels_Manager()->setModel("tree" + i, tree);
 	}
 	int thing = 1;
 }
@@ -89,58 +93,63 @@ void makeTrees(Engine* engine) {
 	int trees = 1;
 }
 
-void makePyramid(Engine* engine) {
-	vector<vector<glm::vec3>> ground;
+void makePyramid(int seedX, int seedZ, float baseLength, Engine* engine) {
+	vector<vector<glm::vec3>> pyramid;
 
-	ground.push_back(vector<glm::vec3>());
+	pyramid.push_back(vector<glm::vec3>());
 
-	int x = 0;
+	int x = seedX;
 	int y = -20;
-	int z = 0;
+	int z = seedZ;
 
-	int max_x = 1000;
-	int max_z = 1000;
-	int half_x = 500;
-	int half_z = 500;
+	int x_offset = 0 - seedX;
+	int z_offset = 0 - seedZ;
+	int max_x = baseLength;
+	int max_z = baseLength;
+	int half_x = baseLength / 2;
+	int half_z = baseLength / 2;
+
+	float baseLength_over_200 = baseLength / 200;
+	float baseLength_over_100 = baseLength / 100;
+	float baseLength_over_50 = baseLength / 50;
+
 	int XHeight;
 	int ZHeight;
 	float YHeight;
 
-	vector<int> absols = vector<int>();
-
 	for (int i = 0; i < 200; i++) {
-		bool evens = i % 2 == 0 ? 0 : 1000;
-			
-		z = evens ? 0 : 1000;
+		bool evens = i % 2 == 0;
+
+		z = evens ? seedZ : seedZ + baseLength;
 
 		for (int j = 0; j < 200; j++) {
-			XHeight = (half_x - abs(x - (half_x)));
-			ZHeight = (half_z - abs(z - (half_z)));
-			YHeight = (XHeight * ZHeight) * 2000 / (max_x * max_z);
+			XHeight = half_x - abs((x + x_offset) - half_x);
+			ZHeight = half_z - abs((z + z_offset) - half_z);
+			YHeight = (XHeight * ZHeight) * (baseLength * 2) / (max_x * max_z);
 
 			y = YHeight;
-				ground[0].push_back(glm::vec3(x, y, z));
-				y = -5 + (GetRandom() * 10) + YHeight;
-				ground[0].push_back(glm::vec3(x + 20, y, z));
-				y = -5 + (GetRandom() * 10) + YHeight;
-				ground[0].push_back(glm::vec3(x, y, z + 20));
-				y = -5 + (GetRandom() * 10) + YHeight;
-				ground[0].push_back(glm::vec3(x + 20, y, z + 20));
-				if (evens) {
-					z += 5;
-				}
-				else {
-					z -= 5;
-				}
+			pyramid[0].push_back(glm::vec3(x, y, z));
+			y = -(baseLength_over_200)+int(GetRandom() * (baseLength_over_100)) + YHeight;
+			pyramid[0].push_back(glm::vec3(x + (baseLength_over_50), y, z));
+			y = -(baseLength_over_200)+int(GetRandom() * (baseLength_over_100)) + YHeight;
+			pyramid[0].push_back(glm::vec3(x, y, z + (baseLength_over_50)));
+			y = -(baseLength_over_200)+int(GetRandom() * (baseLength_over_100)) + YHeight;
+			pyramid[0].push_back(glm::vec3(x + (baseLength_over_50), y, z + (baseLength_over_50)));
+			if (evens) {
+				z += (baseLength_over_200);
+			}
+			else {
+				z -= (baseLength_over_200);
+			}
 		}
-		x += 5;
+		x += (baseLength / 200);
 	}
 
-	GenericModel* groundModel = new GenericModel(ground, GL_TRIANGLE_STRIP);
-	groundModel->SetProgram(engine->GetShader_Manager()->GetProgram("genericWithLighting"));
-	groundModel->Create();
-
-	engine->GetModels_Manager()->SetModel("pyramid", groundModel);
+	GenericModel* pyramidModel = new GenericModel(pyramid, GL_TRIANGLE_STRIP);
+	pyramidModel->SetProgram(engine->GetShader_Manager()->GetProgram("genericWithLighting"));
+	pyramidModel->Create();
+	string modelName = "pyramid_" + std::to_string(seedZ) + "_" + std::to_string(seedX);
+	engine->GetModels_Manager()->setModel(modelName, pyramidModel);
 }
 
 void makeGround(Engine* engine) {
@@ -152,18 +161,16 @@ void makeGround(Engine* engine) {
 	int y = -20;
 	int z = -2000;
 
-	vector<int> absols = vector<int>();
-
 	for (int i = 0; i < 500; i++) {
 		z = -2000;
 		for (int j = 0; j < 500; j++) {
 
 			ground[0].push_back(glm::vec3(x, y, z));
-			y = -5 + (GetRandom() * 10);
+			y = -5 + int(GetRandom() * 10);
 			ground[0].push_back(glm::vec3(x + 50, y, z));
-			y = -5 + (GetRandom() * 10);
+			y = -5 + int(GetRandom() * 10);
 			ground[0].push_back(glm::vec3(x, y, z + 50));
-			y = -5 + (GetRandom() * 10);
+			y = -5 + int(GetRandom() * 10);
 			ground[0].push_back(glm::vec3(x + 50, y, z + 50));
 			z += 40;
 		}
@@ -174,9 +181,14 @@ void makeGround(Engine* engine) {
 	groundModel->SetProgram(engine->GetShader_Manager()->GetProgram("genericWithLighting"));
 	groundModel->Create();
 
-	engine->GetModels_Manager()->SetModel("ground", groundModel);
+	engine->GetModels_Manager()->setModel("ground", groundModel);
 }
 
+void makeMesh(Engine* engine) {
+	MeshStrip* meshStrip = new MeshStrip();
+	meshStrip->SetProgram(engine->GetShader_Manager()->GetProgram("cubeShader"));
+	engine->GetModels_Manager()->setModel("meshStrip", meshStrip);
+}
 
 int main(int argc, char **argv)
 {
@@ -194,8 +206,16 @@ int main(int argc, char **argv)
 
 	vector<GenericModel*> stars = makeStars(engine);
 	makeTrees(engine);
-	makePyramid(engine);
+	//makePyramid(0, 0, engine);
+	makePyramid(-1020, 0, 1000, engine);
+	makePyramid(20, 20, 10000, engine);
+	makePyramid(-100, -100, 70, engine);
+	// makePyramid(0, 0, 1000, engine);
 	makeGround(engine);
+
+	//makeMesh(engine);
+
+   
 
 	engine->Run();
 

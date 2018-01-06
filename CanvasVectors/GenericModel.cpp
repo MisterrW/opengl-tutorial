@@ -19,25 +19,34 @@ std::vector<std::vector<glm::vec3>> GenericModel::GetNormals(std::vector<std::ve
 
 			glm::vec3 edge1;
 			glm::vec3 edge2;
+			glm::vec3 edge3;
+			glm::vec3 edge4;
+			bool haveEdge1 = false;
+			bool haveEdge2 = false;
+			bool haveEdge3 = false;
+			bool haveEdge4 = false;
 			glm::vec3 not_normalised;
 			glm::vec3 normalised;
 			glm::vec3 nullVector = glm::vec3();
 
 			for (unsigned j = 0; j < size; j++) {
-				std::vector<glm::vec3> triangleNormals = std::vector<glm::vec3>();
 				if (j > 1) {
 					edge1 = glm::vec3(vertexArray[j - 2] - vertexArray[j - 1]);
 					edge2 = glm::vec3(vertexArray[j - 1] - vertexArray[j]);
-					not_normalised = glm::cross(edge1, edge2);
-					if (not_normalised.x != 0 || not_normalised.y != 0 || not_normalised.z != 0) {
-						normalised = glm::normalize(not_normalised);
-						triangleNormals.push_back(normalised);
-						//triangleNormals.push_back(glm::normalize(glm::cross(edge1, edge2)));
-					}
+					haveEdge1 = true;
+					haveEdge2 = true;
 				}
 				if (j > 0 && j < size - 1) {
-					edge1 = glm::vec3(vertexArray[j - 1] - vertexArray[j]);
-					edge2 = glm::vec3(vertexArray[j] - vertexArray[j + 1]);
+					edge3 = glm::vec3(vertexArray[j] - vertexArray[j + 1]);
+					haveEdge3 = true;
+				}
+				if (j < size - 2) {
+					edge4 = glm::vec3(vertexArray[j + 1] - vertexArray[j + 2]);
+					haveEdge4 = true;
+				}
+
+				std::vector<glm::vec3> triangleNormals = std::vector<glm::vec3>();
+				if (haveEdge1 && haveEdge2) {
 					not_normalised = glm::cross(edge1, edge2);
 					if (not_normalised.x != 0 || not_normalised.y != 0 || not_normalised.z != 0) {
 						normalised = glm::normalize(not_normalised);
@@ -45,10 +54,16 @@ std::vector<std::vector<glm::vec3>> GenericModel::GetNormals(std::vector<std::ve
 						//triangleNormals.push_back(glm::normalize(glm::cross(edge1, edge2)));
 					}
 				}
-				if (j < size - 2) {
-					edge1 = glm::vec3(vertexArray[j] - vertexArray[j + 1]);
-					edge2 = glm::vec3(vertexArray[j + 1] - vertexArray[j + 2]);
-					not_normalised = glm::cross(edge1, edge2);
+				if (haveEdge2 && haveEdge3) {
+					not_normalised = glm::cross(edge2, edge3);
+					if (not_normalised.x != 0 || not_normalised.y != 0 || not_normalised.z != 0) {
+						normalised = glm::normalize(not_normalised);
+						triangleNormals.push_back(normalised);
+						//triangleNormals.push_back(glm::normalize(glm::cross(edge1, edge2)));
+					}
+				}
+				if (haveEdge3 && haveEdge4) {
+					not_normalised = glm::cross(edge3, edge4);
 					if (not_normalised.x != 0 || not_normalised.y != 0 || not_normalised.z != 0) {
 						normalised = glm::normalize(not_normalised);
 						triangleNormals.push_back(normalised);
@@ -180,7 +195,7 @@ void GenericModel::Draw(const glm::mat4& projection_matrix, const glm::mat4& vie
 
 	//glm::vec3 rotation_sin = glm::vec3(rotation.x * PI / 180, rotation.y * PI / 180, rotation.z * PI / 180);
 
-	glUseProgram(program);
+ 	glUseProgram(program);
 	//glUniform3f(glGetUniformLocation(program, "rotation"),
 	//	rotation_sin.x,
 	//	rotation_sin.y,

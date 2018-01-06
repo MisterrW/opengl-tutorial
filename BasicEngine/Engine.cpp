@@ -1,6 +1,7 @@
 #include "Engine.h"
 using namespace BasicEngine;
 using namespace Core;
+using namespace Rendering;
 
 Engine::Engine()
 {
@@ -33,6 +34,7 @@ bool Engine::Init()
 	if (m_scene_manager && m_shader_manager)
 	{
 		m_models_manager = new Managers::ModelsManager();
+
 		m_scene_manager->SetModelsManager(m_models_manager);
 	}
 	else

@@ -27,6 +27,9 @@
     <ClCompile Include="ModelMakers\TreeMaker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Models\MeshStrip.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GenericModel.h">
@@ -39,6 +42,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ModelMakers\RandomGen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Models\MeshStrip.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
