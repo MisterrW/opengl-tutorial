@@ -7,26 +7,31 @@ std::vector<std::vector<glm::vec3>> GenericModel::GetNormals(std::vector<std::ve
 	}
 	else if (renderFormat == GL_TRIANGLE_STRIP) {
 		UseNormals = true;
+		glm::vec3 edge1;
+		glm::vec3 edge2;
+		glm::vec3 edge3;
+		glm::vec3 edge4;
+		bool haveEdge1;
+		bool haveEdge2;
+		bool haveEdge3;
+		bool haveEdge4;
+		std::vector<glm::vec3> vertexArray;
+		int size;
+
+		glm::vec3 not_normalised;
+		
+		glm::vec3 nullVector = glm::vec3();
 		for (unsigned i = 0; i < vertexArrays.size(); i++) {
 			std::vector<glm::vec3> normalsArray = std::vector<glm::vec3>();
 
-			int size = vertexArrays[i].size();
-
-			std::vector<glm::vec3> vertexArray = vertexArrays[i];
-
-			glm::vec3 edge1;
-			glm::vec3 edge2;
-			glm::vec3 edge3;
-			glm::vec3 edge4;
-			bool haveEdge1 = false;
-			bool haveEdge2 = false;
-			bool haveEdge3 = false;
-			bool haveEdge4 = false;
-			glm::vec3 not_normalised;
-			glm::vec3 normalised;
-			glm::vec3 nullVector = glm::vec3();
+			size = vertexArrays[i].size();
+			vertexArray = vertexArrays[i];
 
 			for (unsigned j = 0; j < size; j++) {
+				haveEdge1 = false;
+				haveEdge2 = false;
+				haveEdge3 = false;
+				haveEdge4 = false;
 				if (j > 1) {
 					edge1 = glm::vec3(vertexArray[j - 2] - vertexArray[j - 1]);
 					edge2 = glm::vec3(vertexArray[j - 1] - vertexArray[j]);
@@ -46,25 +51,22 @@ std::vector<std::vector<glm::vec3>> GenericModel::GetNormals(std::vector<std::ve
 				if (haveEdge1 && haveEdge2) {
 					not_normalised = glm::cross(edge1, edge2);
 					if (not_normalised.x != 0 || not_normalised.y != 0 || not_normalised.z != 0) {
-						normalised = glm::normalize(not_normalised);
+						glm::vec3 normalised = glm::normalize(not_normalised);
 						triangleNormals.push_back(normalised);
-						//triangleNormals.push_back(glm::normalize(glm::cross(edge1, edge2)));
 					}
 				}
 				if (haveEdge2 && haveEdge3) {
 					not_normalised = glm::cross(edge2, edge3);
 					if (not_normalised.x != 0 || not_normalised.y != 0 || not_normalised.z != 0) {
-						normalised = glm::normalize(not_normalised);
+						glm::vec3 normalised = glm::normalize(not_normalised);
 						triangleNormals.push_back(normalised);
-						//triangleNormals.push_back(glm::normalize(glm::cross(edge1, edge2)));
 					}
 				}
 				if (haveEdge3 && haveEdge4) {
 					not_normalised = glm::cross(edge3, edge4);
 					if (not_normalised.x != 0 || not_normalised.y != 0 || not_normalised.z != 0) {
-						normalised = glm::normalize(not_normalised);
+						glm::vec3 normalised = glm::normalize(not_normalised);
 						triangleNormals.push_back(normalised);
-						//triangleNormals.push_back(glm::normalize(glm::cross(edge1, edge2)));
 					}
 				}
 				glm::vec3 vertexNormal = glm::vec3(0, 0, 0);
