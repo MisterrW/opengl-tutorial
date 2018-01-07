@@ -1,12 +1,10 @@
 #pragma once
 
-#include <BasicEngine\Rendering\Models\Model.h>
+#include <BasicEngine\Models\Model.h>
 #include<time.h>
 #include<stdarg.h>
 
-using namespace BasicEngine;
-using namespace BasicEngine::Rendering;
-using namespace BasicEngine::Rendering::Models;
+using namespace BasicEngine::Models;
 
 namespace LocalModels {
 	class MeshStrip : public Model

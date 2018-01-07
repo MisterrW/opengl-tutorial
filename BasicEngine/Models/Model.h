@@ -1,16 +1,16 @@
 #pragma once
 #include <vector>
-#include "../IGameObject.h"
+#include "IGameObject.h"
 namespace BasicEngine
 {
-	namespace Rendering
-	{
 		namespace Models //create another namespace
 		{
 			class Model :public IGameObject
 			{
 			public:
 				Model();
+				Model(std::vector<std::vector<glm::vec3>> vertexArrays);
+				
 				virtual ~Model();
 				// methods from interface
 				virtual void Draw() override;
@@ -20,13 +20,15 @@ namespace BasicEngine
 				virtual void Destroy() override;
 
 				virtual GLuint GetVao() const override;
+				std::vector<glm::vec3> getBoundingBox();
 				virtual const std::vector<GLuint>& GetVbos() const override;
 
 			protected:
+				std::vector<glm::vec3> setBoundingBox(std::vector<std::vector<glm::vec3>> vertexArrays);
 				GLuint vao;
 				GLuint program;
 				std::vector<GLuint> vbos;
+				std::vector<glm::vec3> boundingBox;
 			};
 		}
-	}
 }

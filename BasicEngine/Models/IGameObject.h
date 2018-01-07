@@ -7,7 +7,7 @@
 
 namespace BasicEngine
 {
-	namespace Rendering
+	namespace Models
 	{
 		class IGameObject
 		{

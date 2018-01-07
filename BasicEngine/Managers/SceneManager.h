@@ -10,7 +10,7 @@ These models are passed to the renderer to draw.
 #include "Shader_Manager.h"
 #include "ModelsManager.h"
 #include "../Rendering/Renderer.h"
-#include "../Movement/PositionManager.h"
+#include "../Movement/MovementManager.h"
 #include "../Core/Init/IListener.h"
 
 namespace BasicEngine
@@ -23,7 +23,7 @@ namespace BasicEngine
 			SceneManager();
 			~SceneManager();
 
-			void SetModelsManager(Managers::ModelsManager*& models_manager);
+			void SetModelsManager(Managers::ModelsManager* models_manager);
 			// void SetRenderer(Rendering::Renderer renderer);
 
 			virtual void notifyBeginFrame();
@@ -40,7 +40,8 @@ namespace BasicEngine
 			BasicEngine::Managers::Shader_Manager* shader_manager;
 			BasicEngine::Managers::ModelsManager* modelsManager;
 			BasicEngine::Rendering::Renderer renderer;
-			BasicEngine::Movement::PositionManager* PositionManager;
+			// BasicEngine::Movement::PositionManager* PositionManager;
+			BasicEngine::Movement::MovementManager movementManager;
 		};
 	}
 }

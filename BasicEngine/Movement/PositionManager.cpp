@@ -3,10 +3,6 @@
 using namespace BasicEngine::Movement;
 
 PositionManager::PositionManager() {
-	ViewMatrix = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, -20.0f, 300.0f, 1.0f);
 
 	OldKeyStates = new bool[256];
 	KeyStates = new bool[256];
@@ -17,17 +13,9 @@ PositionManager::~PositionManager() {
 
 }
 
-glm::mat4 PositionManager::GetViewMatrix() {
-	return this->ViewMatrix;
-};
-
-void PositionManager::SetViewMatrix(glm::mat4 viewMatrix) {
-	this->ViewMatrix = viewMatrix;
-};
-
-glm::mat4 PositionManager::GetMoveMatrix() {
+glm::mat4 PositionManager::GetMoveMatrix(glm::mat4 oldViewMatrix) {
 	// keys control camera position
-	glm::mat4 updatedViewMatrix = glm::mat4(ViewMatrix);
+	glm::mat4 updatedViewMatrix = oldViewMatrix;
 
 	if (KeyStates[205] == true) {
 		ScaleFactor = 300;
@@ -123,12 +111,16 @@ glm::mat4 PositionManager::GetOrientationMatrix() {
 	return rotMat;
 }
 
-void PositionManager::UpdateViewMatrix() {
-	glm::mat4 movedMatrix = GetMoveMatrix();
+glm::mat4  PositionManager::GetViewMatrix(glm::mat4 oldViewMatrix) {
+	glm::mat4 movedMatrix = GetMoveMatrix(oldViewMatrix);
 
 	glm::mat4 orientationMatrix = GetOrientationMatrix();
 
-	ViewMatrix = orientationMatrix * movedMatrix;
+	glm::mat4 viewMatrix = orientationMatrix * movedMatrix;
+
+	oldViewMatrix = viewMatrix;
+
+	return viewMatrix;
 }
 
 void PositionManager::notifyKeyPress(char key, int x, int y) {

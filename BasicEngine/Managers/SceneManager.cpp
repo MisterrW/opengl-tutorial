@@ -1,37 +1,27 @@
 #include "SceneManager.h"
 using namespace BasicEngine::Managers;
+using namespace BasicEngine::Rendering;
 
 SceneManager::SceneManager()
 {
 	glEnable(GL_DEPTH_TEST);
 
 	shader_manager = new Shader_Manager();
-	//shader_manager->CreateProgram("colorShader",
-	//	"Shaders\\Vertex_Shader.glsl",
-	//	"Shaders\\Fragment_Shader.glsl");
 
 	renderer = Renderer();
-	modelsManager = new ModelsManager();
-	PositionManager = new BasicEngine::Movement::PositionManager();
 }
 
 SceneManager::~SceneManager()
 {
 	delete shader_manager;
 	delete modelsManager;
-	delete PositionManager;
 }
 
-void SceneManager::SetModelsManager(BasicEngine::Managers::ModelsManager*& models_m)
+void SceneManager::SetModelsManager(BasicEngine::Managers::ModelsManager* models_m)
 {
 	modelsManager = models_m;
+	movementManager.setModelsManager(modelsManager);
 }
-//
-//void SceneManager::SetRenderer(BasicEngine::Rendering::Renderer renderer)
-//{
-//	renderer = renderer;
-//}
-
 
 void SceneManager::notifyBeginFrame()
 {
@@ -51,13 +41,11 @@ void SceneManager::drawScene() {
 
 void SceneManager::notifyDisplayFrame()
 {
-	PositionManager->UpdateViewMatrix();
-	renderer.setViewMatrix(PositionManager->GetViewMatrix());
+	renderer.setViewMatrix(movementManager.getViewMatrix());
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 
 	drawScene();
-	// modelsManager->draw(projection_matrix, viewMatrix);
 }
 
 void SceneManager::notifyEndFrame()
@@ -83,9 +71,9 @@ void SceneManager::notifyReshape(int width, int height,
 }
 
 void SceneManager::notifyKeyPress(char key, int x, int y) {
-	PositionManager->notifyKeyPress(key, x, y);
+	movementManager.notifyKeyPress(key, x, y);
 }
 
 void SceneManager::notifyKeyUp(char key, int x, int y) {
-	PositionManager->notifyKeyUp(key, x, y);
+	movementManager.notifyKeyUp(key, x, y);
 };

@@ -91,47 +91,11 @@ std::vector<std::vector<glm::vec3>> GenericModel::GetNormals(std::vector<std::ve
 	return normalsArrays;
 }
 
-// move this to the base model class
-std::vector<glm::vec3> GenericModel::getBoundingBox(std::vector<std::vector<glm::vec3>> vertexArrays) {
-	std::vector<glm::vec3> boundingBox = std::vector<glm::vec3>();
-	
-	// actually we don't need a box, just 2 vectors representing the smallest and largest xyz corners of a box containing the model, for basic axis-aligned AABB collision / frustrum checks
-	glm::vec3 minXYZ = vertexArrays[0][0];
-	glm::vec3 maxXYZ = vertexArrays[0][0];
 
-	for (unsigned i = 0; i < vertexArrays.size(); i++) {
-		for (unsigned y = 0; y < vertexArrays[i].size(); y++) {
-			if (vertexArrays[i][y].x < minXYZ.x) {
-				minXYZ.x = vertexArrays[i][y].x;
-			} else if (vertexArrays[i][y].x > maxXYZ.x) {
-				maxXYZ.x = vertexArrays[i][y].x;
-			}
-			if (vertexArrays[i][y].y < minXYZ.y) {
-				minXYZ.y = vertexArrays[i][y].y;
-			}
-			else if (vertexArrays[i][y].y > maxXYZ.y) {
-				maxXYZ.y = vertexArrays[i][y].y;
-			}
-			if (vertexArrays[i][y].z < minXYZ.z) {
-				minXYZ.z = vertexArrays[i][y].z;
-			}
-			else if (vertexArrays[i][y].z > maxXYZ.z) {
-				maxXYZ.z = vertexArrays[i][y].z;
-			}
-		}
-	}
-
-	boundingBox.push_back(minXYZ);
-	boundingBox.push_back(maxXYZ);
-
-	return boundingBox;
-}
-
-GenericModel::GenericModel(std::vector<std::vector<glm::vec3>> vertexArrays, GLenum renderFormat)
+GenericModel::GenericModel(std::vector<std::vector<glm::vec3>> vertexArrays, GLenum renderFormat) : Model(vertexArrays)
 {
 	VertexArrays = vertexArrays;
 	RenderFormat = renderFormat;
-	boundingBox = getBoundingBox(vertexArrays);
 	NormalsArrays = GetNormals(VertexArrays, RenderFormat);
 }
 

@@ -6,7 +6,7 @@
 
 namespace BasicEngine
 {
-	namespace Rendering {
+	namespace Models {
 		struct VertexFormat
 		{
 			glm::vec3 position;//our first vertex attribute

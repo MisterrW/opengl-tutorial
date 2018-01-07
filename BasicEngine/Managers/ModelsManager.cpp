@@ -1,8 +1,7 @@
 #include "ModelsManager.h"
-#include "../Rendering/Models/Model.h"
+#include "../Models/Model.h"
 
 using namespace BasicEngine::Managers;
-using namespace BasicEngine::Rendering;
 
 ModelsManager::ModelsManager()
 {
@@ -50,8 +49,6 @@ void ModelsManager::update()
 	}
 
 }
-
-
 
 //const IGameObject& ModelsManager::GetModel_NDC(const std::string& gameModelName) const
 //{

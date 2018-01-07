@@ -7,10 +7,9 @@ It determines whether or not a model should be drawn in this call.
 */
 
 #pragma once
-#include "Models\Model.h"
+#include "../Models/Model.h"
 
-using namespace BasicEngine::Rendering;
-using namespace BasicEngine::Rendering::Models;
+using namespace BasicEngine::Models;
 
 namespace BasicEngine
 {

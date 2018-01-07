@@ -204,12 +204,12 @@ int main(int argc, char **argv)
 		"Shaders\\GenericLightedVertexShader.glsl",
 		"Shaders\\GenericLightedFragmentShader.glsl");
 
-	vector<GenericModel*> stars = makeStars(engine);
-	makeTrees(engine);
+	//vector<GenericModel*> stars = makeStars(engine);
+	//makeTrees(engine);
 	//makePyramid(0, 0, engine);
-	makePyramid(-1020, 0, 1000, engine);
-	makePyramid(20, 20, 10000, engine);
-	makePyramid(-100, -100, 70, engine);
+	//makePyramid(-1020, 0, 1000, engine);
+	//makePyramid(20, 20, 10000, engine);
+	//makePyramid(-100, -100, 70, engine);
 	// makePyramid(0, 0, 1000, engine);
 	makeGround(engine);
 

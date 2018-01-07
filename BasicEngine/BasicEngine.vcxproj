@@ -134,14 +134,15 @@
     <ClCompile Include="Core\Init\Init_Glew.cpp" />
     <ClCompile Include="Core\Init\Init_GLUT.cpp" />
     <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="Movement\MovementManager.cpp" />
+    <ClCompile Include="Physics\CollisionDeterminer.cpp" />
+    <ClCompile Include="Physics\Gravity.cpp" />
     <ClCompile Include="Makers\ModelMaker.cpp" />
     <ClCompile Include="Managers\ModelsManager.cpp" />
     <ClCompile Include="Managers\SceneManager.cpp" />
     <ClCompile Include="Managers\Shader_Manager.cpp" />
     <ClCompile Include="Movement\PositionManager.cpp" />
-    <ClCompile Include="Rendering\Models\Model.cpp" />
-    <ClCompile Include="Rendering\Models\Quad.cpp" />
-    <ClCompile Include="Rendering\Models\Triangle.cpp" />
+    <ClCompile Include="Models\Model.cpp" />
     <ClCompile Include="Rendering\Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -152,18 +153,19 @@
     <ClInclude Include="Core\Init\Init_GLUT.h" />
     <ClInclude Include="Core\Init\WindowInfo.h" />
     <ClInclude Include="Engine.h" />
+    <ClInclude Include="Movement\MovementManager.h" />
+    <ClInclude Include="Physics\Gravity.h" />
     <ClInclude Include="Makers\ModelMaker.h" />
     <ClInclude Include="Managers\ModelsManager.h" />
     <ClInclude Include="Managers\SceneManager.h" />
     <ClInclude Include="Managers\Shader_Manager.h" />
     <ClInclude Include="Movement\PositionManager.h" />
-    <ClInclude Include="Rendering\IGameObject.h" />
+    <ClInclude Include="Models\IGameObject.h" />
     <ClInclude Include="Core\Init\DebugOutput.h" />
-    <ClInclude Include="Rendering\Models\Model.h" />
-    <ClInclude Include="Rendering\Models\Quad.h" />
-    <ClInclude Include="Rendering\Models\Triangle.h" />
+    <ClInclude Include="Models\Model.h" />
+    <ClInclude Include="Physics\CollisionDeterminer.h" />
     <ClInclude Include="Rendering\Renderer.h" />
-    <ClInclude Include="Rendering\VertexFormat.h" />
+    <ClInclude Include="Models\VertexFormat.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\Fragment_Shader.glsl" />

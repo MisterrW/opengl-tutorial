@@ -9,13 +9,10 @@ which passes them to the renderer to be drawn.
 #pragma once
 #include <map>
 #include "Shader_Manager.h"
-#include "../Rendering/IGameObject.h"
-#include "../Rendering/Models/Model.h"
-#include "../Rendering/Models/Triangle.h"
-#include "../Rendering/Models/Quad.h"
+#include "../Models/IGameObject.h"
+#include "../Models/Model.h"
 
-using namespace BasicEngine::Rendering;
-using namespace BasicEngine::Rendering::Models;
+using namespace BasicEngine::Models;
 
 namespace BasicEngine
 {

@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+using namespace BasicEngine::Rendering;
+
 Renderer::Renderer() {
 	viewMatrix = glm::mat4();
 	projectionMatrix = glm::mat4();
