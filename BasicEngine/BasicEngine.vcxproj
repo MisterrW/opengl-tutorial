@@ -138,9 +138,9 @@
     <ClCompile Include="Physics\CollisionDeterminer.cpp" />
     <ClCompile Include="Physics\Gravity.cpp" />
     <ClCompile Include="Makers\ModelMaker.cpp" />
-    <ClCompile Include="Managers\ModelsManager.cpp" />
+    <ClCompile Include="Managers\ModelManager.cpp" />
     <ClCompile Include="Managers\SceneManager.cpp" />
-    <ClCompile Include="Managers\Shader_Manager.cpp" />
+    <ClCompile Include="Managers\ShaderManager.cpp" />
     <ClCompile Include="Movement\PositionManager.cpp" />
     <ClCompile Include="Models\Model.cpp" />
     <ClCompile Include="Rendering\Renderer.cpp" />
@@ -156,9 +156,9 @@
     <ClInclude Include="Movement\MovementManager.h" />
     <ClInclude Include="Physics\Gravity.h" />
     <ClInclude Include="Makers\ModelMaker.h" />
-    <ClInclude Include="Managers\ModelsManager.h" />
+    <ClInclude Include="Managers\ModelManager.h" />
     <ClInclude Include="Managers\SceneManager.h" />
-    <ClInclude Include="Managers\Shader_Manager.h" />
+    <ClInclude Include="Managers\ShaderManager.h" />
     <ClInclude Include="Movement\PositionManager.h" />
     <ClInclude Include="Models\IGameObject.h" />
     <ClInclude Include="Core\Init\DebugOutput.h" />

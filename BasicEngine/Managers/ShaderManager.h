@@ -13,11 +13,11 @@ namespace BasicEngine
 	namespace Managers
 	{
 
-		class Shader_Manager
+		class ShaderManager
 		{
 		public:
-			Shader_Manager(void);
-			~Shader_Manager(void);
+			ShaderManager(void);
+			~ShaderManager(void);
 
 			void CreateProgram(const std::string& ShaderName,
 				const std::string& VertexShaderFilename,

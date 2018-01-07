@@ -2,35 +2,29 @@
 using namespace BasicEngine::Managers;
 using namespace BasicEngine::Rendering;
 
+
 SceneManager::SceneManager()
 {
-	glEnable(GL_DEPTH_TEST);
-
-	shader_manager = new Shader_Manager();
-
 	renderer = Renderer();
+	movementManager = BasicEngine::Movement::MovementManager();
+	glEnable(GL_DEPTH_TEST);
 }
 
 SceneManager::~SceneManager()
 {
-	delete shader_manager;
-	delete modelsManager;
 }
 
-void SceneManager::SetModelsManager(BasicEngine::Managers::ModelsManager* models_m)
-{
-	modelsManager = models_m;
-	movementManager.setModelsManager(modelsManager);
-}
+void SceneManager::initialise(BasicEngine::Managers::ModelManager* modelManager) {
+	this->modelManager = modelManager;
+};
 
 void SceneManager::notifyBeginFrame()
 {
-	modelsManager->update();
+	this->modelManager->update();
 }
 
-void SceneManager::drawScene() {
+void SceneManager::drawScene(std::map<std::string, Model*> modelList) {
 	// get models from modelsmanager
-	std::map<std::string, Model*> modelList = modelsManager->getModels();
 
 	// iterate over them and pass them to renderer's draw method
 	for (auto model : modelList)
@@ -41,11 +35,12 @@ void SceneManager::drawScene() {
 
 void SceneManager::notifyDisplayFrame()
 {
-	renderer.setViewMatrix(movementManager.getViewMatrix());
+	std::map<std::string, Model*> modelList = modelManager->getModels();
+	renderer.setViewMatrix(movementManager.getViewMatrix(modelList));
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 
-	drawScene();
+	drawScene(modelList);
 }
 
 void SceneManager::notifyEndFrame()
@@ -76,4 +71,4 @@ void SceneManager::notifyKeyPress(char key, int x, int y) {
 
 void SceneManager::notifyKeyUp(char key, int x, int y) {
 	movementManager.notifyKeyUp(key, x, y);
-};
+}

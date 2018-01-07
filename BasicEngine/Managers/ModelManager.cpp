@@ -1,14 +1,14 @@
-#include "ModelsManager.h"
+#include "ModelManager.h"
 #include "../Models/Model.h"
 
 using namespace BasicEngine::Managers;
 
-ModelsManager::ModelsManager()
+ModelManager::ModelManager()
 {
 
 }
 
-ModelsManager::~ModelsManager()
+ModelManager::~ModelManager()
 {
 	//auto -it's a map iterator
 	for (auto model : gameModelList)
@@ -19,38 +19,38 @@ ModelsManager::~ModelsManager()
 
 }
 
-std::map<std::string, Model*> ModelsManager::getModels() {
-	return gameModelList;
+std::map<std::string, Model*> ModelManager::getModels() {
+	return this->gameModelList;
 }
 
-const Model& ModelsManager::getModel(const std::string& gameModelName) const
+const Model& ModelManager::getModel(const std::string& gameModelName) const
 {
-	return (*gameModelList.at(gameModelName));
+	return (*this->gameModelList.at(gameModelName));
 }
 
-void ModelsManager::deleteModel(const std::string& gameModelName)
+void ModelManager::deleteModel(const std::string& gameModelName)
 {
 	Model* model = gameModelList[gameModelName];
 	model->Destroy();
 	gameModelList.erase(gameModelName);
 }
 
-void ModelsManager::setModel(const std::string& gameObjectName, Model* gameObject)
+void ModelManager::setModel(const std::string& gameObjectName, Model* gameObject)
 {
-	gameModelList[gameObjectName.c_str()] = gameObject;
+	this->gameModelList[gameObjectName.c_str()] = gameObject;
 }
 
-void ModelsManager::update()
+void ModelManager::update()
 {
 	//auto -it's a map iterator
-	for (auto model : gameModelList)
+	for (auto model : this->gameModelList)
 	{
 		model.second->Update();
 	}
 
 }
 
-//const IGameObject& ModelsManager::GetModel_NDC(const std::string& gameModelName) const
+//const IGameObject& ModelManager::GetModel_NDC(const std::string& gameModelName) const
 //{
 //	return (*gameModelList_NDC.at(gameModelName));
 //}
@@ -68,7 +68,7 @@ delete model.second;
 gameModelList_NDC.clear();*/
 
 // for NDC models
-//void ModelsManager::Draw()
+//void ModelManager::Draw()
 //{
 //	//auto -it's a map iterator
 //	for (auto model : gameModelList)
@@ -78,7 +78,7 @@ gameModelList_NDC.clear();*/
 //}
 
 // for 3d models
-//void ModelsManager::Draw(const glm::mat4& projection_matrix, const glm::mat4& view_matrix)
+//void ModelManager::Draw(const glm::mat4& projection_matrix, const glm::mat4& view_matrix)
 //{
 //	//auto -it's a map iterator
 //	for (auto model : gameModelList)
@@ -87,7 +87,7 @@ gameModelList_NDC.clear();*/
 //	}
 //}
 
-//void ModelsManager::DeleteModel_NDC(const std::string& gameModelName)
+//void ModelManager::DeleteModel_NDC(const std::string& gameModelName)
 //{
 //	IGameObject* model = gameModelList_NDC[gameModelName];
 //	model->Destroy();

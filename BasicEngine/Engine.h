@@ -1,7 +1,17 @@
+/*
+=================
+The engine class is the interface / API for clients of this library.
+Outside of the engine project, interaction with the engine is only through public methods of this class.
+=================
+*/
+
 #pragma once
-#include "Core\Init\Init_GLUT.h"
-#include "Managers\SceneManager.h"
-#include "Rendering\renderer.h"
+#include "Core/Init/Init_GLUT.h"
+#include "Managers/SceneManager.h"
+#include "Managers/ShaderManager.h"
+#include "Managers/ModelManager.h"
+#include "Rendering/renderer.h"
+
 namespace BasicEngine
 {
 	class Engine
@@ -11,20 +21,22 @@ namespace BasicEngine
 		Engine();
 		~Engine();
 
-		//OpenGL and manager init
+		//OpenGL and manager initialisation
 		bool Init();
 
 		//Loop
 		void Run();
 
-		//Getters
-		Managers::SceneManager*  GetScene_Manager()  const;
-		Managers::Shader_Manager* GetShader_Manager() const;
-		Managers::ModelsManager* GetModels_Manager() const;
+		//IO for client
+		void createProgram(const std::string& ShaderName,
+			const std::string& VertexShaderFilename,
+			const std::string& FragmentShaderFilename);
+		const GLuint getProgram(const std::string&);
+		void setModel(const std::string& gameObjectName, Model* gameObject);
 
 	private:
-		Managers::SceneManager*  m_scene_manager;
-		Managers::Shader_Manager* m_shader_manager;
-		Managers::ModelsManager* m_models_manager;
+		Managers::SceneManager sceneManager;
+		Managers::ShaderManager shaderManager;
+		Managers::ModelManager* modelManager;
 	};
 }

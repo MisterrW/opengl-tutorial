@@ -1,4 +1,4 @@
-#include "Shader_Manager.h" 
+#include "ShaderManager.h" 
 #include<iostream>
 #include<fstream>
 #include<vector>
@@ -9,11 +9,11 @@ using namespace BasicEngine::Managers;
 // this is the Shader_Manager class file. It contains functions related to reading shaders from files,
 // and creating programs from those shaders.
 
-std::map<std::string, GLuint> Shader_Manager::programs;
+std::map<std::string, GLuint> ShaderManager::programs;
 
 // ctor and dtor
-Shader_Manager::Shader_Manager(void) {}
-Shader_Manager::~Shader_Manager(void) {
+ShaderManager::ShaderManager(void) {}
+ShaderManager::~ShaderManager(void) {
 	std::map<std::string, GLuint>::iterator i;
 	for (i = programs.begin(); i != programs.end(); ++i)
 	{
@@ -23,7 +23,7 @@ Shader_Manager::~Shader_Manager(void) {
 	programs.clear();
 }
 
-std::string Shader_Manager::ReadShader(const std::string& filename)
+std::string ShaderManager::ReadShader(const std::string& filename)
 {
 
 	std::string shaderCode;
@@ -43,7 +43,7 @@ std::string Shader_Manager::ReadShader(const std::string& filename)
 	return shaderCode;
 }
 
-GLuint Shader_Manager::CreateShader(GLenum shaderType, const std::string&
+GLuint ShaderManager::CreateShader(GLenum shaderType, const std::string&
 	source, const std::string& shaderName)
 {
 
@@ -83,7 +83,7 @@ GLuint Shader_Manager::CreateShader(GLenum shaderType, const std::string&
 	return shader;
 }
 
-void Shader_Manager::CreateProgram(const std::string& ShaderName,
+void ShaderManager::CreateProgram(const std::string& ShaderName,
 	const std::string& vertexShaderFilename,
 	const std::string& fragmentShaderFilename)
 {
@@ -117,11 +117,11 @@ void Shader_Manager::CreateProgram(const std::string& ShaderName,
 	programs[ShaderName] = program;
 }
 
-const GLuint Shader_Manager::GetProgram(const std::string& programName) {
+const GLuint ShaderManager::GetProgram(const std::string& programName) {
 	return programs.at(programName);
 }
 
-void Shader_Manager::DeleteProgram(const std::string& programName) {
+void ShaderManager::DeleteProgram(const std::string& programName) {
 	GLuint pr = programs.at(programName);
 	glDeleteProgram(pr);
 	programs.erase(programName);

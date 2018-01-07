@@ -38,11 +38,11 @@ vector<GenericModel*> makeStars(Engine* engine) {
 			starVertexArrays.push_back(starVertices);
 		//}
 		GenericModel* star = new GenericModel(starVertexArrays, GL_TRIANGLES);
-		star->SetProgram(engine->GetShader_Manager()->GetProgram("cubeShader"));
+		star->SetProgram(engine->getProgram("cubeShader"));
 		star->Create();
 		string modelName = "star_" + std::to_string(i);
 
-		engine->GetModels_Manager()->setModel(modelName, star);
+		engine->setModel(modelName, star);
 		stars.push_back(star);
 		
 	}
@@ -65,10 +65,10 @@ void makeSomeTrees(Engine* engine, int i_min, int i_max) {
 		glm::vec3 seed = glm::vec3(x, y, z);
 		vector<vector<glm::vec3>> treeVertexArrays = treeMaker.GetTree(seed);
 		GenericModel* tree = new GenericModel(treeVertexArrays);
-		tree->SetProgram(engine->GetShader_Manager()->GetProgram("genericWithLighting"));
+		tree->SetProgram(engine->getProgram("genericWithLighting"));
 		tree->Create();
 
-		engine->GetModels_Manager()->setModel("tree" + i, tree);
+		engine->setModel("tree" + i, tree);
 	}
 	int thing = 1;
 }
@@ -146,10 +146,10 @@ void makePyramid(int seedX, int seedZ, float baseLength, Engine* engine) {
 	}
 
 	GenericModel* pyramidModel = new GenericModel(pyramid, GL_TRIANGLE_STRIP);
-	pyramidModel->SetProgram(engine->GetShader_Manager()->GetProgram("genericWithLighting"));
+	pyramidModel->SetProgram(engine->getProgram("genericWithLighting"));
 	pyramidModel->Create();
 	string modelName = "pyramid_" + std::to_string(seedZ) + "_" + std::to_string(seedX);
-	engine->GetModels_Manager()->setModel(modelName, pyramidModel);
+	engine->setModel(modelName, pyramidModel);
 }
 
 void makeGround(Engine* engine) {
@@ -178,16 +178,16 @@ void makeGround(Engine* engine) {
 	}
 
 	GenericModel* groundModel = new GenericModel(ground, GL_TRIANGLE_STRIP);
-	groundModel->SetProgram(engine->GetShader_Manager()->GetProgram("genericWithLighting"));
+	groundModel->SetProgram(engine->getProgram("genericWithLighting"));
 	groundModel->Create();
 
-	engine->GetModels_Manager()->setModel("ground", groundModel);
+	engine->setModel("ground", groundModel);
 }
 
 void makeMesh(Engine* engine) {
 	MeshStrip* meshStrip = new MeshStrip();
-	meshStrip->SetProgram(engine->GetShader_Manager()->GetProgram("cubeShader"));
-	engine->GetModels_Manager()->setModel("meshStrip", meshStrip);
+	meshStrip->SetProgram(engine->getProgram("cubeShader"));
+	engine->setModel("meshStrip", meshStrip);
 }
 
 int main(int argc, char **argv)
@@ -196,11 +196,11 @@ int main(int argc, char **argv)
 	engine->Init();
 
 	//local shaders
-	engine->GetShader_Manager()->CreateProgram("cubeShader",
+	engine->createProgram("cubeShader",
 		"Shaders\\CubeVertexShader.glsl",
 		"Shaders\\CubeFragmentShader.glsl");
 
-	engine->GetShader_Manager()->CreateProgram("genericWithLighting", 
+	engine->createProgram("genericWithLighting", 
 		"Shaders\\GenericLightedVertexShader.glsl",
 		"Shaders\\GenericLightedFragmentShader.glsl");
 

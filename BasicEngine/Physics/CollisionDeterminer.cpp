@@ -1,6 +1,6 @@
 #pragma once
 #include "CollisionDeterminer.h"
-#include "../Managers/ModelsManager.h"
+#include "../Managers/ModelManager.h"
 
 using namespace BasicEngine::Physics;
 using namespace BasicEngine::Managers;
@@ -13,11 +13,7 @@ CollisionDeterminer::~CollisionDeterminer()
 {
 }
 
-void CollisionDeterminer::setModelsManager(BasicEngine::Managers::ModelsManager* modelsManager) {
-	modelsManager = modelsManager;
-};
-
-bool CollisionDeterminer::noPlayerCollisions(glm::mat4 viewMatrix) {
+bool CollisionDeterminer::noPlayerCollisions(glm::mat4 viewMatrix, std::map<std::string, Model*> modelList) {
 	// since we have the tentative view matrix, seems simplest to test player collisions in view space
 	
 	bool noCollisions = true;
@@ -28,7 +24,6 @@ bool CollisionDeterminer::noPlayerCollisions(glm::mat4 viewMatrix) {
 	glm::vec3 maxPlayerBound = glm::vec3(10, 10, 10);
 
 	// get models from modelsmanager
-	std::map<std::string, Model*> modelList = modelsManager->getModels();
 
 	// for each one, convert the bounds to camera space and test them against the player bounds
 	// almost certainly better to invert the view matrix, convert player bounds back to world space and do it there

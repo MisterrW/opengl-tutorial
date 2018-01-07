@@ -5,7 +5,7 @@
 #include "WindowInfo.h"
 #include <iostream>
 #include "Init_GLEW.h"
-#include "IListener.h"
+#include "../../Managers/SceneManager.h"
 #include "DebugOutput.h"
 
 namespace BasicEngine
@@ -16,16 +16,16 @@ namespace BasicEngine
 			class Init_GLUT {
 
 			private:
-				static Core::IListener* listener;
+				static BasicEngine::Managers::SceneManager* listener;
 				static Core::WindowInfo windowInformation;
 
-			public:             //use the structures from Part II
+			public:
 				static void init(
 					const Core::WindowInfo& window,
 					const Core::ContextInfo& context,
 					const Core::FramebufferInfo& framebufferInfo);
 
-				static void Run();//called from outside
+				static void Run();
 				static void close();
 
 				void enterFullscreen();
@@ -36,7 +36,7 @@ namespace BasicEngine
 					const Core::WindowInfo& windowInfo,
 					const Core::ContextInfo& context);
 
-				static void SetListener(Core::IListener* iListener);
+				static void SetListener(BasicEngine::Managers::SceneManager* aListener);
 
 			private:
 				static void idleCallback(void);

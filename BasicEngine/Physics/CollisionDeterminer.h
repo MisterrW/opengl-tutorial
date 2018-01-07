@@ -7,7 +7,7 @@ It is also used by the renderer for frustrum clipping.
 */
 
 #pragma once
-#include "../Managers/ModelsManager.h"
+#include "../Managers/ModelManager.h"
 
 namespace BasicEngine {
 	namespace Physics {
@@ -15,11 +15,9 @@ namespace BasicEngine {
 		{
 		public:
 			CollisionDeterminer();
-			void setModelsManager(BasicEngine::Managers::ModelsManager* modelsManager);
 			~CollisionDeterminer();
-			bool noPlayerCollisions(glm::mat4 viewMatrix);
+			bool noPlayerCollisions(glm::mat4 viewMatrix, std::map<std::string, Model*> models);
 		private:
-			BasicEngine::Managers::ModelsManager* modelsManager;
 		};
 	}
 }

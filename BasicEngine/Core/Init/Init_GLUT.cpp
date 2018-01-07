@@ -1,8 +1,10 @@
 #include "Init_GLUT.h"
 
 using namespace BasicEngine::Core::Init;
+using namespace BasicEngine::Managers;
 
-BasicEngine::Core::IListener* Init_GLUT::listener = NULL;
+BasicEngine::Managers::SceneManager* Init_GLUT::listener;
+
 BasicEngine::Core::WindowInfo Init_GLUT::windowInformation;
 
 void Init_GLUT::init(const BasicEngine::Core::WindowInfo& windowInfo,
@@ -91,28 +93,23 @@ void Init_GLUT::idleCallback(void)
 
 void Init_GLUT::displayCallback()
 {
-	if (listener)
-	{
 		listener->notifyBeginFrame();
 		listener->notifyDisplayFrame();
 
 		glutSwapBuffers();
 
 		listener->notifyEndFrame();
-	}
 }
 
 void Init_GLUT::reshapeCallback(int width, int height)
 {
 	if (windowInformation.isReshapable == true)
 	{
-		if (listener)
-		{
-			listener->notifyReshape(width,
+		listener->notifyReshape(width,
 				height,
 				windowInformation.width,
 				windowInformation.height);
-		}
+		
 		windowInformation.width = width;
 		windowInformation.height = height;
 	}
@@ -126,9 +123,9 @@ void Init_GLUT::KeyUpCallback(unsigned char key, int x, int y) {
 	listener->notifyKeyUp(key, x, y);
 }
 
-void Init_GLUT::SetListener(BasicEngine::Core::IListener* iListener)
+void Init_GLUT::SetListener(BasicEngine::Managers::SceneManager* aListener)
 {
-	listener = iListener;
+	listener = aListener;
 }
 
 void Init_GLUT::closeCallback()

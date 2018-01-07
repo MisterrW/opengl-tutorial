@@ -1,14 +1,19 @@
 #include "Engine.h"
+#include "Physics/CollisionDeterminer.h"
+#include "Movement/MovementManager.h"
+
 using namespace BasicEngine;
 using namespace Core;
 using namespace Rendering;
+using namespace Physics;
+using namespace Movement;
+using namespace Managers;
 
 Engine::Engine()
 {
 
 }
 
-//You can set params for init
 bool Engine::Init()
 {
 	WindowInfo window(std::string("in2gpu OpenGL Chapter 2 tutorial"),
@@ -17,32 +22,43 @@ bool Engine::Init()
 	ContextInfo context(4, 3, true);
 	FramebufferInfo frameBufferInfo(true, true, true, true);
 
-	Init::Init_GLUT::init(window, context, frameBufferInfo);
 
 	glEnable(GL_CULL_FACE);
 
-	m_scene_manager = new Managers::SceneManager();
+	shaderManager = Managers::ShaderManager();
+	
 
-	Init::Init_GLUT::SetListener(m_scene_manager);
+	modelManager = new Managers::ModelManager();
+	sceneManager = Managers::SceneManager();
+	MovementManager movementManager = BasicEngine::Movement::MovementManager();
 
-	//this was created in  scene manager constructor, now copy here
-	m_shader_manager = new Managers::Shader_Manager();
-	m_shader_manager->CreateProgram("colorShader",
+	sceneManager.initialise(modelManager);
+
+	Init::Init_GLUT::init(window, context, frameBufferInfo);
+	Init::Init_GLUT::SetListener(&sceneManager);
+
+	shaderManager.CreateProgram("colorShader",
 		"..\\BasicEngine\\Shaders\\Vertex_Shader.glsl",
 		"..\\BasicEngine\\Shaders\\Fragment_Shader.glsl");
 
-	if (m_scene_manager && m_shader_manager)
-	{
-		m_models_manager = new Managers::ModelsManager();
-
-		m_scene_manager->SetModelsManager(m_models_manager);
-	}
-	else
-	{
-		return false;
-	}
-
 	return true;
+}
+
+void Engine::setModel(const std::string& gameObjectName, Model* gameObject)
+{
+	modelManager->setModel(gameObjectName, gameObject);
+}
+
+void Engine::createProgram(const std::string& shaderName,
+	const std::string& vertexShaderFilename,
+	const std::string& fragmentShaderFilename)
+{
+	shaderManager.CreateProgram(shaderName, vertexShaderFilename, fragmentShaderFilename);
+}
+
+const GLuint Engine::getProgram(const std::string& programName)
+{
+	return shaderManager.GetProgram(programName);
 }
 
 //Create the loop
@@ -51,31 +67,7 @@ void Engine::Run()
 	Init::Init_GLUT::Run();
 }
 
-Managers::SceneManager* Engine::GetScene_Manager() const
-{
-	return m_scene_manager;
-}
-
-Managers::Shader_Manager* Engine::GetShader_Manager() const
-{
-	return m_shader_manager;
-}
-
-Managers::ModelsManager* Engine::GetModels_Manager() const
-{
-	return m_models_manager;
-}
 
 Engine::~Engine()
 {
-
-	if (m_models_manager && !m_scene_manager)
-		delete m_models_manager; 
-
-	if (m_shader_manager && !m_scene_manager)
-		delete m_shader_manager;
-	
-	if (m_scene_manager)
-		delete m_scene_manager;
-
 }

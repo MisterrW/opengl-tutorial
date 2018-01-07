@@ -7,8 +7,8 @@ These models are passed to the renderer to draw.
 */
 
 #pragma once
-#include "Shader_Manager.h"
-#include "ModelsManager.h"
+#include "ShaderManager.h"
+#include "ModelManager.h"
 #include "../Rendering/Renderer.h"
 #include "../Movement/MovementManager.h"
 #include "../Core/Init/IListener.h"
@@ -23,8 +23,7 @@ namespace BasicEngine
 			SceneManager();
 			~SceneManager();
 
-			void SetModelsManager(Managers::ModelsManager* models_manager);
-			// void SetRenderer(Rendering::Renderer renderer);
+			void initialise(Managers::ModelManager* modelManager);
 
 			virtual void notifyBeginFrame();
 			virtual void notifyDisplayFrame();
@@ -36,11 +35,9 @@ namespace BasicEngine
 			virtual void notifyKeyPress(char key, int x, int y);
 			virtual void notifyKeyUp(char key, int x, int y);
 		private:
-			void drawScene();
-			BasicEngine::Managers::Shader_Manager* shader_manager;
-			BasicEngine::Managers::ModelsManager* modelsManager;
+			void drawScene(std::map<std::string, Model*> modelList);
+			BasicEngine::Managers::ModelManager* modelManager;
 			BasicEngine::Rendering::Renderer renderer;
-			// BasicEngine::Movement::PositionManager* PositionManager;
 			BasicEngine::Movement::MovementManager movementManager;
 		};
 	}

@@ -8,7 +8,7 @@ which passes them to the renderer to be drawn.
 
 #pragma once
 #include <map>
-#include "Shader_Manager.h"
+#include "ShaderManager.h"
 #include "../Models/IGameObject.h"
 #include "../Models/Model.h"
 
@@ -18,11 +18,11 @@ namespace BasicEngine
 {
 	namespace Managers
 	{
-		class ModelsManager
+		class ModelManager
 		{
 		public:
-			ModelsManager();
-			~ModelsManager();
+			ModelManager();
+			~ModelManager();
 
 			void update();
 
@@ -38,6 +38,8 @@ namespace BasicEngine
 		private:
 			// NOTE this may become a bottleneck, better to use vector
 			std::map<std::string, Model*> gameModelList;
+			ModelManager(const ModelManager&); // no implementation 
+			ModelManager& operator=(const ModelManager&); // no implementation 
 		};
 	}
 }

@@ -16,17 +16,16 @@ namespace BasicEngine {
 		{
 		public:
 			MovementManager();
-			void setModelsManager(BasicEngine::Managers::ModelsManager* modelsManager);
 			~MovementManager();
-			glm::mat4 getViewMatrix();
+			glm::mat4 getViewMatrix(std::map<std::string, Model*> models);
 			void notifyKeyPress(char key, int x, int y);
 			void notifyKeyUp(char key, int x, int y);
 
 		private:
 			Movement::PositionManager positionManager;
+			Physics::CollisionDeterminer collisionDeterminer;
 			glm::mat4 oldViewMatrix;
 			glm::mat4 oldGravityMatrix;
-			Physics::CollisionDeterminer collisionDeterminer;
 		};
 	}
 }
