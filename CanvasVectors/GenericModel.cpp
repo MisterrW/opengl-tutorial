@@ -99,7 +99,7 @@ GenericModel::GenericModel(std::vector<std::vector<glm::vec3>> vertexArrays, GLe
 	NormalsArrays = GetNormals(VertexArrays, RenderFormat);
 }
 
-GenericModel::GenericModel(std::vector<std::vector<glm::vec3>> vertexArrays)
+GenericModel::GenericModel(std::vector<std::vector<glm::vec3>> vertexArrays) : Model(vertexArrays)
 {
 	VertexArrays = vertexArrays;
 	RenderFormat = GL_TRIANGLE_STRIP;

@@ -11,28 +11,21 @@ using namespace Managers;
 
 Engine::Engine()
 {
-
+	shaderManager = Managers::ShaderManager();
+	modelManager = new Managers::ModelManager();
+	sceneManager = Managers::SceneManager();
+	sceneManager.initialise(modelManager);
 }
 
 bool Engine::Init()
 {
-	WindowInfo window(std::string("in2gpu OpenGL Chapter 2 tutorial"),
+	WindowInfo window(std::string("engine"),
 		0, 0,
-		1920, 1200, true);
+		1920, 1080, true);
 	ContextInfo context(4, 3, true);
 	FramebufferInfo frameBufferInfo(true, true, true, true);
 
-
 	glEnable(GL_CULL_FACE);
-
-	shaderManager = Managers::ShaderManager();
-	
-
-	modelManager = new Managers::ModelManager();
-	sceneManager = Managers::SceneManager();
-	MovementManager movementManager = BasicEngine::Movement::MovementManager();
-
-	sceneManager.initialise(modelManager);
 
 	Init::Init_GLUT::init(window, context, frameBufferInfo);
 	Init::Init_GLUT::SetListener(&sceneManager);
@@ -70,4 +63,5 @@ void Engine::Run()
 
 Engine::~Engine()
 {
+	delete modelManager;
 }

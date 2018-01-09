@@ -35,7 +35,7 @@ namespace BasicEngine
 			virtual void notifyKeyPress(char key, int x, int y);
 			virtual void notifyKeyUp(char key, int x, int y);
 		private:
-			void drawScene(std::map<std::string, Model*> modelList);
+			void drawScene(std::map<std::string, Model*>* modelList);
 			BasicEngine::Managers::ModelManager* modelManager;
 			BasicEngine::Rendering::Renderer renderer;
 			BasicEngine::Movement::MovementManager movementManager;

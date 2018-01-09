@@ -8,6 +8,7 @@ and movement based on physics including gravity and collisions.
 
 #pragma once
 #include "PositionManager.h"
+#include <chrono>
 #include "../Physics/CollisionDeterminer.h"
 
 namespace BasicEngine {
@@ -17,7 +18,7 @@ namespace BasicEngine {
 		public:
 			MovementManager();
 			~MovementManager();
-			glm::mat4 getViewMatrix(std::map<std::string, Model*> models);
+			glm::mat4 getViewMatrix(std::map<std::string, Model*>* models);
 			void notifyKeyPress(char key, int x, int y);
 			void notifyKeyUp(char key, int x, int y);
 
@@ -25,7 +26,9 @@ namespace BasicEngine {
 			Movement::PositionManager positionManager;
 			Physics::CollisionDeterminer collisionDeterminer;
 			glm::mat4 oldViewMatrix;
+			glm::mat4 oldPlayerMatrix;
 			glm::mat4 oldGravityMatrix;
+			std::chrono::steady_clock::time_point lastUpdated;
 		};
 	}
 }

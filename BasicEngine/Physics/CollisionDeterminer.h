@@ -16,7 +16,7 @@ namespace BasicEngine {
 		public:
 			CollisionDeterminer();
 			~CollisionDeterminer();
-			bool noPlayerCollisions(glm::mat4 viewMatrix, std::map<std::string, Model*> models);
+			bool noPlayerCollisions(glm::mat4 viewMatrix, std::map<std::string, Model*>* models);
 		private:
 		};
 	}

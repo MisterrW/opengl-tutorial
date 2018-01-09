@@ -29,7 +29,7 @@ namespace BasicEngine
 			// void Draw(const glm::mat4& projection_matrix, const glm::mat4& view_matrix);
 			
 			// returns all models for rendering
-			std::map<std::string, Model*> getModels();
+			std::map<std::string, Model*>* getModels();
 			const Model& getModel(const std::string& gameModelName) const;
 			void deleteModel(const std::string& gameModelName);
 

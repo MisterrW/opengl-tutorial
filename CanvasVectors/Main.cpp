@@ -68,7 +68,8 @@ void makeSomeTrees(Engine* engine, int i_min, int i_max) {
 		tree->SetProgram(engine->getProgram("genericWithLighting"));
 		tree->Create();
 
-		engine->setModel("tree" + i, tree);
+		string modelName = "tree_" + std::to_string(i);
+		engine->setModel(modelName, tree);
 	}
 	int thing = 1;
 }
@@ -185,9 +186,9 @@ void makeGround(Engine* engine) {
 }
 
 void makeMesh(Engine* engine) {
-	MeshStrip* meshStrip = new MeshStrip();
-	meshStrip->SetProgram(engine->getProgram("cubeShader"));
-	engine->setModel("meshStrip", meshStrip);
+	//MeshStrip* meshStrip = new MeshStrip();
+	//meshStrip->SetProgram(engine->getProgram("cubeShader"));
+	//engine->setModel("meshStrip", meshStrip);
 }
 
 int main(int argc, char **argv)
@@ -204,8 +205,8 @@ int main(int argc, char **argv)
 		"Shaders\\GenericLightedVertexShader.glsl",
 		"Shaders\\GenericLightedFragmentShader.glsl");
 
-	//vector<GenericModel*> stars = makeStars(engine);
-	//makeTrees(engine);
+	vector<GenericModel*> stars = makeStars(engine);
+	makeTrees(engine);
 	//makePyramid(0, 0, engine);
 	//makePyramid(-1020, 0, 1000, engine);
 	//makePyramid(20, 20, 10000, engine);

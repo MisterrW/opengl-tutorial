@@ -19,8 +19,8 @@ ModelManager::~ModelManager()
 
 }
 
-std::map<std::string, Model*> ModelManager::getModels() {
-	return this->gameModelList;
+std::map<std::string, Model*>* ModelManager::getModels() {
+	return &this->gameModelList;
 }
 
 const Model& ModelManager::getModel(const std::string& gameModelName) const

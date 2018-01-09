@@ -23,11 +23,11 @@ void SceneManager::notifyBeginFrame()
 	this->modelManager->update();
 }
 
-void SceneManager::drawScene(std::map<std::string, Model*> modelList) {
+void SceneManager::drawScene(std::map<std::string, Model*>* modelList) {
 	// get models from modelsmanager
 
 	// iterate over them and pass them to renderer's draw method
-	for (auto model : modelList)
+	for (auto model : *modelList)
 	{
 		renderer.draw(model.second);
 	}
@@ -35,7 +35,7 @@ void SceneManager::drawScene(std::map<std::string, Model*> modelList) {
 
 void SceneManager::notifyDisplayFrame()
 {
-	std::map<std::string, Model*> modelList = modelManager->getModels();
+	std::map<std::string, Model*>* modelList = modelManager->getModels();
 	renderer.setViewMatrix(movementManager.getViewMatrix(modelList));
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0, 0.0, 0.0, 1.0);
