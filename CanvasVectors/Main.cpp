@@ -44,7 +44,7 @@ vector<GenericModel*> makeStars(Engine* engine) {
 
 		engine->setModel(modelName, star);
 		stars.push_back(star);
-		
+
 	}
 	return stars;
 }
@@ -66,6 +66,7 @@ void makeSomeTrees(Engine* engine, int i_min, int i_max) {
 		vector<vector<glm::vec3>> treeVertexArrays = treeMaker.GetTree(seed);
 		GenericModel* tree = new GenericModel(treeVertexArrays);
 		tree->SetProgram(engine->getProgram("genericWithLighting"));
+		tree->toggleCollisionCheck(true);
 		tree->Create();
 
 		string modelName = "tree_" + std::to_string(i);
@@ -75,7 +76,7 @@ void makeSomeTrees(Engine* engine, int i_min, int i_max) {
 }
 
 void makeTrees(Engine* engine) {
-	
+
 	// Constructs the new thread and runs it. Does not block execution.
 	/*thread t1(makeSomeTrees, engine, 0, 10);
 	thread t2(makeSomeTrees, engine, 10, 20);
@@ -179,6 +180,7 @@ void makeGround(Engine* engine) {
 	}
 
 	GenericModel* groundModel = new GenericModel(ground, GL_TRIANGLE_STRIP);
+	groundModel->toggleCollisionCheck(true);
 	groundModel->SetProgram(engine->getProgram("genericWithLighting"));
 	groundModel->Create();
 
@@ -191,9 +193,53 @@ void makeMesh(Engine* engine) {
 	//engine->setModel("meshStrip", meshStrip);
 }
 
+void testCollisionDeflections() {
+
+	glm::mat4 oldMoveMatrix = glm::mat4(1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		-2, -11, 0, 1);
+
+	glm::mat4 newMoveMatrix = glm::mat4(1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		-1, -9, 0, 1);
+
+	vector<glm::vec3> boundingBox;
+	boundingBox.push_back(glm::vec3(10, 10, 0));
+	boundingBox.push_back(glm::vec3(0, 10, 10));
+
+	// see the matrix expression of cross product at
+	// https://en.wikipedia.org/wiki/Cross_product#Conversion_to_matrix_multiplication
+	glm::vec3 cross = glm::cross(boundingBox[1], boundingBox[0]);
+	glm::vec3 normal = glm::normalize(cross);
+
+	// a vector representing the change represented by the difference between the old and new matrices
+	// by multiplying the zero vector by the inverse of each matrix
+	// and then subtracting the old one from the new one
+
+	glm::vec4 origin = glm::vec4(0, 0, 0, 1);
+	glm::mat4 oldInv = glm::inverse(oldMoveMatrix);
+	glm::mat4 newInv = glm::inverse(newMoveMatrix);
+	// console.log(oldInv);
+	glm::vec3 oldPos = glm::vec3(oldInv * origin);
+	glm::vec3 newPos = glm::vec3(newInv * origin);
+
+	glm::vec3 result = newPos - oldPos;
+
+	// var angle == the angle of this result vector with the normal of the collided surface
+	// var diff is this angle minus 90 degrees (the angle by which we are past parallel with the surface)
+	// generate a rotation matrix for -diff
+	// et voila
+
+}
+
 int main(int argc, char **argv)
 {
 	Engine* engine = new Engine();
+
+	testCollisionDeflections();
+
 	engine->Init();
 
 	//local shaders
@@ -201,7 +247,7 @@ int main(int argc, char **argv)
 		"Shaders\\CubeVertexShader.glsl",
 		"Shaders\\CubeFragmentShader.glsl");
 
-	engine->createProgram("genericWithLighting", 
+	engine->createProgram("genericWithLighting",
 		"Shaders\\GenericLightedVertexShader.glsl",
 		"Shaders\\GenericLightedFragmentShader.glsl");
 
@@ -216,7 +262,7 @@ int main(int argc, char **argv)
 
 	//makeMesh(engine);
 
-   
+
 
 	engine->Run();
 

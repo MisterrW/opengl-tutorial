@@ -42,6 +42,7 @@ std::vector<glm::vec3> Model::setBoundingBox(std::vector<std::vector<glm::vec3>>
 Model::Model() {}
 
 Model::Model(std::vector<std::vector<glm::vec3>> vertexArrays) {
+	collisionCheck = false;
 	boundingBox = setBoundingBox(vertexArrays);
 }
 
@@ -49,6 +50,15 @@ Model::~Model()
 {
 	Destroy();
 }
+
+void Model::toggleCollisionCheck(bool shouldCheck) {
+	collisionCheck = shouldCheck;
+}
+
+bool Model::shouldCollisionCheck() {
+	return collisionCheck;
+}
+
 
 std::vector<glm::vec3> Model::getBoundingBox() {
 	return boundingBox;

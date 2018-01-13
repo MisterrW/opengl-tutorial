@@ -22,6 +22,8 @@ namespace BasicEngine
 				virtual GLuint GetVao() const override;
 				std::vector<glm::vec3> getBoundingBox();
 				virtual const std::vector<GLuint>& GetVbos() const override;
+				bool shouldCollisionCheck();
+				void toggleCollisionCheck(bool shouldCheck);
 
 			protected:
 				std::vector<glm::vec3> setBoundingBox(std::vector<std::vector<glm::vec3>> vertexArrays);
@@ -29,6 +31,7 @@ namespace BasicEngine
 				GLuint program;
 				std::vector<GLuint> vbos;
 				std::vector<glm::vec3> boundingBox;
+				bool collisionCheck;
 			};
 		}
 }
