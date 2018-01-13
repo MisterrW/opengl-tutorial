@@ -66,6 +66,7 @@ void makeSomeTrees(Engine* engine, int i_min, int i_max) {
 		vector<vector<glm::vec3>> treeVertexArrays = treeMaker.GetTree(seed);
 		GenericModel* tree = new GenericModel(treeVertexArrays);
 		tree->SetProgram(engine->getProgram("genericWithLighting"));
+		tree->toggleCollisionCheck(true);
 		tree->Create();
 
 		string modelName = "tree_" + std::to_string(i);
@@ -179,6 +180,7 @@ void makeGround(Engine* engine) {
 	}
 
 	GenericModel* groundModel = new GenericModel(ground, GL_TRIANGLE_STRIP);
+	groundModel->toggleCollisionCheck(true);
 	groundModel->SetProgram(engine->getProgram("genericWithLighting"));
 	groundModel->Create();
 

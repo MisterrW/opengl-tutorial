@@ -6,7 +6,8 @@ PositionManager::PositionManager() {
 
 	OldKeyStates = new bool[256];
 	KeyStates = new bool[256];
-	ScaleFactor = 100.0;
+	lookScaleFactor = 2.0;
+	moveScaleFactor = 3.0;
 }
 
 PositionManager::~PositionManager() {
@@ -17,35 +18,28 @@ glm::mat4 PositionManager::GetMoveMatrix(glm::mat4 oldViewMatrix) {
 	// keys control camera position
 	glm::mat4 updatedViewMatrix = oldViewMatrix;
 
-	if (KeyStates[205] == true) {
-		ScaleFactor = 300;
-	}
-	else {
-		ScaleFactor = 100;
-	}
-
 	// forward (w s)
 	if (KeyStates['w'] == true) {
-		updatedViewMatrix[3][2] -= 0.02f * ScaleFactor;
+		updatedViewMatrix[3][2] -= 2.0f * moveScaleFactor;
 	}
 	else if (KeyStates['s'] == true) {
-		updatedViewMatrix[3][2] += 0.02f * ScaleFactor;
+		updatedViewMatrix[3][2] += 2.0f * moveScaleFactor;
 	}
 
 	// sideways (a d)
 	if (KeyStates['a'] == true) {
-		updatedViewMatrix[3][0] += 0.02f * ScaleFactor;
+		updatedViewMatrix[3][0] += 2.0f * moveScaleFactor;
 	}
 	else if (KeyStates['d'] == true) {
-		updatedViewMatrix[3][0] -= 0.02f * ScaleFactor;
+		updatedViewMatrix[3][0] -= 2.0f * moveScaleFactor;
 	}
 
 	// up/down (x c)
 	if (KeyStates['x'] == true) {
-		updatedViewMatrix[3][1] -= 0.02f * ScaleFactor;
+		updatedViewMatrix[3][1] -= 2.0f * moveScaleFactor;
 	}
 	else if (KeyStates['c'] == true) {
-		updatedViewMatrix[3][1] += 0.02f * ScaleFactor;
+		updatedViewMatrix[3][1] += 2.0f * moveScaleFactor;
 	}
 
 	return updatedViewMatrix;
@@ -92,18 +86,18 @@ glm::mat4 PositionManager::GetOrientationMatrix() {
 
 	// look up / down
 	if (KeyStates['o'] == true) {
-		orientX = -0.00015f * ScaleFactor;
+		orientX = -0.015f * lookScaleFactor;
 	}
 	else if (KeyStates['l'] == true) {
-		orientX = +0.00015f * ScaleFactor;
+		orientX = +0.015f * lookScaleFactor;
 	}
 
 	// bank left / right (yaw)
 	if (KeyStates['k'] == true) {
-		orientZ = +0.00015f * ScaleFactor;
+		orientZ = +0.015f * lookScaleFactor;
 	}
 	else if (KeyStates[';'] == true) {
-		orientZ = -0.00015f * ScaleFactor;
+		orientZ = -0.015f * lookScaleFactor;
 	}
 
 	glm::mat4 rotMat = GetXYZRotMat(orientX, orientY, orientZ);

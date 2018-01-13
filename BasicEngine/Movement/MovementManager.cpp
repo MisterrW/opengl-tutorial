@@ -7,11 +7,6 @@ MovementManager::MovementManager(){
 	collisionDeterminer = BasicEngine::Physics::CollisionDeterminer(),
 	positionManager = BasicEngine::Movement::PositionManager();
 
-	oldViewMatrix = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 0.0f, 1.0f);
-
 	oldGravityMatrix = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
@@ -20,7 +15,9 @@ MovementManager::MovementManager(){
 	oldPlayerMatrix = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, 100.0f, 300.0f, 1.0f);
+		0.0f, -100.0f, 600.0f, 1.0f);
+
+	oldViewMatrix = oldPlayerMatrix * oldGravityMatrix;
 }
 
 MovementManager::~MovementManager()
@@ -42,20 +39,17 @@ glm::mat4 MovementManager::getViewMatrix(std::map<std::string, Model*>* models) 
 
 		// lame gravity
 		// encodes movement relative to the player's last position, orientation in world space
-	/*	glm::mat4 tentativeGravityMatrix = glm::mat4(oldGravityMatrix);
+	    glm::mat4 tentativeGravityMatrix = glm::mat4(oldGravityMatrix);
 		tentativeGravityMatrix[3][1] += 0.2f;
-		glm::mat4 tentativeNewMatrix = tentativePlayerMatrix * tentativeGravityMatrix;*/
-		oldPlayerMatrix = tentativePlayerMatrix;
-		oldViewMatrix = tentativePlayerMatrix;
+		glm::mat4 tentativeNewMatrix = tentativePlayerMatrix * tentativeGravityMatrix;
 
 		//TimePoint tMid = std::chrono::time_point_cast<ms>(clock::now());
 
-		// return tentativeNewMatrix;
-		//if (collisionDeterminer.noPlayerCollisions(tentativeNewMatrix, models)) {
-		//	oldGravityMatrix = tentativeGravityMatrix;
-		//	oldPlayerMatrix = tentativePlayerMatrix;
-		//	oldViewMatrix = tentativeNewMatrix;
-		//}
+		if (collisionDeterminer.noPlayerCollisions(tentativeNewMatrix, models)) {
+			oldGravityMatrix = tentativeGravityMatrix;
+			oldPlayerMatrix = tentativePlayerMatrix;
+			oldViewMatrix = tentativeNewMatrix;
+		}
 
 		/*TimePoint last = std::chrono::time_point_cast<ms>(lastUpdated);
 		TimePoint tEnd = std::chrono::time_point_cast<ms>(clock::now());
