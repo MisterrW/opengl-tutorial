@@ -13,7 +13,8 @@ CollisionDeterminer::~CollisionDeterminer()
 {
 }
 
-std::array<bool, 3>  CollisionDeterminer::noPlayerCollisions(glm::mat4 viewMatrix, std::map<std::string, Model*>* modelList) {
+//std::array<bool, 3>  CollisionDeterminer::noPlayerCollisions(glm::mat4 viewMatrix, std::map<std::string, Model*>* modelList) {
+bool CollisionDeterminer::noPlayerCollisions(glm::mat4 viewMatrix, std::map<std::string, Model*>* modelList) {
 	// since we have the tentative view matrix, seems simplest to test player collisions in view space
 	std::array<bool ,3> blockedAxes = { false };
 
@@ -54,19 +55,17 @@ std::array<bool, 3>  CollisionDeterminer::noPlayerCollisions(glm::mat4 viewMatri
 							(minPlayerBound.z < maxViewSpaceBound.z && maxViewSpaceBound.z < maxPlayerBound.z)) {
 							noCollisions = false;
 							blockedAxes[1] = true;
-							return blockedAxes;
+							//return blockedAxes;
+							return noCollisions;
 						}
-					}
-					else {
-						// error
 					}
 				}
 			}
 		}
 	}
 
-	//return noCollisions;
-	return blockedAxes;
+	return noCollisions;
+	//return blockedAxes;
 }
 
 //bool CollisionDeterminer::noPlayerCollisions(glm::mat4 viewMatrix, std::map<std::string, Model*> modelList) {

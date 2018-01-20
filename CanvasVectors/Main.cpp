@@ -1,9 +1,12 @@
 #pragma once
+#define GLM_ENABLE_EXPERIMENTAL
 #include <BasicEngine\Engine.h>
 #include "GenericModel.h"
 #include "Models\MeshStrip.h"
 #include "ModelMakers\TreeMaker.h"
 #include <thread>
+#include "../../../Dependencies/include/glm/gtx/transform.hpp"
+
 
 using namespace BasicEngine;
 using namespace ModelMakers;
@@ -25,17 +28,17 @@ vector<GenericModel*> makeStars(Engine* engine) {
 		vector<vector<glm::vec3>> starVertexArrays = vector<vector<glm::vec3>>();
 
 		//for (int i = 0; i < 2; i++) {
-			vector<glm::vec3> starVertices = vector<glm::vec3>();
+		vector<glm::vec3> starVertices = vector<glm::vec3>();
 
-			int sx = -starRadius + GetRandom() * 2 * starRadius;
-			int sz = -starRadius + GetRandom() * 2 * starRadius;
-			int sy = abs(sx) < 10000 && abs(sz) < 10000 ? 10000 + (GetRandom() * 0.5 * starRadius) : -2000 + GetRandom() * starRadius;
+		int sx = -starRadius + GetRandom() * 2 * starRadius;
+		int sz = -starRadius + GetRandom() * 2 * starRadius;
+		int sy = abs(sx) < 10000 && abs(sz) < 10000 ? 10000 + (GetRandom() * 0.5 * starRadius) : -2000 + GetRandom() * starRadius;
 
-			starVertices.push_back(glm::vec3(sx, sy, sz));
-			starVertices.push_back(glm::vec3(sx + GetRandom() * starSize, sy + GetRandom() * starSize, sz + GetRandom() * starSize));
-			starVertices.push_back(glm::vec3(sx + GetRandom() * starSize, sy + GetRandom() * starSize, sz + GetRandom() * starSize));
+		starVertices.push_back(glm::vec3(sx, sy, sz));
+		starVertices.push_back(glm::vec3(sx + GetRandom() * starSize, sy + GetRandom() * starSize, sz + GetRandom() * starSize));
+		starVertices.push_back(glm::vec3(sx + GetRandom() * starSize, sy + GetRandom() * starSize, sz + GetRandom() * starSize));
 
-			starVertexArrays.push_back(starVertices);
+		starVertexArrays.push_back(starVertices);
 		//}
 		GenericModel* star = new GenericModel(starVertexArrays, GL_TRIANGLES);
 		star->SetProgram(engine->getProgram("cubeShader"));
@@ -193,25 +196,65 @@ void makeMesh(Engine* engine) {
 	//engine->setModel("meshStrip", meshStrip);
 }
 
-void testCollisionDeflections() {
+double getAngleBetween(glm::vec3 a, glm::vec3 b) {
+	// we also want the angle between the bb surface normal and the collision angle.
+
+	// the angle between two vectors a and b in R3 is acos(a . b / ||a|| * ||b||) 
+	// (the arc cosine of the dot product of a and b divided by the length of a and b multiplied together)
+
+	// so:
+
+	double multipliedLength = glm::length(a) * glm::length(b);
+	double dotProduct = glm::dot(a, b);
+	double cosAngle = dotProduct / multipliedLength;
+	double angle = glm::acos(cosAngle);
+	double angleDegsApprox = (angle / (3.141 * 2)) * 360;
+
+	return angle;
+}
+
+glm::mat4 testCollisionDeflections() {
+	// IMPORTANT handle linearly dependant vectors - if you hit something dead on, the angle to the normal is 180 degrees, 
+	// so the cross product of the collision angle with the surface normal is undefined.
+	// check for this and bail out - no deflection needed, we can just stop dead for a head on collision.
+
+
+	//glm::mat4 oldMoveMatrix = glm::mat4(1, 0, 0, 0,
+	//	0, 1, 0, 0,
+	//	0, 0, 1, 0,
+	//	-2, -11, 0, 1);
+
+	//glm::mat4 newMoveMatrix = glm::mat4(1, 0, 0, 0,
+	//	0, 1, 0, 0,
+	//	0, 0, 1, 0,
+	//	-1, -9, 0, 1);
+
 
 	glm::mat4 oldMoveMatrix = glm::mat4(1, 0, 0, 0,
 		0, 1, 0, 0,
 		0, 0, 1, 0,
-		-2, -11, 0, 1);
+		3, -3, -5, 1);
 
 	glm::mat4 newMoveMatrix = glm::mat4(1, 0, 0, 0,
 		0, 1, 0, 0,
 		0, 0, 1, 0,
-		-1, -9, 0, 1);
+		0.1, 50, 5, 1);
 
 	vector<glm::vec3> boundingBox;
+	//the top surface of a bounding box aligned to world axes
+	boundingBox.push_back(glm::vec3(0, 10, 0));
 	boundingBox.push_back(glm::vec3(10, 10, 0));
 	boundingBox.push_back(glm::vec3(0, 10, 10));
+	boundingBox.push_back(glm::vec3(10, 10, 10));
+
+	glm::vec3 relative1 = (boundingBox[2] - boundingBox[0]);
+	glm::vec3 relative2 = (boundingBox[1] - boundingBox[0]);
 
 	// see the matrix expression of cross product at
 	// https://en.wikipedia.org/wiki/Cross_product#Conversion_to_matrix_multiplication
-	glm::vec3 cross = glm::cross(boundingBox[1], boundingBox[0]);
+
+	//doing this to get relative vectors to get a sensible cross
+	glm::vec3 cross = glm::cross(relative1, relative2);
 	glm::vec3 normal = glm::normalize(cross);
 
 	// a vector representing the change represented by the difference between the old and new matrices
@@ -227,11 +270,37 @@ void testCollisionDeflections() {
 
 	glm::vec3 result = newPos - oldPos;
 
-	// var angle == the angle of this result vector with the normal of the collided surface
-	// var diff is this angle minus 90 degrees (the angle by which we are past parallel with the surface)
-	// generate a rotation matrix for -diff
-	// et voila
+	// now we want to find the normal of the bounding box's normal and the angle of collision, 
+	// because it is the angle we need to rotate around to get the vector we want (the one at 90 degrees to the bounding box surface normal, ie in the plane of the BB).
+	// (in this example it wil be along the z axis)
+	// in fact, when we do this properly the maths might be easier if we rotate this normal to lie on the z axis
+	// don't know whether to normalise the movement vector
+	// CV = collision vector, BBSN = bounding box normal
 
+    glm::vec3 normalCVandBBSN = glm::normalize(glm::cross(normal, result));
+
+	double angleFromNormal = getAngleBetween(normal, result);
+	//float angleFromNormalDegrees = glm::degrees(float(angleFromNormal));
+	//float angleFromPlaneDegrees = angleFromNormal - 90; // 
+
+	float angleFromPlane = angleFromNormal - glm::radians(90.0);
+
+	// OK, we have the angle of our vector with the normal. Now we need to reduce that angle until we have a vector orthogonal to the normal.
+	// courtesy of https://math.stackexchange.com/questions/80414/increasing-the-angle-between-two-vectors:
+	// decompose into the parts parallel and orthogonal to the normal (parPart is a projection of col onto norm, orthPart is the rest)
+
+	// glm::vec3 parallelPart = (glm::dot(result, normal) / (glm::length(normal) * glm::length(normal))) * normal;
+	// glm::vec3 orthogonalPart = result - parallelPart; // this is what we want.
+
+	// but we actually want a rotation matrix which represents reducing the angle to the normal to 90 degrees. 
+	// GLM has a rotation function which we can use with the normal we figured out earlier 
+
+	glm::mat4 deflectionMatrix = glm::rotate((angleFromPlane), normalCVandBBSN);
+    glm::vec3 deflected = glm::vec3(deflectionMatrix * glm::vec4(result, 1));
+
+	glm::mat4 deflectedMovementMatrix = deflectionMatrix * newMoveMatrix;
+
+	return deflectedMovementMatrix;
 }
 
 int main(int argc, char **argv)
