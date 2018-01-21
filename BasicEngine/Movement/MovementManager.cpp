@@ -52,7 +52,8 @@ glm::mat4 MovementManager::getViewMatrix(std::map<std::string, Model*>* models) 
 		//TimePoint tMid = std::chrono::time_point_cast<ms>(clock::now());
 
 		//combine move and gravity as position matrix
-		glm::mat4 tentativePositionMatrix = moveMatrix * gravityMatrix;
+		glm::mat4 tentativePositionChangeMatrix = oldOrientationMatrix * moveMatrix * gravityMatrix;
+		glm::mat4 tentativePositionMatrix = tentativePositionChangeMatrix * oldPositionMatrix;
 		// then call collision determiner with old position and new position matrix
 		
 		//glm::mat4 actualPositionMatrix = collisionDeterminer.doPlayerCollisions(oldPositionMatrix, tentativePositionMatrix, models);
@@ -60,9 +61,9 @@ glm::mat4 MovementManager::getViewMatrix(std::map<std::string, Model*>* models) 
 		glm::mat4 actualPositionMatrix = tentativePositionMatrix;
 		oldPositionMatrix = actualPositionMatrix;
 		
-		oldOrientationMatrix = oldOrientationMatrix * orientationMatrix;
+		oldOrientationMatrix = orientationMatrix;
 
-		glm::mat4 viewMatrix = oldPositionMatrix * oldOrientationMatrix;
+		glm::mat4 viewMatrix = oldPositionMatrix;
 		return viewMatrix;
 		/*TimePoint last = std::chrono::time_point_cast<ms>(lastUpdated);
 		TimePoint tEnd = std::chrono::time_point_cast<ms>(clock::now());
