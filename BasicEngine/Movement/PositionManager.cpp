@@ -14,35 +14,39 @@ PositionManager::~PositionManager() {
 
 }
 
-glm::mat4 PositionManager::GetMoveMatrix(glm::mat4 oldViewMatrix) {
+glm::mat4 PositionManager::GetMoveMatrix() {
 	// keys control camera position
-	glm::mat4 updatedViewMatrix = oldViewMatrix;
+	glm::mat4 movementMatrix = glm::mat4(
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f);
 
 	// forward (w s)
 	if (KeyStates['w'] == true) {
-		updatedViewMatrix[3][2] -= 2.0f * moveScaleFactor;
+		movementMatrix[3][2] -= 2.0f * moveScaleFactor;
 	}
 	else if (KeyStates['s'] == true) {
-		updatedViewMatrix[3][2] += 2.0f * moveScaleFactor;
+		movementMatrix[3][2] += 2.0f * moveScaleFactor;
 	}
 
 	// sideways (a d)
 	if (KeyStates['a'] == true) {
-		updatedViewMatrix[3][0] += 2.0f * moveScaleFactor;
+		movementMatrix[3][0] += 2.0f * moveScaleFactor;
 	}
 	else if (KeyStates['d'] == true) {
-		updatedViewMatrix[3][0] -= 2.0f * moveScaleFactor;
+		movementMatrix[3][0] -= 2.0f * moveScaleFactor;
 	}
 
 	// up/down (x c)
 	if (KeyStates['x'] == true) {
-		updatedViewMatrix[3][1] -= 2.0f * moveScaleFactor;
+		movementMatrix[3][1] -= 2.0f * moveScaleFactor;
 	}
 	else if (KeyStates['c'] == true) {
-		updatedViewMatrix[3][1] += 2.0f * moveScaleFactor;
+		movementMatrix[3][1] += 2.0f * moveScaleFactor;
 	}
 
-	return updatedViewMatrix;
+	return movementMatrix;
 }
 
 glm::mat4 PositionManager::GetXYZRotMat(float x, float y, float z) {
@@ -105,17 +109,17 @@ glm::mat4 PositionManager::GetOrientationMatrix() {
 	return rotMat;
 }
 
-glm::mat4  PositionManager::GetViewMatrix(glm::mat4 oldViewMatrix) {
-	glm::mat4 movedMatrix = GetMoveMatrix(oldViewMatrix);
-
-	glm::mat4 orientationMatrix = GetOrientationMatrix();
-
-	glm::mat4 viewMatrix = orientationMatrix * movedMatrix;
-
-	oldViewMatrix = viewMatrix;
-
-	return viewMatrix;
-}
+//glm::mat4  PositionManager::GetViewMatrix(glm::mat4 oldViewMatrix) {
+//	glm::mat4 movedMatrix = GetMoveMatrix(oldViewMatrix);
+//
+//	glm::mat4 orientationMatrix = GetOrientationMatrix();
+//
+//	glm::mat4 viewMatrix = orientationMatrix * movedMatrix;
+//
+//	oldViewMatrix = viewMatrix;
+//
+//	return viewMatrix;
+//}
 
 void PositionManager::notifyKeyPress(char key, int x, int y) {
 	OldKeyStates[key] = KeyStates[key];

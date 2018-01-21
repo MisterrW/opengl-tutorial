@@ -1,12 +1,13 @@
 #include "Model.h"
 using namespace BasicEngine::Models;
 
-
-// move this to the base model class
+/*====
+Defines a bounding box aligned to world axes which contains all points in the model
+Also defines normals for all 6 planes of the box
+====*/
 std::vector<glm::vec3> Model::setBoundingBox(std::vector<std::vector<glm::vec3>> vertexArrays) {
 	std::vector<glm::vec3> boundingBox = std::vector<glm::vec3>();
 
-	// actually we don't need a box, just 2 vectors representing the smallest and largest xyz corners of a box containing the model, for basic axis-aligned AABB collision / frustrum checks
 	glm::vec3 minXYZ = vertexArrays[0][0];
 	glm::vec3 maxXYZ = vertexArrays[0][0];
 

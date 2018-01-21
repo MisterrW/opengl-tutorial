@@ -7,21 +7,29 @@ MovementManager::MovementManager(){
 	collisionDeterminer = BasicEngine::Physics::CollisionDeterminer(),
 	positionManager = BasicEngine::Movement::PositionManager();
 
-	oldGravityMatrix = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+	oldOrientationMatrix = glm::mat4(
+		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 1.0f);
+		0.0f, 0.0f, 0.0f, 1.0f);
 
-	oldPlayerMatrix = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+	oldPositionMatrix = glm::mat4(
+		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.0f, -100.0f, 600.0f, 1.0f);
-
-	oldViewMatrix = oldPlayerMatrix * oldGravityMatrix;
 }
 
 MovementManager::~MovementManager()
 {
+}
+
+glm::mat4 MovementManager::getGravityMatrix() {
+	return glm::mat4(
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.2f, 0.0f, 1.0f);
 }
 
 // this is the equivalent of calculating movement for the player.
@@ -35,22 +43,26 @@ glm::mat4 MovementManager::getViewMatrix(std::map<std::string, Model*>* models) 
 	if (true) {
 		//auto updateStarted = clock::now();
 		// encodes movement relative to the player's last position and orientation
-		glm::mat4 tentativePlayerMatrix = positionManager.GetViewMatrix(oldPlayerMatrix);
+		glm::mat4 moveMatrix = positionManager.GetMoveMatrix();
+		glm::mat4 orientationMatrix = positionManager.GetOrientationMatrix();
 
 		// lame gravity
-		// encodes movement relative to the player's last position, orientation in world space
-	    glm::mat4 tentativeGravityMatrix = glm::mat4(oldGravityMatrix);
-		tentativeGravityMatrix[3][1] += 0.2f;
-		glm::mat4 tentativeNewMatrix = tentativePlayerMatrix * tentativeGravityMatrix;
+	    glm::mat4 gravityMatrix = getGravityMatrix();
 
 		//TimePoint tMid = std::chrono::time_point_cast<ms>(clock::now());
 
-		if (collisionDeterminer.noPlayerCollisions(tentativeNewMatrix, models)) {
-			oldGravityMatrix = tentativeGravityMatrix;
-			oldPlayerMatrix = tentativePlayerMatrix;
-			oldViewMatrix = tentativeNewMatrix;
-		}
+		//combine move and gravity as position matrix
+		glm::mat4 tentativePositionMatrix = moveMatrix * gravityMatrix;
+		// then call collision determiner with old position and new position matrix
+		
+		glm::mat4 actualPositionMatrix = collisionDeterminer.doPlayerCollisions(oldPositionMatrix, tentativePositionMatrix, models);
+		
+		oldPositionMatrix = actualPositionMatrix;
+		
+		oldOrientationMatrix = oldOrientationMatrix * orientationMatrix;
 
+		glm::mat4 viewMatrix = oldPositionMatrix * oldOrientationMatrix;
+		return viewMatrix;
 		/*TimePoint last = std::chrono::time_point_cast<ms>(lastUpdated);
 		TimePoint tEnd = std::chrono::time_point_cast<ms>(clock::now());
 
@@ -68,7 +80,6 @@ glm::mat4 MovementManager::getViewMatrix(std::map<std::string, Model*>* models) 
 		//int wtf = 1;
 		//lastUpdated = updateStarted;
 	}
-	return oldViewMatrix;
 };
 
 //glm::mat4 MovementManager::getViewMatrix(std::map<std::string, Model*>* models) {
