@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "IGameObject.h"
+#include "Triangle.h"
 namespace BasicEngine
 {
 		namespace Models //create another namespace
@@ -21,6 +22,7 @@ namespace BasicEngine
 
 				virtual GLuint GetVao() const override;
 				std::vector<glm::vec3> getBoundingBox();
+				std::vector<Triangle> getBoundingBoxTriangles();
 				virtual const std::vector<GLuint>& GetVbos() const override;
 				bool shouldCollisionCheck();
 				void toggleCollisionCheck(bool shouldCheck);
@@ -31,6 +33,8 @@ namespace BasicEngine
 				GLuint program;
 				std::vector<GLuint> vbos;
 				std::vector<glm::vec3> boundingBox;
+				std::vector<Triangle> boundingBoxTriangles;
+				std::vector<Triangle> setBoundingBoxTriangles(std::vector<glm::vec3> boundingBoxMinMax);
 				bool collisionCheck;
 			};
 		}

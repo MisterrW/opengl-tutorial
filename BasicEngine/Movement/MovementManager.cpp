@@ -55,8 +55,9 @@ glm::mat4 MovementManager::getViewMatrix(std::map<std::string, Model*>* models) 
 		glm::mat4 tentativePositionMatrix = moveMatrix * gravityMatrix;
 		// then call collision determiner with old position and new position matrix
 		
-		glm::mat4 actualPositionMatrix = collisionDeterminer.doPlayerCollisions(oldPositionMatrix, tentativePositionMatrix, models);
+		//glm::mat4 actualPositionMatrix = collisionDeterminer.doPlayerCollisions(oldPositionMatrix, tentativePositionMatrix, models);
 		
+		glm::mat4 actualPositionMatrix = tentativePositionMatrix;
 		oldPositionMatrix = actualPositionMatrix;
 		
 		oldOrientationMatrix = oldOrientationMatrix * orientationMatrix;

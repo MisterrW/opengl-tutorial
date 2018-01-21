@@ -40,11 +40,64 @@ std::vector<glm::vec3> Model::setBoundingBox(std::vector<std::vector<glm::vec3>>
 	return boundingBox;
 }
 
+std::vector<Triangle> Model::setBoundingBoxTriangles(std::vector<glm::vec3> boundingBoxMinMax) {
+	std::vector<Triangle> boundingBoxTriangles = std::vector<Triangle>();
+	
+	glm::vec3 min = boundingBoxMinMax[0];
+	glm::vec3 max = boundingBoxMinMax[1];
+
+	// top = more y, right = more x, front = more z
+
+	glm::vec3 TopRearLeft = glm::vec3(min.x, max.y, min.z);
+	glm::vec3 TopRearRight = glm::vec3(max.x, max.y, min.z);
+	glm::vec3 TopFrontRight = glm::vec3(max.x, max.y, max.z);
+	glm::vec3 TopFrontLeft = glm::vec3(min.x, max.y, max.z);
+
+	glm::vec3 BottomRearLeft = glm::vec3(min.x, min.y, min.z);
+	glm::vec3 BottomRearRight = glm::vec3(max.x, min.y, min.z);
+	glm::vec3 BottomFrontRight = glm::vec3(max.x, min.y, max.z);
+	glm::vec3 BottomFrontLeft = glm::vec3(min.x, min.y, max.z);
+	
+
+	//in openGL standard winding order is counterclockwise
+
+	//top
+	boundingBoxTriangles.push_back(Triangle(TopRearLeft, TopFrontLeft, TopFrontRight));
+	boundingBoxTriangles.push_back(Triangle(TopRearLeft, TopFrontRight, TopRearRight));
+
+	//left
+	boundingBoxTriangles.push_back(Triangle(TopRearLeft, BottomRearLeft, BottomFrontLeft));
+	boundingBoxTriangles.push_back(Triangle(TopRearLeft, BottomFrontLeft, TopFrontLeft));
+
+	//front
+	boundingBoxTriangles.push_back(Triangle(TopFrontLeft, BottomFrontLeft, BottomFrontRight));
+	boundingBoxTriangles.push_back(Triangle(TopFrontLeft, BottomFrontRight, TopFrontRight));
+
+	//right
+	boundingBoxTriangles.push_back(Triangle(TopFrontRight, BottomFrontRight, BottomRearRight));
+	boundingBoxTriangles.push_back(Triangle(TopFrontRight, BottomRearRight, TopRearRight));
+
+	//back
+	boundingBoxTriangles.push_back(Triangle(TopFrontLeft, BottomFrontLeft, BottomFrontRight));
+	boundingBoxTriangles.push_back(Triangle(TopFrontLeft, BottomFrontRight, TopFrontRight));
+
+	//bottom
+	boundingBoxTriangles.push_back(Triangle(BottomFrontLeft, BottomRearLeft, BottomRearRight));
+	boundingBoxTriangles.push_back(Triangle(BottomFrontLeft, BottomRearRight, BottomFrontRight));
+
+	return boundingBoxTriangles;
+}
+
+std::vector<Triangle> Model::getBoundingBoxTriangles() {
+	return boundingBoxTriangles;
+}
+
 Model::Model() {}
 
 Model::Model(std::vector<std::vector<glm::vec3>> vertexArrays) {
 	collisionCheck = false;
 	boundingBox = setBoundingBox(vertexArrays);
+	boundingBoxTriangles = setBoundingBoxTriangles(boundingBox);
 }
 
 Model::~Model()
@@ -59,7 +112,6 @@ void Model::toggleCollisionCheck(bool shouldCheck) {
 bool Model::shouldCollisionCheck() {
 	return collisionCheck;
 }
-
 
 std::vector<glm::vec3> Model::getBoundingBox() {
 	return boundingBox;

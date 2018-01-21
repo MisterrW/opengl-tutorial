@@ -134,6 +134,7 @@
     <ClCompile Include="Core\Init\Init_Glew.cpp" />
     <ClCompile Include="Core\Init\Init_GLUT.cpp" />
     <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="Models\Triangle.cpp" />
     <ClCompile Include="Movement\MovementManager.cpp" />
     <ClCompile Include="Physics\CollisionDeterminer.cpp" />
     <ClCompile Include="Physics\Gravity.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="Core\Init\Init_GLUT.h" />
     <ClInclude Include="Core\Init\WindowInfo.h" />
     <ClInclude Include="Engine.h" />
+    <ClInclude Include="Models\Triangle.h" />
     <ClInclude Include="Movement\MovementManager.h" />
     <ClInclude Include="Physics\Gravity.h" />
     <ClInclude Include="Makers\ModelMaker.h" />

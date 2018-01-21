@@ -1,6 +1,7 @@
 #pragma once
 #include "CollisionDeterminer.h"
 #include "../Managers/ModelManager.h"
+#define GLM_ENABLE_EXPERIMENTAL
 #include "../../../Dependencies/include/glm/gtx/transform.hpp"
 
 using namespace BasicEngine::Physics;
@@ -40,32 +41,130 @@ double CollisionDeterminer::getAngleBetween(glm::vec3 a, glm::vec3 b) {
 
 /*
 ====
+Line-triangle intersection code courtesy of softSurfer, http://geomalgorithms.com/a06-_intersect-2.html#intersect3D_RayTriangle()
+====
+*/
+
+// Copyright 2001 softSurfer, 2012 Dan Sunday
+// This code may be freely used and modified for any purpose
+// providing that this copyright notice is included with it.
+// SoftSurfer makes no warranty for this code, and cannot be held
+// liable for any real or imagined damage resulting from its use.
+// Users of this code must verify correctness for their application.
+
+
+// some of the below invalid as (for now) using glm::vec3 for vectors and simply std::vector<glm::vec3> for lines and triangles
+
+// Assume that classes are already given for the objects:
+//    Point and Vector with
+//        coordinates {float x, y, z;}
+//        operators for:
+//            == to test  equality
+//            != to test  inequality
+//            (Vector)0 =  (0,0,0)         (null vector)
+//            Point   = Point ± Vector
+//            Vector =  Point - Point
+//            Vector =  Scalar * Vector    (scalar product)
+//            Vector =  Vector * Vector    (cross product)
+//    Line and Ray and Segment with defining  points {Point P0, P1;}
+//        (a Line is infinite, Rays and  Segments start at P0)
+//        (a Ray extends beyond P1, but a  Segment ends at P1)
+//    Plane with a point and a normal {Point V0; Vector  n;}
+//    Triangle with defining vertices {Point V0, V1, V2;}
+//    Polyline and Polygon with n vertices {int n;  Point *V;}
+//        (a Polygon has V[n]=V[0])
+//===================================================================
+
+
+#define SMALL_NUM   0.00000001 // anything that avoids division overflow
+// dot product (3D) which allows vector operations in arguments
+#define dot(u,v)   ((u).x * (v).x + (u).y * (v).y + (u).z * (v).z)
+
+
+
+// intersect3D_RayTriangle(): find the 3D intersection of a ray with a triangle
+//    Input:  a ray R, and a triangle T
+//    Output: *I = intersection point (when it exists)
+//    Return: -1 = triangle is degenerate (a segment or point)
+//             0 =  disjoint (no intersect)
+//             1 =  intersect in unique point I1
+//             2 =  are in the same plane
+int CollisionDeterminer::intersect3D_RayTriangle(const std::vector<glm::vec3> lineSeg, const std::vector<glm::vec3> triangle, glm::vec3* I) {
+	glm::vec3    u, v, n;              // triangle vectors
+	glm::vec3    dir, w0, w;           // ray vectors
+	float        r, a, b;              // params to calc ray-plane intersect
+
+									   // get triangle edge vectors and plane normal
+	u = triangle[1] - triangle[0];
+	v = triangle[2] - triangle[0];
+	n = glm::cross(u, v);              // cross product
+	if (n == glm::vec3(0, 0, 0))             // triangle is degenerate
+		return -1;                  // do not deal with this case
+
+	dir = lineSeg[1] - lineSeg[0];              // ray direction vector
+	w0 = lineSeg[0] - triangle[0];
+	a = -dot(n, w0);
+	b = dot(n, dir);
+	if (fabs(b) < SMALL_NUM) {     // ray is  parallel to triangle plane
+		if (a == 0)                 // ray lies in triangle plane
+			return 2;
+		else return 0;              // ray disjoint from plane
+	}
+
+	// get intersect point of ray with triangle plane
+	r = a / b;
+	if (r < 0.0 || r > 1.0)                    // r < 0.0 => ray goes away from triangle . for a segment, also test if (r > 1.0) => no intersect
+		return 0;                   // => no intersect
+
+	*I = lineSeg[0] + r * dir;            // intersect point of ray and plane
+
+										  // is I inside T?
+	float    uu, uv, vv, wu, wv, D;
+	uu = dot(u, u);
+	uv = dot(u, v);
+	vv = dot(v, v);
+	w = *I - triangle[0];
+	wu = dot(w, u);
+	wv = dot(w, v);
+	D = uv * uv - uu * vv;
+
+	// get and test parametric coords
+	float s, t;
+	s = (uv * wv - vv * wu) / D;
+	if (s < 0.0 || s > 1.0)         // I is outside T
+		return 0;
+	t = (uv * wu - uu * wv) / D;
+	if (t < 0.0 || (s + t) > 1.0)  // I is outside T
+		return 0;
+
+	return 1;                       // I is in T
+}
+
+/*
+====
 Given a collided model, gets the normal of the collision plane
 ====
 */
-glm::vec3 CollisionDeterminer::getCollisionPlaneNormal(Model* model) {
-	std::vector<glm::vec3> boundingBox;
-	//the top surface of a bounding box aligned to world axes
-	boundingBox.push_back(glm::vec3(0, 10, 0));
-	boundingBox.push_back(glm::vec3(10, 10, 0));
-	boundingBox.push_back(glm::vec3(0, 10, 10));
-	boundingBox.push_back(glm::vec3(10, 10, 10));
+glm::vec3 CollisionDeterminer::getCollisionPlaneNormal(Model* model, std::vector<glm::vec3> lineSeg) {
+	
+	std::vector<Triangle> boundingBoxTriangles = model->getBoundingBoxTriangles();
+	for (unsigned i = 0; i < boundingBoxTriangles.size(); i++) {
+		glm::vec3 intersection = glm::vec3(0, 0, 0);
+		//todo modify this function to accept the triangle so we don't have to recalculate the normal
+		if ( intersect3D_RayTriangle(lineSeg, boundingBoxTriangles[i].getVertices(), &intersection) > 0) {
+			return boundingBoxTriangles[i].getNormal();
+		}
+	}
 
-	glm::vec3 relative1 = (boundingBox[2] - boundingBox[0]);
-	glm::vec3 relative2 = (boundingBox[1] - boundingBox[0]);
+	// todo fast-moving object could cross two planes, and we want to check we have the right one ie first one crossed
 
-	//doing this to get relative vectors to get a sensible cross
-	glm::vec3 cross = glm::cross(relative1, relative2);
-	glm::vec3 normal = glm::normalize(cross);
-
-	return normal;
 }
 
 /*
 ====
 Given a move vector, and the normal of a collided plane,
 returns a matrix which deflects the colliding object along the plane's surface.
-Assumes that there is a collision - call after collision confirmed.
+Assumes that there is a collision - so only call after collision confirmed.
 ====
 */
 glm::mat4 CollisionDeterminer::getDeflectionMatrix(glm::vec3 move, glm::vec3 planeNormal) {
@@ -82,19 +181,22 @@ glm::mat4 CollisionDeterminer::getDeflectionMatrix(glm::vec3 move, glm::vec3 pla
 	glm::vec3 rotationAxis = glm::cross(planeNormal, move);
 
 	// GLM has a rotation function for an angle around an axis vector
-	glm::mat4 deflectionMatrix = glm::rotate((angleFromPlane), rotationAxis);
+	// but it's experimental - TODO write one based on Rodrigues' rotation matrix
+	glm::mat4 deflectionMatrix = glm::rotate(angleFromPlane, rotationAxis);
 	//glm::vec3 deflected = glm::vec3(deflectionMatrix * glm::vec4(move, 1));
 
 	return deflectionMatrix;
 }
 
-//std::array<bool, 3>  CollisionDeterminer::noPlayerCollisions(glm::mat4 viewMatrix, std::map<std::string, Model*>* modelList) {
+/*
+====
+Bounding-box based collision detector
+Returns a vector of the models which collide with the position represented by the view matrix
+====
+*/
 std::vector<Model*> CollisionDeterminer::getPlayerCollidedModels(glm::mat4 viewMatrix, std::map<std::string, Model*>* modelList) {
-	// since we have the tentative view matrix, seems simplest to test player collisions in view space
 	
 	std::vector<Model*> collidedModels = std::vector<Model*>();
-
-	bool noCollisions = true;
 
 	//if we're doing this a lot set a class variable or pass it in
 	glm::mat4 inverseView = glm::inverse(viewMatrix);
@@ -102,22 +204,12 @@ std::vector<Model*> CollisionDeterminer::getPlayerCollidedModels(glm::mat4 viewM
 	glm::vec3 minPlayerBound = glm::vec3(inverseView * glm::vec4(-10, -10, -10, 1));
 	glm::vec3 maxPlayerBound = glm::vec3(inverseView  * glm::vec4(10, 10, 10, 1));
 
-	// get models from modelsmanager
-
-	// for each one, convert the bounds to camera space and test them against the player bounds
-	// almost certainly better to invert the view matrix, convert player bounds back to world space and do it there
 	for (auto model : *modelList)
 	{
 		if (model.second->shouldCollisionCheck()) {
 			std::vector<glm::vec3> modelBounds = model.second->getBoundingBox();
 
 			if (modelBounds.size() == 2) {
-				// need to be able to figure out which plane has been collided with
-				// probably the nearest one
-				// use the old and new move matrices to check
-
-				//glm::vec3 minViewSpaceBound = glm::vec3(viewMatrix * glm::vec4(modelBounds[0], 1));
-				//glm::vec3 maxViewSpaceBound = glm::vec3(viewMatrix * glm::vec4(modelBounds[1], 1));
 				glm::vec3 minViewSpaceBound = modelBounds[0];
 				glm::vec3 maxViewSpaceBound = modelBounds[1];
 				if ((minViewSpaceBound.x < minPlayerBound.x && minPlayerBound.x < maxViewSpaceBound.x) ||
@@ -144,6 +236,21 @@ std::vector<Model*> CollisionDeterminer::getPlayerCollidedModels(glm::mat4 viewM
 	return collidedModels;
 }
 
+std::vector<glm::vec3> CollisionDeterminer::getLineSegmentFromViewMatrices(glm::mat4 oldViewMatrix, glm::mat4 newViewMatrix) {
+
+	std::vector<glm::vec3> lineSeg = std::vector<glm::vec3>();
+
+	glm::vec4 origin = glm::vec4(0, 0, 0, 1);
+	glm::mat4 oldInv = glm::inverse(oldViewMatrix);
+	glm::mat4 newInv = glm::inverse(newViewMatrix);
+	glm::vec3 oldPos = glm::vec3(oldInv * origin);
+	glm::vec3 newPos = glm::vec3(newInv * origin);
+	lineSeg.push_back(oldPos);
+	lineSeg.push_back(newPos);
+
+	return lineSeg;
+}
+
 /*
 ====
 Takes in the old and new player movement matrices, figures out if there are any collisions,
@@ -158,7 +265,8 @@ glm::mat4 CollisionDeterminer::doPlayerCollisions(glm::mat4 oldViewMatrix, glm::
 	}
 	for (unsigned i = 0; i < collidedModels.size(); i++) {
 		glm::vec3 move = getMove(oldViewMatrix, newViewMatrix);
-		glm::vec3 planeNormal = getCollisionPlaneNormal(collidedModels[i]);
+		std::vector<glm::vec3> lineSeg = getLineSegmentFromViewMatrices(oldViewMatrix, newViewMatrix);
+		glm::vec3 planeNormal = getCollisionPlaneNormal(collidedModels[i], lineSeg);
 		glm::mat4 deflectionMatrix = getDeflectionMatrix(move, planeNormal);
 		newViewMatrix = deflectionMatrix * newViewMatrix;
 	}
