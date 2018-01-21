@@ -15,7 +15,7 @@ void main()
   float cosTheta = clamp(dot( n, l), 0, 1);
   vec4 LightColor = vec4(0.2, 0.4, 0.7, 1);
   vec4 MaterialDiffuseColor = vec4(1, 1, 1, 1);
-  float LightPower = 600000;
+  float LightPower = 60000000;
 
   // out_color = MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance*distance);
   // out_color = LightColor * LightPower * cosTheta / (distance*distance);
