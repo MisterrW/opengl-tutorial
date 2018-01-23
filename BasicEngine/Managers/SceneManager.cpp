@@ -36,7 +36,9 @@ void SceneManager::drawScene(std::map<std::string, Model*>* modelList) {
 void SceneManager::notifyDisplayFrame()
 {
 	std::map<std::string, Model*>* modelList = modelManager->getModels();
+	movementManager.updateModelPositions(modelList);
 	renderer.setViewMatrix(movementManager.getViewMatrix(modelList));
+	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -53,7 +55,7 @@ void SceneManager::notifyReshape(int width, int height,
 {
 	float ar = (float)glutGet(GLUT_WINDOW_WIDTH) /
 		(float)glutGet(GLUT_WINDOW_HEIGHT);
-	float angle = 45.0f, near1 = 0.1f, far1 = 20000.0f;
+	float angle = 45.0f, near1 = 2.0f, far1 = 1000.0f;
 
 	glm::mat4 projection_matrix = glm::mat4();
 	projection_matrix[0][0] = 1.0f / (ar * tan(angle / 2.0f));

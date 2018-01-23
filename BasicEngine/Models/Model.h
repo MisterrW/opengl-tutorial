@@ -11,6 +11,7 @@ namespace BasicEngine
 			public:
 				Model();
 				Model(std::vector<std::vector<glm::vec3>> vertexArrays);
+				Model(std::vector<std::vector<glm::vec3>> vertexArrays, bool canMove);
 				
 				virtual ~Model();
 				// methods from interface
@@ -27,7 +28,17 @@ namespace BasicEngine
 				bool shouldCollisionCheck();
 				void toggleCollisionCheck(bool shouldCheck);
 
+				bool canMove;
+				void makeMoveable();
+				glm::mat4 getThisFrameMoveMatrix();
+				glm::mat4 getOldMoveMatrix();
+				glm::mat4 getNewMoveMatrix();
+				void setNewMoveMatrix(glm::mat4 newMoveMatrix);
+				void setEachFrameMoveMatrix(glm::mat4 moveMatrix);
+
 			protected:
+
+				void initialise(std::vector<std::vector<glm::vec3>> vertexArrays);
 				std::vector<glm::vec3> setBoundingBox(std::vector<std::vector<glm::vec3>> vertexArrays);
 				GLuint vao;
 				GLuint program;
@@ -36,6 +47,9 @@ namespace BasicEngine
 				std::vector<Triangle> boundingBoxTriangles;
 				std::vector<Triangle> setBoundingBoxTriangles(std::vector<glm::vec3> boundingBoxMinMax);
 				bool collisionCheck;
+				glm::mat4 eachFrameMoveMatrix;
+				glm::mat4 oldMoveMatrix;
+				glm::mat4 newMoveMatrix;
 			};
 		}
 }

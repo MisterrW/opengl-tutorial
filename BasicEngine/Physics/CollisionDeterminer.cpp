@@ -155,7 +155,7 @@ glm::vec3 CollisionDeterminer::getCollisionPlaneNormal(Model* model, std::vector
 			return boundingBoxTriangles[i].getNormal();
 		}
 	}
-
+	return boundingBoxTriangles[0].getNormal();
 	// todo fast-moving object could cross two planes, and we want to check we have the right one ie first one crossed
 
 }
@@ -167,23 +167,28 @@ returns a matrix which deflects the colliding object along the plane's surface.
 Assumes that there is a collision - so only call after collision confirmed.
 ====
 */
-glm::mat4 CollisionDeterminer::getDeflectionMatrix(glm::vec3 move, glm::vec3 planeNormal) {
+glm::mat4 CollisionDeterminer::getDeflectionMatrix(glm::vec3 move, glm::vec3 planeNormal, double angleFromNormal) {
+	glm::mat4 deflectionMatrix;
 
 	// IMPORTANT todo handle linearly dependant vectors - if you hit something dead on, the angle to the normal is 180 degrees, 
 	// so the cross product of the collision angle with the surface normal is undefined.
 	// check for this and bail out - no deflection needed, we can just stop dead for a head on collision.
 	// add in a 'dead zone' around this.
 
-
-	double angleFromNormal = getAngleBetween(planeNormal, move);
+	
+	glm::vec3 rotationAxis = glm::cross(planeNormal, move);
+	
 	float angleFromPlane = angleFromNormal - glm::radians(90.0);
 
-	glm::vec3 rotationAxis = glm::cross(planeNormal, move);
-
+	
 	// GLM has a rotation function for an angle around an axis vector
 	// but it's experimental - TODO write one based on Rodrigues' rotation matrix
-	glm::mat4 deflectionMatrix = glm::rotate(angleFromPlane, rotationAxis);
+
+	deflectionMatrix = glm::rotate(angleFromPlane, rotationAxis);
+
 	//glm::vec3 deflected = glm::vec3(deflectionMatrix * glm::vec4(move, 1));
+
+
 
 	return deflectionMatrix;
 }
@@ -194,15 +199,17 @@ Bounding-box based collision detector
 Returns a vector of the models which collide with the position represented by the view matrix
 ====
 */
-std::vector<Model*> CollisionDeterminer::getPlayerCollidedModels(glm::mat4 viewMatrix, std::map<std::string, Model*>* modelList) {
+std::vector<Model*> CollisionDeterminer::getPlayerCollidedModels(glm::mat4 viewMatrix, const std::map<std::string, Model*>* modelList) {
 	
 	std::vector<Model*> collidedModels = std::vector<Model*>();
 
 	//if we're doing this a lot set a class variable or pass it in
 	glm::mat4 inverseView = glm::inverse(viewMatrix);
 
-	glm::vec3 minPlayerBound = glm::vec3(inverseView * glm::vec4(-10, -10, -10, 1));
-	glm::vec3 maxPlayerBound = glm::vec3(inverseView  * glm::vec4(10, 10, 10, 1));
+	//glm::vec3 minPlayerBound = glm::vec3(inverseView * glm::vec4(-10, -10, -10, 1));
+	//glm::vec3 maxPlayerBound = glm::vec3(inverseView  * glm::vec4(10, 10, 10, 1));
+	glm::vec3 minPlayerBound = glm::vec3(inverseView * glm::vec4(0, 0, 0, 1));
+	glm::vec3 maxPlayerBound = glm::vec3(inverseView  * glm::vec4(0, 0 , 0, 1));
 
 	for (auto model : *modelList)
 	{
@@ -255,10 +262,10 @@ std::vector<glm::vec3> CollisionDeterminer::getLineSegmentFromViewMatrices(glm::
 ====
 Takes in the old and new player movement matrices, figures out if there are any collisions,
 does collision detections as needed, and returns a revised move matrix.
-Calls itself recursively until no more collisions are found.
+Should call itself recursively until no more collisions are found.
 ====
 */
-glm::mat4 CollisionDeterminer::doPlayerCollisions(glm::mat4 oldViewMatrix, glm::mat4 newViewMatrix, std::map<std::string, Model*>* modelList) {
+glm::mat4 CollisionDeterminer::doPlayerCollisions(const glm::mat4 oldViewMatrix, glm::mat4 newViewMatrix, const std::map<std::string, Model*>* modelList) {
 	std::vector<Model*> collidedModels = getPlayerCollidedModels(newViewMatrix, modelList);
 	if (collidedModels.size() == 0) {
 		return newViewMatrix;
@@ -267,8 +274,22 @@ glm::mat4 CollisionDeterminer::doPlayerCollisions(glm::mat4 oldViewMatrix, glm::
 		glm::vec3 move = getMove(oldViewMatrix, newViewMatrix);
 		std::vector<glm::vec3> lineSeg = getLineSegmentFromViewMatrices(oldViewMatrix, newViewMatrix);
 		glm::vec3 planeNormal = getCollisionPlaneNormal(collidedModels[i], lineSeg);
-		glm::mat4 deflectionMatrix = getDeflectionMatrix(move, planeNormal);
-		newViewMatrix = deflectionMatrix * newViewMatrix;
+		double collisionAngleFromPlaneNormal = getAngleBetween(planeNormal, move);
+		
+		if (collisionAngleFromPlaneNormal < 3.13 || collisionAngleFromPlaneNormal > 3.15) {
+			glm::mat4 deflectionMatrix = getDeflectionMatrix(move, planeNormal, collisionAngleFromPlaneNormal);
+			// so we have our deflection matrix, which is a rotation matrix.
+			// If we do it this way, we'd need to reorient, apply the move, and orient back again. invDeflect * newView * deflect.
+			// newViewMatrix = deflectionMatrix * newViewMatrix;
+
+			glm::mat4 inverseDeflectionMatrix = glm::inverse(deflectionMatrix);
+			//glm::mat4 deflectedViewMatrix = inverseDeflectionMatrix * (newViewMatrix * deflectionMatrix);
+			glm::mat4 deflectedViewMatrix = deflectionMatrix * (newViewMatrix * inverseDeflectionMatrix);
+			newViewMatrix = deflectedViewMatrix;
+		}
+		else {
+			newViewMatrix = oldViewMatrix;
+		}
 	}
 	return newViewMatrix;
 }

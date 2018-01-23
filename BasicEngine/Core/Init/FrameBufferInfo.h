@@ -11,7 +11,7 @@ namespace BasicEngine
 		struct FramebufferInfo {
 
 			unsigned int flags;
-			bool msaa;//to enable or disable it when wee need it
+			bool msaa;//to enable or disable it when we need it
 
 			FramebufferInfo()
 			{

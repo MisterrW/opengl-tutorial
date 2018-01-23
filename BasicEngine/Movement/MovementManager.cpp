@@ -17,7 +17,7 @@ MovementManager::MovementManager(){
 		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, -100.0f, 600.0f, 1.0f);
+		0.0f, -100.0f, -100.0f, 1.0f);
 }
 
 MovementManager::~MovementManager()
@@ -26,15 +26,23 @@ MovementManager::~MovementManager()
 
 glm::mat4 MovementManager::getGravityMatrix() {
 	return glm::mat4(
+		/*1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.2f, 0.0f, 1.0f*/
 		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, 0.2f, 0.0f, 1.0f);
+		0.0f, 0.0f, 0.0f, 1.0f
+	);
 }
+
+void MovementManager::updateModelPositions(std::map<std::string, Model*>* models) {
+};
 
 // this is the equivalent of calculating movement for the player.
 // the new movement matrix must take account of player input, gravity, collisions preventing movement.
-glm::mat4 MovementManager::getViewMatrix(std::map<std::string, Model*>* models) {
+glm::mat4 MovementManager::getViewMatrix(const std::map<std::string, Model*>* models) {
 	//typedef std::chrono::steady_clock clock;
 	//typedef std::chrono::milliseconds ms;
 	//using TimePoint = std::chrono::time_point<clock, ms>;

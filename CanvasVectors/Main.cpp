@@ -40,7 +40,7 @@ vector<GenericModel*> makeStars(Engine* engine) {
 
 		starVertexArrays.push_back(starVertices);
 		//}
-		GenericModel* star = new GenericModel(starVertexArrays, GL_TRIANGLES);
+		GenericModel* star = new GenericModel(starVertexArrays, GL_TRIANGLES, glm::vec4(0.2, 0.6, 0.8, 0.3));
 		star->SetProgram(engine->getProgram("cubeShader"));
 		star->Create();
 		string modelName = "star_" + std::to_string(i);
@@ -67,8 +67,8 @@ void makeSomeTrees(Engine* engine, int i_min, int i_max) {
 
 		glm::vec3 seed = glm::vec3(x, y, z);
 		vector<vector<glm::vec3>> treeVertexArrays = treeMaker.GetTree(seed);
-		GenericModel* tree = new GenericModel(treeVertexArrays);
-		tree->SetProgram(engine->getProgram("genericWithLighting"));
+		GenericModel* tree = new GenericModel(treeVertexArrays, glm::vec4(0.3, 0.3, 0.3, 0.9));
+		tree->SetProgram(engine->getProgram("flatShader"));
 		tree->toggleCollisionCheck(true);
 		tree->Create();
 
@@ -150,50 +150,94 @@ void makePyramid(int seedX, int seedZ, float baseLength, Engine* engine) {
 		x += (baseLength / 200);
 	}
 
-	GenericModel* pyramidModel = new GenericModel(pyramid, GL_TRIANGLE_STRIP);
-	pyramidModel->SetProgram(engine->getProgram("genericWithLighting"));
+	GenericModel* pyramidModel = new GenericModel(pyramid, GL_TRIANGLE_STRIP, glm::vec4(0.7, 0.9, 0.2, 0.3));
+	pyramidModel->SetProgram(engine->getProgram("flatShader"));
 	pyramidModel->Create();
 	string modelName = "pyramid_" + std::to_string(seedZ) + "_" + std::to_string(seedX);
 	engine->setModel(modelName, pyramidModel);
 }
 
-void makeGround(Engine* engine) {
-	vector<vector<glm::vec3>> ground;
 
-	ground.push_back(vector<glm::vec3>());
-
-	int x = -2000;
-	int y = -20;
-	int z = -2000;
-
-	for (int i = 0; i < 500; i++) {
-		z = -2000;
-		for (int j = 0; j < 500; j++) {
-
-			ground[0].push_back(glm::vec3(x, y, z));
-			y = -5 + int(GetRandom() * 10);
-			ground[0].push_back(glm::vec3(x + 50, y, z));
-			y = -5 + int(GetRandom() * 10);
-			ground[0].push_back(glm::vec3(x, y, z + 50));
-			y = -5 + int(GetRandom() * 10);
-			ground[0].push_back(glm::vec3(x + 50, y, z + 50));
-			z += 40;
-		}
-		x += 40;
-	}
-
-	GenericModel* groundModel = new GenericModel(ground, GL_TRIANGLE_STRIP);
-	groundModel->toggleCollisionCheck(true);
-	groundModel->SetProgram(engine->getProgram("genericWithLighting"));
-	groundModel->Create();
-
-	engine->setModel("ground", groundModel);
-}
 
 void makeMesh(Engine* engine) {
 	//MeshStrip* meshStrip = new MeshStrip();
 	//meshStrip->SetProgram(engine->getProgram("cubeShader"));
 	//engine->setModel("meshStrip", meshStrip);
+}
+
+vector<Triangle> getCube(glm::vec3 min, glm::vec3 max) {
+	std::vector<Triangle> cube = std::vector<Triangle>();
+
+	// top = more y, right = more x, front = more z
+
+	glm::vec3 TopRearLeft = glm::vec3(min.x, max.y, min.z);
+	glm::vec3 TopRearRight = glm::vec3(max.x, max.y, min.z);
+	glm::vec3 TopFrontRight = glm::vec3(max.x, max.y, max.z);
+	glm::vec3 TopFrontLeft = glm::vec3(min.x, max.y, max.z);
+
+	glm::vec3 BottomRearLeft = glm::vec3(min.x, min.y, min.z);
+	glm::vec3 BottomRearRight = glm::vec3(max.x, min.y, min.z);
+	glm::vec3 BottomFrontRight = glm::vec3(max.x, min.y, max.z);
+	glm::vec3 BottomFrontLeft = glm::vec3(min.x, min.y, max.z);
+
+
+	//in openGL standard winding order is counterclockwise
+
+	//top
+	cube.push_back(Triangle(TopRearLeft, TopFrontLeft, TopFrontRight));
+	cube.push_back(Triangle(TopRearLeft, TopFrontRight, TopRearRight));
+
+	//left
+	cube.push_back(Triangle(TopRearLeft, BottomRearLeft, BottomFrontLeft));
+	cube.push_back(Triangle(TopRearLeft, BottomFrontLeft, TopFrontLeft));
+
+	//front
+	cube.push_back(Triangle(TopFrontLeft, BottomFrontLeft, BottomFrontRight));
+	cube.push_back(Triangle(TopFrontLeft, BottomFrontRight, TopFrontRight));
+
+	//right
+	cube.push_back(Triangle(TopFrontRight, BottomFrontRight, BottomRearRight));
+	cube.push_back(Triangle(TopFrontRight, BottomRearRight, TopRearRight));
+
+	//back
+	cube.push_back(Triangle(TopFrontLeft, BottomFrontLeft, BottomFrontRight));
+	cube.push_back(Triangle(TopFrontLeft, BottomFrontRight, TopFrontRight));
+
+	//bottom
+	cube.push_back(Triangle(BottomFrontLeft, BottomRearLeft, BottomRearRight));
+	cube.push_back(Triangle(BottomFrontLeft, BottomRearRight, BottomFrontRight));
+
+	return cube;
+}
+
+void makeFallingCube(Engine* engine) {
+	std::vector<Triangle> cube = getCube(glm::vec3(10, 200, 10), glm::vec3(1010, 1200, 1010));
+	std::vector<std::vector<glm::vec3>> cubeVertices = std::vector<std::vector<glm::vec3>>();
+	for (unsigned i = 0; i < cube.size(); i++) {
+		cubeVertices.push_back(cube[i].getVertices());
+	}
+
+	GenericModel* cubeModel = new GenericModel(cubeVertices, GL_TRIANGLES, glm::vec4(0.2, 0.9, 0.9, 0.9));
+	cubeModel->toggleCollisionCheck(true);
+	cubeModel->SetProgram(engine->getProgram("flatShader"));
+	cubeModel->Create();
+
+	engine->setModel("cube", cubeModel);
+}
+
+void makeGround(Engine* engine) {
+	std::vector<Triangle> ground = getCube(glm::vec3(-100000, -50, -100000), glm::vec3(100000, 0, 100000));
+	std::vector<std::vector<glm::vec3>> groundVertices = std::vector<std::vector<glm::vec3>>();
+	for (unsigned i = 0; i < ground.size(); i++) {
+		groundVertices.push_back(ground[i].getVertices());
+	}
+
+	GenericModel* groundModel = new GenericModel(groundVertices, GL_TRIANGLES, glm::vec4(0.6, 0.2, 0.8, 0.3));
+	groundModel->toggleCollisionCheck(true);
+	groundModel->SetProgram(engine->getProgram("flatShader"));
+	groundModel->Create();
+
+	engine->setModel("ground", groundModel);
 }
 
 int main(int argc, char **argv)
@@ -203,7 +247,7 @@ int main(int argc, char **argv)
 	engine->Init();
 
 	//local shaders
-	engine->createProgram("cubeShader",
+	engine->createProgram("flatShader",
 		"Shaders\\CubeVertexShader.glsl",
 		"Shaders\\CubeFragmentShader.glsl");
 
@@ -219,7 +263,7 @@ int main(int argc, char **argv)
 	//makePyramid(-100, -100, 70, engine);
 	// makePyramid(0, 0, 1000, engine);
 	makeGround(engine);
-
+	makeFallingCube(engine);
 	//makeMesh(engine);
 
 

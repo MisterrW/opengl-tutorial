@@ -92,12 +92,75 @@ std::vector<Triangle> Model::getBoundingBoxTriangles() {
 	return boundingBoxTriangles;
 }
 
+////////movement section
+
+glm::mat4 Model::getThisFrameMoveMatrix() {
+	return this->eachFrameMoveMatrix;
+};
+glm::mat4 Model::getOldMoveMatrix() {
+	return this->oldMoveMatrix;
+};
+glm::mat4 Model::getNewMoveMatrix() {
+	return this->newMoveMatrix;
+};
+void Model::setNewMoveMatrix(glm::mat4 newMoveMatrix) {
+	this->newMoveMatrix = newMoveMatrix;
+};
+
+void Model::makeMoveable() {
+	if (!this->canMove) {
+		this->oldMoveMatrix = this->newMoveMatrix;
+		this->eachFrameMoveMatrix = glm::mat4(
+			1.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f);
+	}
+}
+
+void Model::setEachFrameMoveMatrix(glm::mat4 moveMatrix) {
+	this->eachFrameMoveMatrix = moveMatrix;
+}
+
+
+////////end movement section
+
 Model::Model() {}
 
-Model::Model(std::vector<std::vector<glm::vec3>> vertexArrays) {
+void Model::initialise(std::vector<std::vector<glm::vec3>> vertexArrays) {
 	collisionCheck = false;
 	boundingBox = setBoundingBox(vertexArrays);
 	boundingBoxTriangles = setBoundingBoxTriangles(boundingBox);
+	this->canMove = false;
+
+	this->newMoveMatrix = glm::mat4(
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+Model::Model(std::vector<std::vector<glm::vec3>> vertexArrays) {
+	initialise(vertexArrays);
+}
+
+Model::Model(std::vector<std::vector<glm::vec3>> vertexArrays, bool canMove) {
+
+	initialise(vertexArrays);
+
+	if (canMove) {
+		this->canMove = true;
+		this->oldMoveMatrix = glm::mat4(
+			1.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f);
+		this->eachFrameMoveMatrix = glm::mat4(
+			1.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f);
+	}
 }
 
 Model::~Model()

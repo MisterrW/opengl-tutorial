@@ -18,7 +18,8 @@ namespace BasicEngine {
 		public:
 			MovementManager();
 			~MovementManager();
-			glm::mat4 getViewMatrix(std::map<std::string, Model*>* models);
+			glm::mat4 getViewMatrix(const std::map<std::string, Model*>* models);
+			void updateModelPositions(std::map<std::string, Model*>* models);
 			void notifyKeyPress(char key, int x, int y);
 			void notifyKeyUp(char key, int x, int y);
 

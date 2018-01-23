@@ -91,20 +91,29 @@ std::vector<std::vector<glm::vec3>> GenericModel::GetNormals(std::vector<std::ve
 	return normalsArrays;
 }
 
-
-GenericModel::GenericModel(std::vector<std::vector<glm::vec3>> vertexArrays, GLenum renderFormat) : Model(vertexArrays)
-{
+void GenericModel::init(std::vector<std::vector<glm::vec3>> vertexArrays, GLenum renderFormat, glm::vec4 color) {
 	VertexArrays = vertexArrays;
 	RenderFormat = renderFormat;
 	NormalsArrays = GetNormals(VertexArrays, RenderFormat);
+	this->color = color;
 }
 
-GenericModel::GenericModel(std::vector<std::vector<glm::vec3>> vertexArrays) : Model(vertexArrays)
+GenericModel::GenericModel(std::vector<std::vector<glm::vec3>> vertexArrays, GLenum renderFormat, glm::vec4 color) : Model(vertexArrays)
 {
-	VertexArrays = vertexArrays;
-	RenderFormat = GL_TRIANGLE_STRIP;
-	NormalsArrays = GetNormals(VertexArrays, RenderFormat);
+	init(vertexArrays, renderFormat, color);
 }
+
+GenericModel::GenericModel(std::vector<std::vector<glm::vec3>> vertexArrays, glm::vec4 color) : Model(vertexArrays)
+{
+	init(vertexArrays, GL_TRIANGLE_STRIP, color);
+}
+
+//TODO make triangles acceptable to Model constructor
+GenericModel::GenericModel(std::vector<Triangle> triangles, std::vector<std::vector<glm::vec3>> vertexArrays, GLenum renderFormat, glm::vec4 color) : Model(vertexArrays)
+{
+	init(vertexArrays, renderFormat, color);
+}
+
 
 GenericModel::~GenericModel()
 {
@@ -124,9 +133,11 @@ void GenericModel::Create()
 		glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
 
+			color = this->color;
+		
 		for (unsigned i = 0; i < Vertices.size(); i++) {
 			vertices.push_back(VertexFormat(Vertices[i],
-				glm::vec4(1.0, 1.0, 1.0, 1.0)));
+				color));
 		}
 
 		glGenBuffers(1, &vbo);
@@ -197,6 +208,7 @@ void GenericModel::Draw(const glm::mat4& projection_matrix, const glm::mat4& vie
 	glUniformMatrix4fv(glGetUniformLocation(program, "view_matrix"), 1, false, &view_matrix[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(program, "projection_matrix"), 1, false, &projection_matrix[0][0]);
 
+	//glm::mat4 modelMatrix = this->newMoveMatrix;
 	glm::mat4 modelMatrix = glm::mat4(1.0f);
 	glUniformMatrix4fv(glGetUniformLocation(program, "model_matrix"), 1, false, &modelMatrix[0][0]);
 
