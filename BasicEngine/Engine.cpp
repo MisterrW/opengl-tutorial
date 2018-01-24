@@ -29,6 +29,11 @@ bool Engine::Init()
 	glDisable(GL_CULL_FACE);
 
 	Init::Init_GLUT::init(window, context, frameBufferInfo);
+
+	glClearDepth(1.0f);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
 	Init::Init_GLUT::SetListener(&sceneManager);
 
 	shaderManager.CreateProgram("colorShader",

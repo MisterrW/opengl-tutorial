@@ -225,6 +225,21 @@ void makeFallingCube(Engine* engine) {
 	engine->setModel("cube", cubeModel);
 }
 
+void makeSecondCube(Engine* engine) {
+	std::vector<Triangle> cube = getCube(glm::vec3(1020, 200, 1020), glm::vec3(2010, 1200, 2010));
+	std::vector<std::vector<glm::vec3>> cubeVertices = std::vector<std::vector<glm::vec3>>();
+	for (unsigned i = 0; i < cube.size(); i++) {
+		cubeVertices.push_back(cube[i].getVertices());
+	}
+
+	GenericModel* cubeModel = new GenericModel(cubeVertices, GL_TRIANGLES, glm::vec4(0.9, 0.4, 0.5, 0.2));
+	cubeModel->toggleCollisionCheck(true);
+	cubeModel->SetProgram(engine->getProgram("flatShader"));
+	cubeModel->Create();
+
+	engine->setModel("cube2", cubeModel);
+}
+
 void makeGround(Engine* engine) {
 	std::vector<Triangle> ground = getCube(glm::vec3(-100000, -50, -100000), glm::vec3(100000, 0, 100000));
 	std::vector<std::vector<glm::vec3>> groundVertices = std::vector<std::vector<glm::vec3>>();
@@ -264,6 +279,7 @@ int main(int argc, char **argv)
 	// makePyramid(0, 0, 1000, engine);
 	makeGround(engine);
 	makeFallingCube(engine);
+	makeSecondCube(engine);
 	//makeMesh(engine);
 
 
