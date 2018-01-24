@@ -17,7 +17,7 @@ MovementManager::MovementManager(){
 		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, -1000.0f, 0.0f, 1.0f);
+		0.0f, 0.0f, 3000.0f, 1.0f);
 }
 
 MovementManager::~MovementManager()
@@ -43,7 +43,7 @@ void MovementManager::updateModelPositions(std::map<std::string, Model*>* models
 			glm::mat4 old = model.second->getOldMoveMatrix();
 			glm::mat4 thisFrame = model.second->getThisFrameMoveMatrix();
 			glm::mat4 tentativeMoveMatrix = old * thisFrame;
-			glm::mat4 moveMatrix = collisionDeterminer.doModelCollisions(model.second, old, tentativeMoveMatrix, models);
+			glm::mat4 moveMatrix = collisionDeterminer.doModelCollisions(model.second, thisFrame, old, tentativeMoveMatrix, models);
 			model.second->setNewMoveMatrix(moveMatrix);
 		}
 	}

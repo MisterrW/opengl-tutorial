@@ -292,7 +292,10 @@ glm::mat4 CollisionDeterminer::doPlayerCollisions(const glm::mat4 oldViewMatrix,
 	return newViewMatrix;
 }
 
-glm::mat4 CollisionDeterminer::doModelCollisions(Model* model, const glm::mat4 oldMoveMatrix, glm::mat4 newMoveMatrix, const std::map<std::string, Model*>* models) {
+glm::mat4 CollisionDeterminer::doModelCollisions(Model* model, const glm::mat4 thisFrameMoveMatrix, const glm::mat4 oldMoveMatrix, glm::mat4 newMoveMatrix, const std::map<std::string, Model*>* models) {
+
+	glm::mat4 deflectedMoveThisFrame = glm::mat4(thisFrameMoveMatrix);
+
 	std::vector<Model*> collidedModels = getCollidedModels(
 		models,
 		glm::vec3(newMoveMatrix * glm::vec4(0, 0, 0, 1)),
@@ -319,8 +322,9 @@ glm::mat4 CollisionDeterminer::doModelCollisions(Model* model, const glm::mat4 o
 
 			glm::mat4 inverseDeflectionMatrix = glm::inverse(deflectionMatrix);
 			//glm::mat4 deflectedViewMatrix = inverseDeflectionMatrix * (newViewMatrix * deflectionMatrix);
-			glm::mat4 deflectedViewMatrix = deflectionMatrix * (newMoveMatrix * inverseDeflectionMatrix);
-			newMoveMatrix = deflectedViewMatrix;
+			// deflectedMoveThisFrame = deflectionMatrix * (deflectedMoveThisFrame * inverseDeflectionMatrix);
+			deflectedMoveThisFrame = inverseDeflectionMatrix * deflectedMoveThisFrame * deflectionMatrix;
+			newMoveMatrix = oldMoveMatrix * deflectedMoveThisFrame;
 		}
 		else {
 			newMoveMatrix = oldMoveMatrix;
