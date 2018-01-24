@@ -27,7 +27,7 @@ std::vector<std::vector<glm::vec3>> GenericModel::GetNormals(std::vector<std::ve
 			size = vertexArrays[i].size();
 			vertexArray = vertexArrays[i];
 
-			for (unsigned j = 0; j < size; j++) {
+			for (int j = 0; j < size; j++) {
 				haveEdge1 = false;
 				haveEdge2 = false;
 				haveEdge3 = false;
@@ -124,7 +124,7 @@ void GenericModel::Create()
 {
 	time(&timer);
 
-	for (int i = 0; i < VertexArrays.size(); i++) {
+	for (unsigned i = 0; i < VertexArrays.size(); i++) {
 		GLuint vao;
 		GLuint vbo;
 		std::vector<glm::vec3> Vertices = VertexArrays[i];
@@ -208,13 +208,13 @@ void GenericModel::Draw(const glm::mat4& projection_matrix, const glm::mat4& vie
 	glUniformMatrix4fv(glGetUniformLocation(program, "view_matrix"), 1, false, &view_matrix[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(program, "projection_matrix"), 1, false, &projection_matrix[0][0]);
 
-	//glm::mat4 modelMatrix = this->newMoveMatrix;
-	glm::mat4 modelMatrix = glm::mat4(1.0f);
+	glm::mat4 modelMatrix = this->newMoveMatrix;
+	//glm::mat4 modelMatrix = glm::mat4(1.0f);
 	glUniformMatrix4fv(glGetUniformLocation(program, "model_matrix"), 1, false, &modelMatrix[0][0]);
 
 
 
-	for (int i = 0; i < Vaos.size(); i++) {
+	for (unsigned i = 0; i < Vaos.size(); i++) {
 		glBindVertexArray(Vaos[i]);
 		glDrawArrays(RenderFormat, 0, VertexArrays[i].size());
 		//glDrawArrays(RenderFormat, 0, 100); - adds lines to origin when GL_TRIANGLE_STRIP - quite a nice effect :)

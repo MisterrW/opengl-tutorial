@@ -34,6 +34,8 @@ namespace BasicEngine
 				glm::mat4 getOldMoveMatrix();
 				glm::mat4 getNewMoveMatrix();
 				void setNewMoveMatrix(glm::mat4 newMoveMatrix);
+				void setOldMoveMatrix(glm::mat4 oldMoveMatrix);
+				void setInitialPositionMatrix(glm::mat4 moveMatrix);
 				void setEachFrameMoveMatrix(glm::mat4 moveMatrix);
 
 			protected:

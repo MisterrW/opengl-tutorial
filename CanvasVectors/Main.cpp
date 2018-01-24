@@ -21,8 +21,8 @@ vector<GenericModel*> makeStars(Engine* engine) {
 
 	int starRadius = 20000;
 	//int starCount = 50000;
-	int starCount = 1000;
-	int starSize = 50;
+	int starCount = 100;
+	int starSize = 100;
 
 	for (unsigned i = 0; i < starCount; i++) {
 		vector<vector<glm::vec3>> starVertexArrays = vector<vector<glm::vec3>>();
@@ -40,8 +40,8 @@ vector<GenericModel*> makeStars(Engine* engine) {
 
 		starVertexArrays.push_back(starVertices);
 		//}
-		GenericModel* star = new GenericModel(starVertexArrays, GL_TRIANGLES, glm::vec4(0.2, 0.6, 0.8, 0.3));
-		star->SetProgram(engine->getProgram("cubeShader"));
+		GenericModel* star = new GenericModel(starVertexArrays, GL_TRIANGLES, glm::vec4(1.0, 1.0, 1.0, 1.0));
+		star->SetProgram(engine->getProgram("flatShader"));
 		star->Create();
 		string modelName = "star_" + std::to_string(i);
 
@@ -86,7 +86,7 @@ void makeTrees(Engine* engine) {
 	thread t3(makeSomeTrees, engine, 20, 30);*/
 
 	TreeMaker treeMaker = ModelMakers::TreeMaker();
-	makeSomeTrees(engine, 375, 500);
+	makeSomeTrees(engine, 0, 15);
 
 	// Makes the main thread wait for the new thread to finish execution, therefore blocks its own execution.
 	//t1.join();
@@ -161,7 +161,7 @@ void makePyramid(int seedX, int seedZ, float baseLength, Engine* engine) {
 
 void makeMesh(Engine* engine) {
 	//MeshStrip* meshStrip = new MeshStrip();
-	//meshStrip->SetProgram(engine->getProgram("cubeShader"));
+	//meshStrip->SetProgram(engine->getProgram("flatShader"));
 	//engine->setModel("meshStrip", meshStrip);
 }
 
@@ -211,7 +211,7 @@ vector<Triangle> getCube(glm::vec3 min, glm::vec3 max) {
 }
 
 void makeFallingCube(Engine* engine) {
-	std::vector<Triangle> cube = getCube(glm::vec3(10, 200, 10), glm::vec3(1010, 1200, 1010));
+	std::vector<Triangle> cube = getCube(glm::vec3(-200, 0, -200), glm::vec3(200, 400, 200));
 	std::vector<std::vector<glm::vec3>> cubeVertices = std::vector<std::vector<glm::vec3>>();
 	for (unsigned i = 0; i < cube.size(); i++) {
 		cubeVertices.push_back(cube[i].getVertices());
@@ -220,6 +220,19 @@ void makeFallingCube(Engine* engine) {
 	GenericModel* cubeModel = new GenericModel(cubeVertices, GL_TRIANGLES, glm::vec4(0.2, 0.9, 0.9, 0.9));
 	cubeModel->toggleCollisionCheck(true);
 	cubeModel->SetProgram(engine->getProgram("flatShader"));
+	
+	cubeModel->makeMoveable();
+	cubeModel->setInitialPositionMatrix(glm::mat4(
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 150.0f, 600.0f, 1.0f));
+	cubeModel->setEachFrameMoveMatrix(glm::mat4(
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.2f, -0.2f, 0.2f, 1.0f));
+
 	cubeModel->Create();
 
 	engine->setModel("cube", cubeModel);
@@ -235,13 +248,14 @@ void makeSecondCube(Engine* engine) {
 	GenericModel* cubeModel = new GenericModel(cubeVertices, GL_TRIANGLES, glm::vec4(0.9, 0.4, 0.5, 0.2));
 	cubeModel->toggleCollisionCheck(true);
 	cubeModel->SetProgram(engine->getProgram("flatShader"));
+	
 	cubeModel->Create();
 
 	engine->setModel("cube2", cubeModel);
 }
 
 void makeGround(Engine* engine) {
-	std::vector<Triangle> ground = getCube(glm::vec3(-100000, -50, -100000), glm::vec3(100000, 0, 100000));
+	std::vector<Triangle> ground = getCube(glm::vec3(-1000, -50, -1000), glm::vec3(1000, -40, 1000));
 	std::vector<std::vector<glm::vec3>> groundVertices = std::vector<std::vector<glm::vec3>>();
 	for (unsigned i = 0; i < ground.size(); i++) {
 		groundVertices.push_back(ground[i].getVertices());
@@ -279,7 +293,7 @@ int main(int argc, char **argv)
 	// makePyramid(0, 0, 1000, engine);
 	makeGround(engine);
 	makeFallingCube(engine);
-	makeSecondCube(engine);
+	//makeSecondCube(engine);
 	//makeMesh(engine);
 
 

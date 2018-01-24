@@ -17,7 +17,7 @@ MovementManager::MovementManager(){
 		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, -100.0f, -100.0f, 1.0f);
+		0.0f, -1000.0f, 0.0f, 1.0f);
 }
 
 MovementManager::~MovementManager()
@@ -38,6 +38,15 @@ glm::mat4 MovementManager::getGravityMatrix() {
 }
 
 void MovementManager::updateModelPositions(std::map<std::string, Model*>* models) {
+	for (auto model : *models) {
+		if (model.second->canMove) {
+			glm::mat4 old = model.second->getOldMoveMatrix();
+			glm::mat4 thisFrame = model.second->getThisFrameMoveMatrix();
+			glm::mat4 tentativeMoveMatrix = old * thisFrame;
+			glm::mat4 moveMatrix = collisionDeterminer.doModelCollisions(model.second, old, tentativeMoveMatrix, models);
+			model.second->setNewMoveMatrix(moveMatrix);
+		}
+	}
 };
 
 // this is the equivalent of calculating movement for the player.

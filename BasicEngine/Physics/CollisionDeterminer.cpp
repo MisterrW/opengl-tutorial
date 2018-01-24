@@ -199,17 +199,9 @@ Bounding-box based collision detector
 Returns a vector of the models which collide with the position represented by the view matrix
 ====
 */
-std::vector<Model*> CollisionDeterminer::getPlayerCollidedModels(glm::mat4 viewMatrix, const std::map<std::string, Model*>* modelList) {
-	
+std::vector<Model*> CollisionDeterminer::getCollidedModels(const std::map<std::string, Model*>* modelList, glm::vec3 minBound, glm::vec3 maxBound) {
+
 	std::vector<Model*> collidedModels = std::vector<Model*>();
-
-	//if we're doing this a lot set a class variable or pass it in
-	glm::mat4 inverseView = glm::inverse(viewMatrix);
-
-	//glm::vec3 minPlayerBound = glm::vec3(inverseView * glm::vec4(-10, -10, -10, 1));
-	//glm::vec3 maxPlayerBound = glm::vec3(inverseView  * glm::vec4(10, 10, 10, 1));
-	glm::vec3 minPlayerBound = glm::vec3(inverseView * glm::vec4(0, 0, 0, 1));
-	glm::vec3 maxPlayerBound = glm::vec3(inverseView  * glm::vec4(0, 0 , 0, 1));
 
 	for (auto model : *modelList)
 	{
@@ -219,20 +211,20 @@ std::vector<Model*> CollisionDeterminer::getPlayerCollidedModels(glm::mat4 viewM
 			if (modelBounds.size() == 2) {
 				glm::vec3 minViewSpaceBound = modelBounds[0];
 				glm::vec3 maxViewSpaceBound = modelBounds[1];
-				if ((minViewSpaceBound.x < minPlayerBound.x && minPlayerBound.x < maxViewSpaceBound.x) ||
-					(minViewSpaceBound.x < maxPlayerBound.x && maxPlayerBound.x < maxViewSpaceBound.x) ||
-					(minPlayerBound.x < minViewSpaceBound.x && minViewSpaceBound.x < maxPlayerBound.x) ||
-					(minPlayerBound.x < maxViewSpaceBound.x && maxViewSpaceBound.x < maxPlayerBound.x)) {
+				if ((minViewSpaceBound.x < minBound.x && minBound.x < maxViewSpaceBound.x) ||
+					(minViewSpaceBound.x < maxBound.x && maxBound.x < maxViewSpaceBound.x) ||
+					(minBound.x < minViewSpaceBound.x && minViewSpaceBound.x < maxBound.x) ||
+					(minBound.x < maxViewSpaceBound.x && maxViewSpaceBound.x < maxBound.x)) {
 
-					if ((minViewSpaceBound.y < minPlayerBound.y && minPlayerBound.y < maxViewSpaceBound.y) ||
-						(minViewSpaceBound.y < maxPlayerBound.y && maxPlayerBound.y < maxViewSpaceBound.y) ||
-						(minPlayerBound.y < minViewSpaceBound.y && minViewSpaceBound.y < maxPlayerBound.y) ||
-						(minPlayerBound.y < maxViewSpaceBound.y && maxViewSpaceBound.y < maxPlayerBound.y)) {
+					if ((minViewSpaceBound.y < minBound.y && minBound.y < maxViewSpaceBound.y) ||
+						(minViewSpaceBound.y < maxBound.y && maxBound.y < maxViewSpaceBound.y) ||
+						(minBound.y < minViewSpaceBound.y && minViewSpaceBound.y < maxBound.y) ||
+						(minBound.y < maxViewSpaceBound.y && maxViewSpaceBound.y < maxBound.y)) {
 
-						if ((minViewSpaceBound.z < minPlayerBound.z && minPlayerBound.z < maxViewSpaceBound.z) ||
-							(minViewSpaceBound.z < maxPlayerBound.z && maxPlayerBound.z < maxViewSpaceBound.z) ||
-							(minPlayerBound.z < minViewSpaceBound.z && minViewSpaceBound.z < maxPlayerBound.z) ||
-							(minPlayerBound.z < maxViewSpaceBound.z && maxViewSpaceBound.z < maxPlayerBound.z)) {
+						if ((minViewSpaceBound.z < minBound.z && minBound.z < maxViewSpaceBound.z) ||
+							(minViewSpaceBound.z < maxBound.z && maxBound.z < maxViewSpaceBound.z) ||
+							(minBound.z < minViewSpaceBound.z && minViewSpaceBound.z < maxBound.z) ||
+							(minBound.z < maxViewSpaceBound.z && maxViewSpaceBound.z < maxBound.z)) {
 							collidedModels.push_back(model.second);
 						}
 					}
@@ -266,7 +258,13 @@ Should call itself recursively until no more collisions are found.
 ====
 */
 glm::mat4 CollisionDeterminer::doPlayerCollisions(const glm::mat4 oldViewMatrix, glm::mat4 newViewMatrix, const std::map<std::string, Model*>* modelList) {
-	std::vector<Model*> collidedModels = getPlayerCollidedModels(newViewMatrix, modelList);
+	
+	// need to invert to get from view to world position matrix
+	glm::mat4 inverseView = glm::inverse(newViewMatrix);
+	std::vector<Model*> collidedModels = getCollidedModels(
+		modelList, 
+		glm::vec3(inverseView * glm::vec4(0, 0, 0, 1)),
+		glm::vec3(inverseView  * glm::vec4(0, 0, 0, 1)));
 	if (collidedModels.size() == 0) {
 		return newViewMatrix;
 	}
@@ -293,3 +291,41 @@ glm::mat4 CollisionDeterminer::doPlayerCollisions(const glm::mat4 oldViewMatrix,
 	}
 	return newViewMatrix;
 }
+
+glm::mat4 CollisionDeterminer::doModelCollisions(Model* model, const glm::mat4 oldMoveMatrix, glm::mat4 newMoveMatrix, const std::map<std::string, Model*>* models) {
+	std::vector<Model*> collidedModels = getCollidedModels(
+		models,
+		glm::vec3(newMoveMatrix * glm::vec4(0, 0, 0, 1)),
+		glm::vec3(newMoveMatrix * glm::vec4(0, 0, 0, 1)));
+	for (int i = 0; i < collidedModels.size(); i++) {
+		if (collidedModels[i] == model) {
+			collidedModels.erase(collidedModels.begin() +i);
+		}
+	}
+	if (collidedModels.size() == 0) {
+		return newMoveMatrix;
+	}
+	for (unsigned i = 0; i < collidedModels.size(); i++) {
+		glm::vec3 move = getMove(oldMoveMatrix, newMoveMatrix);
+		std::vector<glm::vec3> lineSeg = getLineSegmentFromViewMatrices(oldMoveMatrix, newMoveMatrix);
+		glm::vec3 planeNormal = getCollisionPlaneNormal(collidedModels[i], lineSeg);
+		double collisionAngleFromPlaneNormal = getAngleBetween(planeNormal, move);
+
+		if ((collisionAngleFromPlaneNormal < 3.13 || collisionAngleFromPlaneNormal > 3.15) && collisionAngleFromPlaneNormal > 0.01) {
+			glm::mat4 deflectionMatrix = getDeflectionMatrix(move, planeNormal, collisionAngleFromPlaneNormal);
+			// so we have our deflection matrix, which is a rotation matrix.
+			// If we do it this way, we'd need to reorient, apply the move, and orient back again. invDeflect * newView * deflect.
+			// newViewMatrix = deflectionMatrix * newViewMatrix;
+
+			glm::mat4 inverseDeflectionMatrix = glm::inverse(deflectionMatrix);
+			//glm::mat4 deflectedViewMatrix = inverseDeflectionMatrix * (newViewMatrix * deflectionMatrix);
+			glm::mat4 deflectedViewMatrix = deflectionMatrix * (newMoveMatrix * inverseDeflectionMatrix);
+			newMoveMatrix = deflectedViewMatrix;
+		}
+		else {
+			newMoveMatrix = oldMoveMatrix;
+		}
+		//newMoveMatrix = oldMoveMatrix;
+	}
+	return newMoveMatrix;
+};

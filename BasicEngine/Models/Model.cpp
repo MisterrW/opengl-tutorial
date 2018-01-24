@@ -104,7 +104,15 @@ glm::mat4 Model::getNewMoveMatrix() {
 	return this->newMoveMatrix;
 };
 void Model::setNewMoveMatrix(glm::mat4 newMoveMatrix) {
+	this->oldMoveMatrix = this->newMoveMatrix;
 	this->newMoveMatrix = newMoveMatrix;
+};
+void Model::setOldMoveMatrix(glm::mat4 oldMoveMatrix) {
+	this->oldMoveMatrix = oldMoveMatrix;
+};
+void Model::setInitialPositionMatrix(glm::mat4 moveMatrix) {
+	this->oldMoveMatrix = moveMatrix;
+	this->newMoveMatrix = moveMatrix;
 };
 
 void Model::makeMoveable() {
@@ -115,6 +123,7 @@ void Model::makeMoveable() {
 			0.0f, 1.0f, 0.0f, 0.0f,
 			0.0f, 0.0f, 1.0f, 0.0f,
 			0.0f, 0.0f, 0.0f, 1.0f);
+		this->canMove = true;
 	}
 }
 
