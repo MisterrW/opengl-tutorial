@@ -18,11 +18,11 @@ namespace BasicEngine {
 			CollisionDeterminer();
 			~CollisionDeterminer();
 			//std::array<bool, 3> noPlayerCollisions(glm::mat4 viewMatrix, std::map<std::string, Model*>* models);
-			glm::mat4 doPlayerCollisions(const glm::mat4 oldViewMatrix, glm::mat4 newViewMatrix, const std::map<std::string, Model*>* models);
+			glm::mat4 doPlayerCollisions(const glm::mat4 thisFrameMoveMatrix, const glm::mat4 oldViewMatrix, glm::mat4 newViewMatrix, const std::map<std::string, Model*>* models);
 			glm::mat4 doModelCollisions(Model* model, const glm::mat4 thisFrameMoveMatrix, const glm::mat4 oldMoveMatrix, glm::mat4 newMoveMatrix, const std::map<std::string, Model*>* models);
 		private:
 			int intersect3D_RayTriangle(std::vector<glm::vec3> lineSeg, std::vector<glm::vec3> triangle, glm::vec3* I);
-			std::vector<glm::vec3> getLineSegmentFromViewMatrices(glm::mat4 oldViewMatrix, glm::mat4 newViewMatrix);
+			std::vector<glm::vec3> getLineSegmentFromPositionMatrices(glm::mat4 oldViewMatrix, glm::mat4 newViewMatrix);
 			std::vector<Model*> getCollidedModels(const std::map<std::string, Model*>* modelList, glm::vec3 minBound, glm::vec3 maxBound);
 			glm::vec3 getMove(glm::mat4 oldViewMatrix, glm::mat4 newViewMatrix);
 			double getAngleBetween(glm::vec3 a, glm::vec3 b);
