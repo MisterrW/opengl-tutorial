@@ -133,11 +133,18 @@ void GenericModel::Create()
 		glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
 
-			color = this->color;
-		
+		color = this->color;
+		glm::vec4 white = glm::vec4(1.0, 1.0, 1.0, 1.0);
+
 		for (unsigned i = 0; i < Vertices.size(); i++) {
-			vertices.push_back(VertexFormat(Vertices[i],
-				color));
+			if (i % 2 == 0) {
+				vertices.push_back(VertexFormat(Vertices[i],
+					color));
+			}
+			else {
+				vertices.push_back(VertexFormat(Vertices[i],
+					white));
+			}
 		}
 
 		glGenBuffers(1, &vbo);

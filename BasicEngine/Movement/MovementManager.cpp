@@ -13,11 +13,13 @@ MovementManager::MovementManager(){
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f);
 
-	oldPositionMatrix = glm::mat4(
+	oldViewMatrix = glm::mat4(
 		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f, 3000.0f, 1.0f);
+
+	oldPositionMatrix = glm::inverse(oldViewMatrix);
 }
 
 MovementManager::~MovementManager()
@@ -59,7 +61,8 @@ glm::mat4 MovementManager::getViewMatrix(const std::map<std::string, Model*>* mo
 	//TimePoint tStart = std::chrono::time_point_cast<ms>(clock::now());
 	if (true) {
 		//auto updateStarted = clock::now();
-		// encodes movement relative to the player's last position and orientation
+
+		// todo rework these matrix multiplications in world space, just invert at the end to return view matrix (maybe don't even store)
 		glm::mat4 moveMatrix = positionManager.GetMoveMatrix();
 		glm::mat4 orientationMatrix = positionManager.GetOrientationMatrix();
 
@@ -69,19 +72,21 @@ glm::mat4 MovementManager::getViewMatrix(const std::map<std::string, Model*>* mo
 		//TimePoint tMid = std::chrono::time_point_cast<ms>(clock::now());
 
 		//combine move and gravity as position matrix
-		glm::mat4 tentativePositionChangeMatrix = oldOrientationMatrix * moveMatrix * gravityMatrix;
-		glm::mat4 tentativePositionMatrix = tentativePositionChangeMatrix * oldPositionMatrix;
-		// then call collision determiner with old position and new position matrix
+		glm::mat4 tentativeViewChangeMatrix = oldOrientationMatrix * moveMatrix * gravityMatrix;
+		glm::mat4 tentativeViewMatrix = tentativeViewChangeMatrix * oldViewMatrix;
 		
-		glm::mat4 actualPositionMatrix = collisionDeterminer.doPlayerCollisions(tentativePositionChangeMatrix, oldPositionMatrix, tentativePositionMatrix, models);
+		// for collision checking, need to invert to get from view to world position matrix
+		glm::mat4 moveThisFrame = glm::inverse(glm::mat4(tentativeViewChangeMatrix));
+		glm::mat4 newPosition = glm::inverse(tentativeViewMatrix);
+
+		glm::mat4 actualPositionMatrix = collisionDeterminer.doPlayerCollisions(moveThisFrame, oldPositionMatrix, newPosition, models, 0);
 		
-		// glm::mat4 actualPositionMatrix = tentativePositionMatrix;
+		// invert back to view matrix and save
 		oldPositionMatrix = actualPositionMatrix;
-		
+		oldViewMatrix = glm::inverse(actualPositionMatrix);
 		oldOrientationMatrix = orientationMatrix;
 
-		glm::mat4 viewMatrix = oldPositionMatrix;
-		return viewMatrix;
+		return oldViewMatrix;
 		/*TimePoint last = std::chrono::time_point_cast<ms>(lastUpdated);
 		TimePoint tEnd = std::chrono::time_point_cast<ms>(clock::now());
 

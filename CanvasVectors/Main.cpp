@@ -231,7 +231,7 @@ void makeFallingCube(Engine* engine) {
 		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
-		0.2f, -0.2f, 0.0f, 1.0f));
+		0.5f, -0.6f, 0.0f, 1.0f));
 
 	cubeModel->Create();
 
@@ -239,16 +239,28 @@ void makeFallingCube(Engine* engine) {
 }
 
 void makeSecondCube(Engine* engine) {
-	std::vector<Triangle> cube = getCube(glm::vec3(1020, 200, 1020), glm::vec3(2010, 1200, 2010));
+	std::vector<Triangle> cube = getCube(glm::vec3(-200, 0, -200), glm::vec3(200, 400, 200));
 	std::vector<std::vector<glm::vec3>> cubeVertices = std::vector<std::vector<glm::vec3>>();
 	for (unsigned i = 0; i < cube.size(); i++) {
 		cubeVertices.push_back(cube[i].getVertices());
 	}
 
-	GenericModel* cubeModel = new GenericModel(cubeVertices, GL_TRIANGLES, glm::vec4(0.9, 0.4, 0.5, 0.2));
+	GenericModel* cubeModel = new GenericModel(cubeVertices, GL_TRIANGLES, glm::vec4(0.2, 0.9, 0.9, 0.9));
 	cubeModel->toggleCollisionCheck(true);
 	cubeModel->SetProgram(engine->getProgram("flatShader"));
-	
+
+	cubeModel->makeMoveable();
+	cubeModel->setInitialPositionMatrix(glm::mat4(
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 600.0f, 600.0f, 1.0f));
+	cubeModel->setEachFrameMoveMatrix(glm::mat4(
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, -0.9f, 0.0f, 1.0f));
+
 	cubeModel->Create();
 
 	engine->setModel("cube2", cubeModel);

@@ -9,6 +9,7 @@ using namespace BasicEngine::Managers;
 
 CollisionDeterminer::CollisionDeterminer()
 {
+	this->roundCounter = 0;
 }
 
 CollisionDeterminer::~CollisionDeterminer()
@@ -153,6 +154,7 @@ glm::vec3 CollisionDeterminer::getCollisionPlaneNormal(Model* model, std::vector
 			return boundingBoxTriangles[i].getNormal();
 		}
 	}
+	//hack, because we know we collided with something
 	return boundingBoxTriangles[0].getNormal();
 	// todo fast-moving object could cross two planes, and we want to check we have the right one ie first one crossed
 
@@ -253,20 +255,23 @@ does collision detections as needed, and returns a revised move matrix.
 Should call itself recursively until no more collisions are found.
 ====
 */
-glm::mat4 CollisionDeterminer::doPlayerCollisions(const glm::mat4 thisFrameMoveMatrix, const glm::mat4 oldViewMatrix, glm::mat4 newViewMatrix, const std::map<std::string, Model*>* modelList) {
+glm::mat4 CollisionDeterminer::doPlayerCollisions(const glm::mat4 moveThisFrame, const glm::mat4 oldPosition, glm::mat4 newPosition, const std::map<std::string, Model*>* modelList, int roundCounter) {
 
-	glm::mat4 deflectedMoveThisFrame = glm::inverse(glm::mat4(thisFrameMoveMatrix));
-	
-	// need to invert to get from view to world position matrix
-	glm::mat4 newPosition = glm::inverse(newViewMatrix);
-	glm::mat4 oldPosition = glm::inverse(oldViewMatrix);
+	if (roundCounter > 5) {
+		return newPosition;
+	}
+
+	glm::mat4 deflectedMoveThisFrame = moveThisFrame;
+
 	std::vector<Model*> collidedModels = getCollidedModels(
 		modelList, 
 		glm::vec3(newPosition * glm::vec4(0, 0, 0, 1)),
-		glm::vec3(newPosition  * glm::vec4(0, 0, 0, 1)));
+		glm::vec3(newPosition * glm::vec4(0, 0, 0, 1)));
+
 	if (collidedModels.size() == 0) {
-		return newViewMatrix;
+		return newPosition;
 	}
+
 	for (unsigned i = 0; i < collidedModels.size(); i++) {
 		glm::vec3 move = getMove(oldPosition, newPosition);
 		std::vector<glm::vec3> lineSeg = getLineSegmentFromPositionMatrices(oldPosition, newPosition);
@@ -279,14 +284,15 @@ glm::mat4 CollisionDeterminer::doPlayerCollisions(const glm::mat4 thisFrameMoveM
 			glm::mat4 inverseDeflectionMatrix = glm::inverse(deflectionMatrix);
 
 			deflectedMoveThisFrame = inverseDeflectionMatrix * deflectedMoveThisFrame * deflectionMatrix;
-			glm::mat4 newMove = oldPosition * deflectedMoveThisFrame;
-			newViewMatrix = glm::inverse(newMove);
+			newPosition = oldPosition * deflectedMoveThisFrame;
 		}
 		else {
-			newViewMatrix = oldViewMatrix;
+			// todo this will be a problem if movement of other elements has caused old position to be invalid
+			return oldPosition;
 		}
 	}
-	return newViewMatrix;
+
+	return(doPlayerCollisions(deflectedMoveThisFrame, oldPosition, newPosition, modelList, roundCounter + 1));
 }
 
 glm::mat4 CollisionDeterminer::doModelCollisions(Model* model, const glm::mat4 thisFrameMoveMatrix, const glm::mat4 oldPositionMatrix, glm::mat4 newPositionMatrix, const std::map<std::string, Model*>* models) {

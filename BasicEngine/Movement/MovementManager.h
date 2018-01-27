@@ -26,10 +26,8 @@ namespace BasicEngine {
 		private:
 			Movement::PositionManager positionManager;
 			Physics::CollisionDeterminer collisionDeterminer;
-			/*glm::mat4 oldViewMatrix;
-			glm::mat4 oldPlayerMatrix;
-			glm::mat4 oldGravityMatrix;*/
 			glm::mat4 oldOrientationMatrix;
+			glm::mat4 oldViewMatrix;
 			glm::mat4 oldPositionMatrix;
 			std::chrono::steady_clock::time_point lastUpdated;
 
