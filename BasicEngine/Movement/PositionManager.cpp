@@ -24,26 +24,26 @@ glm::mat4 PositionManager::GetMoveMatrix() {
 
 	// forward (w s)
 	if (KeyStates['w'] == true) {
-		movementMatrix[3][2] -= 2.0f * moveScaleFactor;
+		movementMatrix[3][2] += 2.0f * moveScaleFactor;
 	}
 	else if (KeyStates['s'] == true) {
-		movementMatrix[3][2] += 2.0f * moveScaleFactor;
+		movementMatrix[3][2] -= 2.0f * moveScaleFactor;
 	}
 
 	// sideways (a d)
 	if (KeyStates['a'] == true) {
-		movementMatrix[3][0] += 2.0f * moveScaleFactor;
+		movementMatrix[3][0] -= 2.0f * moveScaleFactor;
 	}
 	else if (KeyStates['d'] == true) {
-		movementMatrix[3][0] -= 2.0f * moveScaleFactor;
+		movementMatrix[3][0] += 2.0f * moveScaleFactor;
 	}
 
 	// up/down (x c)
 	if (KeyStates['x'] == true) {
-		movementMatrix[3][1] -= 2.0f * moveScaleFactor;
+		movementMatrix[3][1] += 2.0f * moveScaleFactor;
 	}
 	else if (KeyStates['c'] == true) {
-		movementMatrix[3][1] += 2.0f * moveScaleFactor;
+		movementMatrix[3][1] -= 2.0f * moveScaleFactor;
 	}
 
 	return movementMatrix;
@@ -90,18 +90,18 @@ glm::mat4 PositionManager::GetOrientationMatrix() {
 
 	// look up / down
 	if (KeyStates['o'] == true) {
-		orientX = -0.015f * lookScaleFactor;
+		orientX = 0.015f * lookScaleFactor;
 	}
 	else if (KeyStates['l'] == true) {
-		orientX = +0.015f * lookScaleFactor;
+		orientX = -0.015f * lookScaleFactor;
 	}
 
 	// bank left / right (yaw)
 	if (KeyStates['k'] == true) {
-		orientZ = +0.015f * lookScaleFactor;
+		orientZ = -0.015f * lookScaleFactor;
 	}
 	else if (KeyStates[';'] == true) {
-		orientZ = -0.015f * lookScaleFactor;
+		orientZ = 0.015f * lookScaleFactor;
 	}
 
 	glm::mat4 rotMat = GetXYZRotMat(orientX, orientY, orientZ);

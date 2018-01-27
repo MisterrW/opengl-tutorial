@@ -3,6 +3,7 @@
 #include "../Managers/ModelManager.h"
 #define GLM_ENABLE_EXPERIMENTAL
 #include "../../../Dependencies/include/glm/gtx/transform.hpp"
+#include "../../../Dependencies/include/glm/glm.hpp"
 
 using namespace BasicEngine::Physics;
 using namespace BasicEngine::Managers;
@@ -77,7 +78,7 @@ Line-triangle intersection code courtesy of softSurfer, http://geomalgorithms.co
 
 #define SMALL_NUM   0.00000001 // anything that avoids division overflow
 // dot product (3D) which allows vector operations in arguments
-#define dot(u,v)   ((u).x * (v).x + (u).y * (v).y + (u).z * (v).z)
+#define dotProduct(u,v)   ((u).x * (v).x + (u).y * (v).y + (u).z * (v).z)
 
 
 
@@ -102,8 +103,8 @@ int CollisionDeterminer::intersect3D_RayTriangle(const std::vector<glm::vec3> li
 
 	dir = lineSeg[1] - lineSeg[0];              // ray direction vector
 	w0 = lineSeg[0] - triangle[0];
-	a = -dot(n, w0);
-	b = dot(n, dir);
+	a = -dotProduct(n, w0);
+	b = dotProduct(n, dir);
 	if (fabs(b) < SMALL_NUM) {     // ray is  parallel to triangle plane
 		if (a == 0)                 // ray lies in triangle plane
 			return 2;
@@ -119,12 +120,12 @@ int CollisionDeterminer::intersect3D_RayTriangle(const std::vector<glm::vec3> li
 
 										  // is I inside T?
 	float    uu, uv, vv, wu, wv, D;
-	uu = dot(u, u);
-	uv = dot(u, v);
-	vv = dot(v, v);
+	uu = dotProduct(u, u);
+	uv = dotProduct(u, v);
+	vv = dotProduct(v, v);
 	w = *I - triangle[0];
-	wu = dot(w, u);
-	wv = dot(w, v);
+	wu = dotProduct(w, u);
+	wv = dotProduct(w, v);
 	D = uv * uv - uu * vv;
 
 	// get and test parametric coords
@@ -235,6 +236,22 @@ std::vector<Model*> CollisionDeterminer::getCollidedModels(const std::map<std::s
 	return collidedModels;
 }
 
+// returns a matrix to reverse the part of the colliding move which is parallel to the normal
+glm::mat4 CollisionDeterminer::testReverseParallelPart(std::vector<glm::vec3> lineSeg, glm::vec3 normal) {
+	glm::vec3 result = lineSeg[1] - lineSeg[0];
+	glm::vec3 parallelPart = (glm::dot(result, normal) / (glm::length(normal) * glm::length(normal))) * normal;
+
+	glm::mat4 reverser = glm::mat4(1.0);
+
+	reverser[3][0] = parallelPart[0] * -1;
+	reverser[3][1] = parallelPart[1] * -1;
+	reverser[3][2] = parallelPart[2] * -1;
+
+	glm::vec3 rebuffed = glm::vec3((reverser * glm::vec4(result, 1)));
+
+	return reverser;
+}
+
 std::vector<glm::vec3> CollisionDeterminer::getLineSegmentFromPositionMatrices(glm::mat4 oldPositionMatrix, glm::mat4 newPositionMatrix) {
 
 	std::vector<glm::vec3> lineSeg = std::vector<glm::vec3>();
@@ -273,9 +290,15 @@ glm::mat4 CollisionDeterminer::doPlayerCollisions(const glm::mat4 moveThisFrame,
 	}
 
 	for (unsigned i = 0; i < collidedModels.size(); i++) {
-		glm::vec3 move = getMove(oldPosition, newPosition);
+		// glm::vec3 move = getMove(oldPosition, newPosition);
 		std::vector<glm::vec3> lineSeg = getLineSegmentFromPositionMatrices(oldPosition, newPosition);
 		glm::vec3 planeNormal = getCollisionPlaneNormal(collidedModels[i], lineSeg);
+		
+		glm::mat4 reverser = testReverseParallelPart(lineSeg, planeNormal);
+		
+		newPosition = reverser * newPosition;
+		
+		/*
 		double collisionAngleFromPlaneNormal = getAngleBetween(planeNormal, move);
 		
 		if (collisionAngleFromPlaneNormal < 3.13 || collisionAngleFromPlaneNormal > 3.15) {
@@ -290,6 +313,7 @@ glm::mat4 CollisionDeterminer::doPlayerCollisions(const glm::mat4 moveThisFrame,
 			// todo this will be a problem if movement of other elements has caused old position to be invalid
 			return oldPosition;
 		}
+		*/
 	}
 
 	return(doPlayerCollisions(deflectedMoveThisFrame, oldPosition, newPosition, modelList, roundCounter + 1));
