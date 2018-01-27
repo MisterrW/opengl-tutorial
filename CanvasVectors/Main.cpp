@@ -201,8 +201,8 @@ vector<Triangle> getCube(glm::vec3 min, glm::vec3 max) {
 	cube.push_back(Triangle(TopFrontRight, BottomRearRight, TopRearRight));
 
 	//back
-	cube.push_back(Triangle(TopFrontLeft, BottomFrontLeft, BottomFrontRight));
-	cube.push_back(Triangle(TopFrontLeft, BottomFrontRight, TopFrontRight));
+	cube.push_back(Triangle(TopRearLeft, BottomRearLeft, BottomRearRight));
+	cube.push_back(Triangle(TopRearLeft, BottomRearRight, TopRearRight));
 
 	//bottom
 	cube.push_back(Triangle(BottomFrontLeft, BottomRearLeft, BottomRearRight));
@@ -222,7 +222,7 @@ void makeFallingCube(Engine* engine) {
 	cubeModel->toggleCollisionCheck(true);
 	cubeModel->SetProgram(engine->getProgram("flatShader"));
 	
-	cubeModel->makeMoveable();
+	//cubeModel->makeMoveable();
 	cubeModel->setInitialPositionMatrix(glm::mat4(
 		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,

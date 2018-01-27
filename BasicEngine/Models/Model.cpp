@@ -88,8 +88,28 @@ std::vector<Triangle> Model::setBoundingBoxTriangles(std::vector<glm::vec3> boun
 	return boundingBoxTriangles;
 }
 
+std::vector<glm::vec3> Model::getBoundingBox() {
+	std::vector<glm::vec3> worldspaceBounds = std::vector<glm::vec3>();
+	for (unsigned i = 0; i < boundingBox.size(); i++) {
+		worldspaceBounds.push_back(glm::vec3(newMoveMatrix * (glm::vec4(boundingBox[i], 1))));
+	}
+	return worldspaceBounds;
+}
+
+
 std::vector<Triangle> Model::getBoundingBoxTriangles() {
-	return boundingBoxTriangles;
+
+	std::vector<Triangle> worldspaceBoundingTriangles = std::vector<Triangle>();
+	for (unsigned i = 0; i < boundingBoxTriangles.size(); i++) {
+		std::vector<glm::vec3> oldVertices = boundingBoxTriangles[i].getVertices();
+		std::vector<glm::vec3> newVertices = std::vector<glm::vec3>();
+		for (unsigned j = 0; j < oldVertices.size(); j++) {
+			newVertices.push_back(glm::vec3(newMoveMatrix * (glm::vec4(oldVertices[j], 1))));
+		}
+		Triangle newTriangle = Triangle(newVertices);
+		worldspaceBoundingTriangles.push_back(newTriangle);
+	}
+	return worldspaceBoundingTriangles;
 }
 
 ////////movement section
@@ -183,10 +203,6 @@ void Model::toggleCollisionCheck(bool shouldCheck) {
 
 bool Model::shouldCollisionCheck() {
 	return collisionCheck;
-}
-
-std::vector<glm::vec3> Model::getBoundingBox() {
-	return boundingBox;
 }
 
 void Model::Draw()

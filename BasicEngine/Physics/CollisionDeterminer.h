@@ -26,7 +26,6 @@ namespace BasicEngine {
 			int intersect3D_RayTriangle(std::vector<glm::vec3> lineSeg, std::vector<glm::vec3> triangle, glm::vec3* I);
 			std::vector<glm::vec3> getLineSegmentFromPositionMatrices(glm::mat4 oldViewMatrix, glm::mat4 newViewMatrix);
 			std::vector<Model*> getCollidedModels(const std::map<std::string, Model*>* modelList, glm::vec3 minBound, glm::vec3 maxBound);
-			glm::vec3 getMove(glm::mat4 oldViewMatrix, glm::mat4 newViewMatrix);
 			double getAngleBetween(glm::vec3 a, glm::vec3 b);
 			glm::vec3 getCollisionPlaneNormal(Model* model, std::vector<glm::vec3> lineSeg);
 			glm::mat4 getDeflectionMatrix(glm::vec3 move, glm::vec3 planeNormal, double angleFromNormal);

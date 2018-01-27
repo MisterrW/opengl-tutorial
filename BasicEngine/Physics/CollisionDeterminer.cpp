@@ -17,20 +17,6 @@ CollisionDeterminer::~CollisionDeterminer()
 {
 }
 
-glm::vec3 CollisionDeterminer::getMove(glm::mat4 oldPositionMatrix, glm::mat4 newPositionMatrix) {
-	// get a vector representing the change in position from the old to the new matrix
-	// by multiplying the zero vector by the inverse of each matrix
-	// and then subtracting the old one from the new one
-	// todo inverting might be slow, is there an alternative?
-
-	glm::vec4 origin = glm::vec4(0, 0, 0, 1);
-	glm::vec3 oldPos = glm::vec3(oldPositionMatrix * origin);
-	glm::vec3 newPos = glm::vec3(newPositionMatrix * origin);
-
-	glm::vec3 move = newPos - oldPos;
-	return move;
-}
-
 double CollisionDeterminer::getAngleBetween(glm::vec3 a, glm::vec3 b) {
 	// the angle between two vectors a and b in R3 is acos(a . b / ||a|| * ||b||), so:
 	double multipliedLength = glm::length(a) * glm::length(b);
@@ -292,7 +278,6 @@ glm::mat4 CollisionDeterminer::doPlayerCollisions(const glm::mat4 moveThisFrame,
 	}
 
 	for (unsigned i = 0; i < collidedModels.size(); i++) {
-		// glm::vec3 move = getMove(oldPosition, newPosition);
 		std::vector<glm::vec3> lineSeg = getLineSegmentFromPositionMatrices(oldPosition, newPosition);
 		glm::vec3 planeNormal = getCollisionPlaneNormal(collidedModels[i], lineSeg);
 		
@@ -338,8 +323,8 @@ glm::mat4 CollisionDeterminer::doModelCollisions(Model* model, const glm::mat4 t
 		return newPositionMatrix;
 	}
 	for (unsigned i = 0; i < collidedModels.size(); i++) {
-		glm::vec3 move = getMove(oldPositionMatrix, newPositionMatrix);
 		std::vector<glm::vec3> lineSeg = getLineSegmentFromPositionMatrices(oldPositionMatrix, newPositionMatrix);
+		glm::vec3 move = lineSeg[1] - lineSeg[0];
 		glm::vec3 planeNormal = getCollisionPlaneNormal(collidedModels[i], lineSeg);
 		double collisionAngleFromPlaneNormal = getAngleBetween(planeNormal, move);
 
