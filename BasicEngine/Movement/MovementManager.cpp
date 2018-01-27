@@ -29,7 +29,7 @@ glm::mat4 MovementManager::getGravityMatrix() {
 		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, 0.2f, 0.0f, 1.0f
+		0.0f, -0.2f, 0.0f, 1.0f
 		/*1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
@@ -60,7 +60,6 @@ glm::mat4 MovementManager::getViewMatrix(const std::map<std::string, Model*>* mo
 	if (true) {
 		//auto updateStarted = clock::now();
 
-		// todo rework these matrix multiplications in world space, just invert at the end to return view matrix (maybe don't even store)
 		glm::mat4 moveMatrix = positionManager.GetMoveMatrix();
 		glm::mat4 orientationMatrix = positionManager.GetOrientationMatrix();
 
@@ -71,7 +70,7 @@ glm::mat4 MovementManager::getViewMatrix(const std::map<std::string, Model*>* mo
 
 		//combine move and gravity as position matrix
 		glm::mat4 tentativePositionChangeMatrix = gravityMatrix * oldOrientationMatrix * moveMatrix;
-		glm::mat4 tentativePositionMatrix = oldPositionMatrix * tentativePositionChangeMatrix;
+		glm::mat4 tentativePositionMatrix = gravityMatrix * oldPositionMatrix * oldOrientationMatrix * moveMatrix; //tentativePositionChangeMatrix;
 		
 		glm::mat4 actualPositionMatrix = collisionDeterminer.doPlayerCollisions(tentativePositionChangeMatrix, oldPositionMatrix, tentativePositionMatrix, models, 0);
 		

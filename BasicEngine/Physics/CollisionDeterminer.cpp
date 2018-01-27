@@ -267,11 +267,13 @@ std::vector<glm::vec3> CollisionDeterminer::getLineSegmentFromPositionMatrices(g
 
 /*
 ====
-Takes in the old and new player movement matrices, figures out if there are any collisions,
-does collision detections as needed, and returns a revised move matrix.
+Takes in the old and new player position matrices, the move matrix and the models, figures out if there are any collisions,
+does collision detections as needed, and returns a revised position matrix.
 Should call itself recursively until no more collisions are found.
+roundCounter just makes sure we don't loop forever.
 ====
 */
+// todo handle movement-caused collisions and orientation-caused collisions independently?
 glm::mat4 CollisionDeterminer::doPlayerCollisions(const glm::mat4 moveThisFrame, const glm::mat4 oldPosition, glm::mat4 newPosition, const std::map<std::string, Model*>* modelList, int roundCounter) {
 
 	if (roundCounter > 5) {
@@ -282,8 +284,8 @@ glm::mat4 CollisionDeterminer::doPlayerCollisions(const glm::mat4 moveThisFrame,
 
 	std::vector<Model*> collidedModels = getCollidedModels(
 		modelList, 
-		glm::vec3(newPosition * glm::vec4(0, 0, 0, 1)),
-		glm::vec3(newPosition * glm::vec4(0, 0, 0, 1)));
+		glm::vec3(newPosition * glm::vec4(-15, -150, -15, 1)),
+		glm::vec3(newPosition * glm::vec4(15, 150, 15, 1)));
 
 	if (collidedModels.size() == 0) {
 		return newPosition;
