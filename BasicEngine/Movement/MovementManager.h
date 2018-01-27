@@ -29,7 +29,10 @@ namespace BasicEngine {
 			glm::mat4 oldOrientationMatrix;
 			glm::mat4 oldPositionMatrix;
 			std::chrono::steady_clock::time_point lastUpdated;
-
+			std::chrono::steady_clock::time_point lastFpsSecond;
+			void countFps();
+			int framesThisSecond;
+			bool fpsCheckStarted;
 			glm::mat4 getGravityMatrix();
 		};
 	}

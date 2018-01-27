@@ -6,6 +6,8 @@ using namespace BasicEngine::Movement;
 MovementManager::MovementManager(){
 	collisionDeterminer = BasicEngine::Physics::CollisionDeterminer(),
 	positionManager = BasicEngine::Movement::PositionManager();
+	this->fpsCheckStarted = false;
+	this->framesThisSecond = 0;
 
 	oldOrientationMatrix = glm::mat4(
 		1.0f, 0.0f, 0.0f, 0.0f,
@@ -49,9 +51,35 @@ void MovementManager::updateModelPositions(std::map<std::string, Model*>* models
 	}
 };
 
+void MovementManager::countFps() {
+	//this->lastUpdated
+
+	typedef std::chrono::steady_clock clock;
+	typedef std::chrono::milliseconds ms;
+	using TimePoint = std::chrono::time_point<clock, ms>;
+
+	TimePoint now = std::chrono::time_point_cast<ms>(clock::now());
+
+	this->framesThisSecond += 1;
+
+	if (this->fpsCheckStarted == true) {
+		std::chrono::duration<float, std::milli> timeSinceLastCall = now - this->lastFpsSecond;
+		if (timeSinceLastCall.count() > 1000) {
+			std::cout << "fps: " << framesThisSecond << "\n";
+			this->framesThisSecond = 0;
+			this->lastFpsSecond = now;
+		}
+	}
+	else {
+		this->lastFpsSecond = now;
+		this->fpsCheckStarted = true;
+	}
+};
+
 // this is the equivalent of calculating movement for the player.
 // the new movement matrix must take account of player input, gravity, collisions preventing movement.
 glm::mat4 MovementManager::getViewMatrix(const std::map<std::string, Model*>* models) {
+	countFps();
 	//typedef std::chrono::steady_clock clock;
 	//typedef std::chrono::milliseconds ms;
 	//using TimePoint = std::chrono::time_point<clock, ms>;

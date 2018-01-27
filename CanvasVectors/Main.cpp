@@ -21,7 +21,7 @@ vector<GenericModel*> makeStars(Engine* engine) {
 
 	int starRadius = 20000;
 	//int starCount = 50000;
-	int starCount = 100;
+	int starCount = 150;
 	int starSize = 100;
 
 	for (unsigned i = 0; i < starCount; i++) {
@@ -32,7 +32,8 @@ vector<GenericModel*> makeStars(Engine* engine) {
 
 		int sx = -starRadius + GetRandom() * 2 * starRadius;
 		int sz = -starRadius + GetRandom() * 2 * starRadius;
-		int sy = abs(sx) < 10000 && abs(sz) < 10000 ? 10000 + (GetRandom() * 0.5 * starRadius) : -2000 + GetRandom() * starRadius;
+		//int sy = abs(sx) < 5000 && abs(sz) < 5000 ? 10000 + (GetRandom() * 0.5 * starRadius) : -2000 + GetRandom() * starRadius;
+		int sy = -starRadius + GetRandom() * 2 * starRadius;;
 
 		starVertices.push_back(glm::vec3(sx, sy, sz));
 		starVertices.push_back(glm::vec3(sx + GetRandom() * starSize, sy + GetRandom() * starSize, sz + GetRandom() * starSize));
@@ -296,7 +297,7 @@ int main(int argc, char **argv)
 		"Shaders\\GenericLightedVertexShader.glsl",
 		"Shaders\\GenericLightedFragmentShader.glsl");
 
-	//vector<GenericModel*> stars = makeStars(engine);
+	vector<GenericModel*> stars = makeStars(engine);
 	//makeTrees(engine);
 	//makePyramid(0, 0, engine);
 	//makePyramid(-1020, 0, 1000, engine);
