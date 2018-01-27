@@ -22,7 +22,8 @@ namespace BasicEngine
 				virtual void Destroy() override;
 
 				virtual GLuint GetVao() const override;
-				std::vector<glm::vec3> getBoundingBox();
+				std::vector<glm::vec3> getBoundingBoxModelSpace();
+				std::vector<glm::vec3> getBoundingBoxWorldSpace();
 				std::vector<Triangle> getBoundingBoxTriangles();
 				virtual const std::vector<GLuint>& GetVbos() const override;
 				bool shouldCollisionCheck();
@@ -31,11 +32,9 @@ namespace BasicEngine
 				bool canMove;
 				void makeMoveable();
 				glm::mat4 getThisFrameMoveMatrix();
-				glm::mat4 getOldMoveMatrix();
-				glm::mat4 getNewMoveMatrix();
-				void setNewMoveMatrix(glm::mat4 newMoveMatrix);
-				void setOldMoveMatrix(glm::mat4 oldMoveMatrix);
-				void setInitialPositionMatrix(glm::mat4 moveMatrix);
+				glm::mat4 getPositionMatrix();
+				void setPositionMatrix(glm::mat4 positionMatrix);
+				void setInitialPositionMatrix(glm::mat4 positionMatrix);
 				void setEachFrameMoveMatrix(glm::mat4 moveMatrix);
 
 			protected:
@@ -50,8 +49,7 @@ namespace BasicEngine
 				std::vector<Triangle> setBoundingBoxTriangles(std::vector<glm::vec3> boundingBoxMinMax);
 				bool collisionCheck;
 				glm::mat4 eachFrameMoveMatrix;
-				glm::mat4 oldMoveMatrix;
-				glm::mat4 newMoveMatrix;
+				glm::mat4 positionMatrix;
 			};
 		}
 }

@@ -193,25 +193,32 @@ std::vector<Model*> CollisionDeterminer::getCollidedModels(const std::map<std::s
 	for (auto model : *modelList)
 	{
 		if (model.second->shouldCollisionCheck()) {
-			std::vector<glm::vec3> modelBounds = model.second->getBoundingBox();
+			std::vector<glm::vec3> modelBounds = model.second->getBoundingBoxWorldSpace();
 
 			if (modelBounds.size() == 2) {
-				glm::vec3 minViewSpaceBound = modelBounds[0];
-				glm::vec3 maxViewSpaceBound = modelBounds[1];
-				if ((minViewSpaceBound.x < minBound.x && minBound.x < maxViewSpaceBound.x) ||
-					(minViewSpaceBound.x < maxBound.x && maxBound.x < maxViewSpaceBound.x) ||
-					(minBound.x < minViewSpaceBound.x && minViewSpaceBound.x < maxBound.x) ||
-					(minBound.x < maxViewSpaceBound.x && maxViewSpaceBound.x < maxBound.x)) {
+				glm::vec3 minCandidateWorldSpaceBound = modelBounds[0];
+				glm::vec3 maxCandidateWorldSpaceBound = modelBounds[1];
+				
+				if ((minCandidateWorldSpaceBound.x <= minBound.x && minBound.x <= maxCandidateWorldSpaceBound.x) ||
+					(minCandidateWorldSpaceBound.x <= maxBound.x && maxBound.x <= maxCandidateWorldSpaceBound.x) ||
+					(minBound.x <= minCandidateWorldSpaceBound.x && minCandidateWorldSpaceBound.x <= maxBound.x) ||
+					(minBound.x <= maxCandidateWorldSpaceBound.x && maxCandidateWorldSpaceBound.x <= maxBound.x)) {
+					//std::cout << "xMatch \n";
+					
+					if ((minCandidateWorldSpaceBound.y <= minBound.y && minBound.y <= maxCandidateWorldSpaceBound.y) ||
+						(minCandidateWorldSpaceBound.y <= maxBound.y && maxBound.y <= maxCandidateWorldSpaceBound.y) ||
+						(minBound.y <= minCandidateWorldSpaceBound.y && minCandidateWorldSpaceBound.y <= maxBound.y) ||
+						(minBound.y <= maxCandidateWorldSpaceBound.y && maxCandidateWorldSpaceBound.y <= maxBound.y)) {
+						//std::cout << "yMatch \n";
 
-					if ((minViewSpaceBound.y < minBound.y && minBound.y < maxViewSpaceBound.y) ||
-						(minViewSpaceBound.y < maxBound.y && maxBound.y < maxViewSpaceBound.y) ||
-						(minBound.y < minViewSpaceBound.y && minViewSpaceBound.y < maxBound.y) ||
-						(minBound.y < maxViewSpaceBound.y && maxViewSpaceBound.y < maxBound.y)) {
-
-						if ((minViewSpaceBound.z < minBound.z && minBound.z < maxViewSpaceBound.z) ||
-							(minViewSpaceBound.z < maxBound.z && maxBound.z < maxViewSpaceBound.z) ||
-							(minBound.z < minViewSpaceBound.z && minViewSpaceBound.z < maxBound.z) ||
-							(minBound.z < maxViewSpaceBound.z && maxViewSpaceBound.z < maxBound.z)) {
+						//std::cout << "primary: min z " << minBound.z << ", max z " << maxBound.z;
+						//std::cout << "candidate: min z " << minCandidateWorldSpaceBound.z << ", max z " << maxCandidateWorldSpaceBound.z;
+						
+						if ((minCandidateWorldSpaceBound.z <= minBound.z && minBound.z <= maxCandidateWorldSpaceBound.z) ||
+							(minCandidateWorldSpaceBound.z <= maxBound.z && maxBound.z <= maxCandidateWorldSpaceBound.z) ||
+							(minBound.z <= minCandidateWorldSpaceBound.z && minCandidateWorldSpaceBound.z <= maxBound.z) ||
+							(minBound.z <= maxCandidateWorldSpaceBound.z && maxCandidateWorldSpaceBound.z <= maxBound.z)) {
+							//std::cout << "zMatch \n";
 							collidedModels.push_back(model.second);
 						}
 					}
@@ -309,11 +316,11 @@ glm::mat4 CollisionDeterminer::doPlayerCollisions(const glm::mat4 moveThisFrame,
 glm::mat4 CollisionDeterminer::doModelCollisions(Model* model, const glm::mat4 thisFrameMoveMatrix, const glm::mat4 oldPositionMatrix, glm::mat4 newPositionMatrix, const std::map<std::string, Model*>* models) {
 
 	glm::mat4 deflectedMoveThisFrame = glm::mat4(thisFrameMoveMatrix);
-
+	std::vector<glm::vec3> boundingBoxModelSpace = model->getBoundingBoxModelSpace();
 	std::vector<Model*> collidedModels = getCollidedModels(
 		models,
-		glm::vec3(newPositionMatrix * glm::vec4(0, 0, 0, 1)),
-		glm::vec3(newPositionMatrix * glm::vec4(0, 0, 0, 1)));
+		glm::vec3(newPositionMatrix * glm::vec4(boundingBoxModelSpace[0], 1)),
+		glm::vec3(newPositionMatrix * glm::vec4(boundingBoxModelSpace[1], 1)));
 	for (int i = 0; i < collidedModels.size(); i++) {
 		if (collidedModels[i] == model) {
 			collidedModels.erase(collidedModels.begin() +i);

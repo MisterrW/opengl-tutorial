@@ -215,7 +215,7 @@ void GenericModel::Draw(const glm::mat4& projection_matrix, const glm::mat4& vie
 	glUniformMatrix4fv(glGetUniformLocation(program, "view_matrix"), 1, false, &view_matrix[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(program, "projection_matrix"), 1, false, &projection_matrix[0][0]);
 
-	glm::mat4 modelMatrix = this->newMoveMatrix;
+	glm::mat4 modelMatrix = this->positionMatrix;
 	//glm::mat4 modelMatrix = glm::mat4(1.0f);
 	glUniformMatrix4fv(glGetUniformLocation(program, "model_matrix"), 1, false, &modelMatrix[0][0]);
 

@@ -222,7 +222,7 @@ void makeFallingCube(Engine* engine) {
 	cubeModel->toggleCollisionCheck(true);
 	cubeModel->SetProgram(engine->getProgram("flatShader"));
 	
-	//cubeModel->makeMoveable();
+	cubeModel->makeMoveable();
 	cubeModel->setInitialPositionMatrix(glm::mat4(
 		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
@@ -297,7 +297,7 @@ int main(int argc, char **argv)
 		"Shaders\\GenericLightedVertexShader.glsl",
 		"Shaders\\GenericLightedFragmentShader.glsl");
 
-	vector<GenericModel*> stars = makeStars(engine);
+	// vector<GenericModel*> stars = makeStars(engine);
 	//makeTrees(engine);
 	//makePyramid(0, 0, engine);
 	//makePyramid(-1020, 0, 1000, engine);
@@ -306,7 +306,7 @@ int main(int argc, char **argv)
 	// makePyramid(0, 0, 1000, engine);
 	makeGround(engine);
 	makeFallingCube(engine);
-	//makeSecondCube(engine);
+	makeSecondCube(engine);
 	//makeMesh(engine);
 
 

@@ -42,11 +42,11 @@ glm::mat4 MovementManager::getGravityMatrix() {
 void MovementManager::updateModelPositions(std::map<std::string, Model*>* models) {
 	for (auto model : *models) {
 		if (model.second->canMove) {
-			glm::mat4 old = model.second->getOldMoveMatrix();
+			glm::mat4 old = model.second->getPositionMatrix();
 			glm::mat4 thisFrame = model.second->getThisFrameMoveMatrix();
 			glm::mat4 tentativeMoveMatrix = old * thisFrame;
 			glm::mat4 moveMatrix = collisionDeterminer.doModelCollisions(model.second, thisFrame, old, tentativeMoveMatrix, models);
-			model.second->setNewMoveMatrix(moveMatrix);
+			model.second->setPositionMatrix(moveMatrix);
 		}
 	}
 };
@@ -100,7 +100,9 @@ glm::mat4 MovementManager::getViewMatrix(const std::map<std::string, Model*>* mo
 		glm::mat4 tentativePositionChangeMatrix = gravityMatrix * oldOrientationMatrix * moveMatrix;
 		glm::mat4 tentativePositionMatrix = gravityMatrix * oldPositionMatrix * oldOrientationMatrix * moveMatrix; //tentativePositionChangeMatrix;
 		
-		glm::mat4 actualPositionMatrix = collisionDeterminer.doPlayerCollisions(tentativePositionChangeMatrix, oldPositionMatrix, tentativePositionMatrix, models, 0);
+		/*glm::mat4 actualPositionMatrix = collisionDeterminer.doPlayerCollisions(tentativePositionChangeMatrix, oldPositionMatrix, tentativePositionMatrix, models, 0);*/
+
+		glm::mat4 actualPositionMatrix = tentativePositionMatrix;
 		
 		oldPositionMatrix = actualPositionMatrix;
 		oldOrientationMatrix = orientationMatrix;
