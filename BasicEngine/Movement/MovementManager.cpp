@@ -13,13 +13,11 @@ MovementManager::MovementManager(){
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f);
 
-	oldViewMatrix = glm::mat4(
+	oldPositionMatrix = glm::mat4(
 		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 3000.0f, 1.0f);
-
-	oldPositionMatrix = glm::inverse(oldViewMatrix);
+		0.0f, 0.0f, -3000.0f, 1.0f);
 }
 
 MovementManager::~MovementManager()
@@ -73,12 +71,11 @@ glm::mat4 MovementManager::getViewMatrix(const std::map<std::string, Model*>* mo
 
 		//combine move and gravity as position matrix
 		glm::mat4 tentativePositionChangeMatrix = gravityMatrix * oldOrientationMatrix * moveMatrix;
-		glm::mat4 tentativePositonMatrix = oldPositionMatrix * tentativePositionChangeMatrix;
+		glm::mat4 tentativePositionMatrix = oldPositionMatrix * tentativePositionChangeMatrix;
 		
-		glm::mat4 actualPositionMatrix = collisionDeterminer.doPlayerCollisions(tentativePositionChangeMatrix, oldPositionMatrix, tentativePositonMatrix, models, 0);
+		glm::mat4 actualPositionMatrix = collisionDeterminer.doPlayerCollisions(tentativePositionChangeMatrix, oldPositionMatrix, tentativePositionMatrix, models, 0);
 		
 		oldPositionMatrix = actualPositionMatrix;
-		oldViewMatrix = glm::inverse(actualPositionMatrix);
 		oldOrientationMatrix = orientationMatrix;
 
 		// invert back to view matrix and return
