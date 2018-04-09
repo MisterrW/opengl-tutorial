@@ -13,8 +13,9 @@ Engine::Engine()
 {
 	shaderManager = Managers::ShaderManager();
 	modelManager = new Managers::ModelManager();
+	monsterManager = new Managers::MonsterManager();
 	sceneManager = Managers::SceneManager();
-	sceneManager.initialise(modelManager);
+	sceneManager.initialise(modelManager, monsterManager);
 }
 
 bool Engine::Init()
@@ -48,6 +49,12 @@ void Engine::setModel(const std::string& gameObjectName, Model* gameObject)
 	modelManager->setModel(gameObjectName, gameObject);
 }
 
+void Engine::setMonster(const std::string& monsterName, Monster* monster)
+{
+	monsterManager->setMonster(monsterName, monster);
+}
+
+
 void Engine::createProgram(const std::string& shaderName,
 	const std::string& vertexShaderFilename,
 	const std::string& fragmentShaderFilename)
@@ -60,7 +67,8 @@ const GLuint Engine::getProgram(const std::string& programName)
 	return shaderManager.GetProgram(programName);
 }
 
-//Create the loop
+
+//Create the rendering and physics loops
 void Engine::Run()
 {
 	Init::Init_GLUT::Run();

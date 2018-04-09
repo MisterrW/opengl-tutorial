@@ -10,6 +10,7 @@ Outside of the engine project, interaction with the engine is only through publi
 #include "Managers/SceneManager.h"
 #include "Managers/ShaderManager.h"
 #include "Managers/ModelManager.h"
+#include "Managers/MonsterManager.h"
 #include "Rendering/renderer.h"
 
 namespace BasicEngine
@@ -33,10 +34,12 @@ namespace BasicEngine
 			const std::string& FragmentShaderFilename);
 		const GLuint getProgram(const std::string&);
 		void setModel(const std::string& gameObjectName, Model* gameObject);
+		void setMonster(const std::string& monsterName, Monster* monster);
 
 	private:
 		Managers::SceneManager sceneManager;
 		Managers::ShaderManager shaderManager;
 		Managers::ModelManager* modelManager;
+		Managers::MonsterManager* monsterManager;
 	};
 }

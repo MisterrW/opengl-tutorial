@@ -7,7 +7,7 @@ It is also used by the renderer for frustrum clipping.
 */
 
 #pragma once
-#include "../Managers/ModelManager.h"
+#include "../Managers/ModelManager.h" //todo why is this here?
 #include <array>
 
 namespace BasicEngine {

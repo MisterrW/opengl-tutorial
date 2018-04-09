@@ -1,6 +1,6 @@
 #pragma once
 #include "CollisionDeterminer.h"
-#include "../Managers/ModelManager.h"
+#include "../Managers/ModelManager.h" //todo why is this here?
 #define GLM_ENABLE_EXPERIMENTAL
 #include "../../../Dependencies/include/glm/gtx/transform.hpp"
 #include "../../../Dependencies/include/glm/glm.hpp"

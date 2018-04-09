@@ -30,3 +30,8 @@ void Renderer::draw(Model* model) {
 	}
 }
 
+void Renderer::drawMonster(Monster* monster) {
+	monster->Draw(projectionMatrix, viewMatrix);
+}
+
+

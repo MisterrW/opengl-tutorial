@@ -1,5 +1,5 @@
 #include "MovementManager.h"
-#include "../Managers/ModelManager.h"
+#include "../Managers/ModelManager.h" // todo why is this dependency here?
 
 using namespace BasicEngine::Movement;
 
@@ -39,6 +39,7 @@ glm::mat4 MovementManager::getGravityMatrix() {
 	);
 }
 
+// todo remove this, as now only monsters should be moveable ( also clean up movement stuff in Model ) ( this should save some pain as only doing collisions for monsters )
 void MovementManager::updateModelPositions(std::map<std::string, Model*>* models) {
 	for (auto model : *models) {
 		if (model.second->canMove) {
@@ -48,6 +49,16 @@ void MovementManager::updateModelPositions(std::map<std::string, Model*>* models
 			glm::mat4 moveMatrix = collisionDeterminer.doModelCollisions(model.second, thisFrame, old, tentativeMoveMatrix, models);
 			model.second->setPositionMatrix(moveMatrix);
 		}
+	}
+};
+
+void MovementManager::updateMonsterPositions(std::map<std::string, Monster*>* monsters, std::map<std::string, Model*>* models) {
+	for (auto monster : *monsters) {
+		glm::mat4 old = monster.second->getPositionMatrix();
+		glm::mat4 thisFrame = monster.second->getThisFrameMoveMatrix();
+		glm::mat4 tentativeMoveMatrix = old * thisFrame;
+		glm::mat4 moveMatrix = collisionDeterminer.doModelCollisions(monster.second->getModel(), thisFrame, old, tentativeMoveMatrix, models);
+		monster.second->setPositionMatrix(moveMatrix);
 	}
 };
 
@@ -78,7 +89,7 @@ void MovementManager::countFps() {
 
 // this is the equivalent of calculating movement for the player.
 // the new movement matrix must take account of player input, gravity, collisions preventing movement.
-glm::mat4 MovementManager::getViewMatrix(const std::map<std::string, Model*>* models) {
+glm::mat4 MovementManager::getViewMatrix(const std::map<std::string, Model*>* models, const std::map<std::string, Monster*>* monsters) {
 	countFps();
 	//typedef std::chrono::steady_clock clock;
 	//typedef std::chrono::milliseconds ms;

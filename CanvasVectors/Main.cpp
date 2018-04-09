@@ -236,7 +236,9 @@ void makeFallingCube(Engine* engine) {
 
 	cubeModel->Create();
 
-	engine->setModel("cube", cubeModel);
+	BasicEngine::Monsters::Monster* cubeMonster = new BasicEngine::Monsters::Monster(cubeModel, new BasicEngine::Monsters::Mind());
+
+	engine->setMonster("cube", cubeMonster);
 }
 
 void makeSecondCube(Engine* engine) {

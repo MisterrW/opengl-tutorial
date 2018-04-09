@@ -13,8 +13,9 @@ SceneManager::~SceneManager()
 {
 }
 
-void SceneManager::initialise(BasicEngine::Managers::ModelManager* modelManager) {
+void SceneManager::initialise(BasicEngine::Managers::ModelManager* modelManager, BasicEngine::Managers::MonsterManager* monsterManager) {
 	this->modelManager = modelManager;
+	this->monsterManager = monsterManager;
 };
 
 void SceneManager::notifyBeginFrame()
@@ -22,25 +23,59 @@ void SceneManager::notifyBeginFrame()
 	this->modelManager->update();
 }
 
-void SceneManager::drawScene(std::map<std::string, Model*>* modelList) {
+//duplicate for monsters
+void SceneManager::drawScene(std::map<std::string, Model*>* models) {
 	// get models from modelsmanager
 
 	// iterate over them and pass them to renderer's draw method
-	for (auto model : *modelList)
+	for (auto model : *models)
 	{
 		renderer.draw(model.second);
 	}
 }
 
-void SceneManager::notifyDisplayFrame()
+//duplicate for monsters
+void SceneManager::drawMonsters(std::map<std::string, Monster*>* monsters) {
+	// iterate over them and pass them to renderer's draw method
+	for (auto monster : *monsters)
+	{
+		renderer.drawMonster(monster.second);
+	}
+}
+
+// everything that needs to update in 'real time' should happen here - this is called 30 times a second, OR as often as the frame rate lets us.
+// unhook this from the glut render loop - we want to control physics / world updates separately from graphics rendering
+void SceneManager::updateGameState()
 {
 	std::map<std::string, Model*>* modelList = modelManager->getModels();
+	std::map<std::string, Monster*>* monsters = monsterManager->getMonsters();
 	movementManager.updateModelPositions(modelList);
-	renderer.setViewMatrix(movementManager.getViewMatrix(modelList));
-	
+	movementManager.updateMonsterPositions(monsters, modelList);
+	glm::mat4 viewMatrix = movementManager.getViewMatrix(modelList, monsters);
+	renderer.setViewMatrix(viewMatrix); // model list required for player collision detection
+}
+
+void SceneManager::notifyDisplayFrame()
+{
+	typedef std::chrono::steady_clock clock;
+	typedef std::chrono::milliseconds ms;
+	using TimePoint = std::chrono::time_point<clock, ms>;
+
+	TimePoint now = std::chrono::time_point_cast<ms>(clock::now());
+
+	std::chrono::duration<float, std::milli> timeSinceLastCall = now - this->last;
+
+	if (timeSinceLastCall.count() > 16.666667) // approx 30 per second
+	{
+		last = now;
+		updateGameState();
+	}
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0, 0.0, 0.0, 1.0);
-	drawScene(modelList);
+	std::map<std::string, Model*>* models = modelManager->getModels();
+	drawScene(models);
+	std::map<std::string, Monster*>* monsters = monsterManager->getMonsters();
+	drawMonsters(monsters);
 }
 
 void SceneManager::notifyEndFrame()

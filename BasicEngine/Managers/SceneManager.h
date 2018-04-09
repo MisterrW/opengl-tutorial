@@ -11,6 +11,7 @@ These models are passed to the renderer to draw.
 #include "ModelManager.h"
 #include "../Rendering/Renderer.h"
 #include "../Movement/MovementManager.h"
+#include "../Managers/MonsterManager.h"
 #include "../Core/Init/IListener.h"
 
 namespace BasicEngine
@@ -23,8 +24,9 @@ namespace BasicEngine
 			SceneManager();
 			~SceneManager();
 
-			void initialise(Managers::ModelManager* modelManager);
+			void initialise(Managers::ModelManager* modelManager, BasicEngine::Managers::MonsterManager* monsterManager);
 
+			virtual void updateGameState();
 			virtual void notifyBeginFrame();
 			virtual void notifyDisplayFrame();
 			virtual void notifyEndFrame();
@@ -35,8 +37,11 @@ namespace BasicEngine
 			virtual void notifyKeyPress(char key, int x, int y);
 			virtual void notifyKeyUp(char key, int x, int y);
 		private:
-			void drawScene(std::map<std::string, Model*>* modelList);
+			std::chrono::steady_clock::time_point last;
+			void drawScene(std::map<std::string, Model*>* models);
+			void drawMonsters(std::map<std::string, Monster*>* monsters);
 			BasicEngine::Managers::ModelManager* modelManager;
+			BasicEngine::Managers::MonsterManager* monsterManager;
 			BasicEngine::Rendering::Renderer renderer;
 			BasicEngine::Movement::MovementManager movementManager;
 		};

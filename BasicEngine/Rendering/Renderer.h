@@ -8,8 +8,10 @@ It determines whether or not a model should be drawn in this call.
 
 #pragma once
 #include "../Models/Model.h"
+#include "../Monsters/Monster.h"
 
 using namespace BasicEngine::Models;
+using namespace BasicEngine::Monsters;
 
 namespace BasicEngine
 {
@@ -23,6 +25,7 @@ namespace BasicEngine
 			void setProjectionMatrix(glm::mat4 projection_matrix);
 			void setViewMatrix(glm::mat4 view_matrix);
 			void draw(Model* model);
+			void drawMonster(Monster* monster);
 		private:
 			bool shouldDraw(const Model& model);
 			//frustrum culler - owned class

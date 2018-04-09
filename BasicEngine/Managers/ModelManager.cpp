@@ -45,6 +45,9 @@ void ModelManager::update()
 	//auto -it's a map iterator
 	for (auto model : this->gameModelList)
 	{
+		/*if (model.second->expired) {
+
+		}*/
 		model.second->Update();
 	}
 
