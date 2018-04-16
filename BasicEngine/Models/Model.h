@@ -32,6 +32,7 @@ namespace BasicEngine
 			bool canMove;
 			void makeMoveable();
 			glm::mat4 getThisFrameMoveMatrix();
+			void setThisFrameMoveMatrix(glm::mat4 thisFrameMoveMatrix);
 			glm::mat4 getPositionMatrix();
 			void setPositionMatrix(glm::mat4 positionMatrix);
 			void setInitialPositionMatrix(glm::mat4 positionMatrix);

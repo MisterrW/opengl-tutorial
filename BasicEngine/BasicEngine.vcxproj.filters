@@ -69,6 +69,9 @@
     <ClCompile Include="Managers\MonsterManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Monsters\Behaviours\KeepAway.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Init\WindowInfo.h">
@@ -144,6 +147,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Managers\MonsterManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Monsters\Behaviours\KeepAway.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

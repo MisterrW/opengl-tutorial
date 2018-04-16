@@ -11,6 +11,8 @@ which passes them to the renderer to be drawn.
 #include "ShaderManager.h"
 #include "../Monsters/Monster.h"
 #include "../Monsters/Mind.h"
+#include "../Monsters/Behaviour.h"
+#include "../Monsters/Behaviours/KeepAway.h"
 #include "../Models/Model.h"
 
 using namespace BasicEngine::Monsters;
@@ -32,6 +34,8 @@ namespace BasicEngine
 			void deleteMonster(const std::string& monsterName);
 
 			void setMonster(const std::string& monsterName, Monster* monster);
+
+			void doMonsterThinking(glm::vec3 playerPosition, glm::vec3 playerOrientation, std::map<std::string, Model*>* models);
 
 		private:
 			// NOTE this may become a bottleneck, better to use vector

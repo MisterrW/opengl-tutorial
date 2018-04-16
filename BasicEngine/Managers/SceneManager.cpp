@@ -48,6 +48,10 @@ void SceneManager::drawMonsters(std::map<std::string, Monster*>* monsters) {
 void SceneManager::updateGameState()
 {
 	std::map<std::string, Model*>* modelList = modelManager->getModels();
+	glm::vec3 playerPosition = movementManager.getPlayerPosition();
+	glm::vec3 playerOrientation = movementManager.getPlayerOrientation();
+	monsterManager->doMonsterThinking(playerPosition, playerOrientation, modelList);
+
 	std::map<std::string, Monster*>* monsters = monsterManager->getMonsters();
 	movementManager.updateModelPositions(modelList);
 	movementManager.updateMonsterPositions(monsters, modelList);

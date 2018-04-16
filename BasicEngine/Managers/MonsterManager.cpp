@@ -40,3 +40,11 @@ void MonsterManager::setMonster(const std::string& monsterName, Monster* monster
 {
 	this->monsterList[monsterName.c_str()] = monster;
 }
+
+void MonsterManager::doMonsterThinking(glm::vec3 playerPosition, glm::vec3 playerOrientation, std::map<std::string, Model*>* models)
+{
+	for (auto monster : this->monsterList)
+	{
+		monster.second->think(playerPosition, playerOrientation, models, &this->monsterList);
+	}
+}

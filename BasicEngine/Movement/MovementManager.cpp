@@ -22,9 +22,19 @@ MovementManager::MovementManager(){
 		0.0f, 0.0f, -3000.0f, 1.0f);
 }
 
+glm::vec3 MovementManager::getPlayerPosition()
+{
+	return glm::vec3(glm::vec4(0, 0, 0, 0) * this->oldPositionMatrix);
+};
+
+glm::vec3 MovementManager::getPlayerOrientation()
+{
+	return glm::vec3(glm::vec4(0, 0, 0, 0) * this->oldOrientationMatrix);
+};
+
 MovementManager::~MovementManager()
 {
-}
+};
 
 glm::mat4 MovementManager::getGravityMatrix() {
 	return glm::mat4(
@@ -37,7 +47,7 @@ glm::mat4 MovementManager::getGravityMatrix() {
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f*/
 	);
-}
+};
 
 // todo remove this, as now only monsters should be moveable ( also clean up movement stuff in Model ) ( this should save some pain as only doing collisions for monsters )
 void MovementManager::updateModelPositions(std::map<std::string, Model*>* models) {

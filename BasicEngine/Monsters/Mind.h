@@ -1,24 +1,27 @@
 #pragma once
 #include <vector>
-#include "behaviour.h"
+#include <map>
+#include "Behaviour.h"
 #include "../../../Dependencies/include/glm/glm.hpp"
 
 namespace BasicEngine
 {
 	namespace Monsters
 	{
+		class Monster;
+
 		class Mind
 		{
 		public:
 			// the general aim is to abstract the goals of the monster (where to go and how quickly, whether to attack) from the implementation of movement etc, which will be properties of the model for now.
 			Mind();
 
-			Mind(std::vector<Behaviour> behaviours);
+			Mind(std::vector<BasicEngine::Monsters::Behaviour> behaviours);
 
 
 			// the function which takes in all the gamestate and decides what to do
 			// it will call setActiveBehaviour(), and then make that behaviour behave()
-			void think(models, monsters, player, health);
+			void think(Monster* thisMonster, glm::vec3 playerPosition, glm::vec3 playerOrientation, std::map<std::string, Model*>* models, std::map<std::string, Monster*>* monsters);
 
 			// passes this query through to the active behaviour
 			// will probably end up with modifiers like desired speed (enum)
@@ -39,10 +42,10 @@ namespace BasicEngine
 
 			// remember: teams, an int (player is 0, everything else typically 1). Every monster needs a team, and a uid.
 			std::vector<Behaviour> behaviours;
-			Behaviour* activeBehaviour;
+			Behaviour activeBehaviour;
 
 
-			void setActiveBehaviour(models, monsters, player, health);
+			void setActiveBehaviour(Monster* thisMonster, glm::vec3 playerPosition, glm::vec3 playerOrientation, std::map<std::string, Model*>* models, std::map<std::string, Monster*>* monsters);
 		};
 	}
 }

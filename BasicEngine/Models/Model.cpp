@@ -123,6 +123,11 @@ glm::mat4 Model::getThisFrameMoveMatrix() {
 	return this->eachFrameMoveMatrix;
 };
 
+void Model::setThisFrameMoveMatrix(glm::mat4 thisFrameMoveMatrix)
+{
+	this->eachFrameMoveMatrix = thisFrameMoveMatrix;
+};
+
 glm::mat4 Model::getPositionMatrix() {
 	return this->positionMatrix;
 };

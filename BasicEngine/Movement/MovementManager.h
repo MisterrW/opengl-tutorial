@@ -22,6 +22,8 @@ namespace BasicEngine {
 			MovementManager();
 			~MovementManager();
 			glm::mat4 getViewMatrix(const std::map<std::string, Model*>* models, const std::map<std::string, Monster*>* monsters);
+			glm::vec3 getPlayerPosition();
+			glm::vec3 getPlayerOrientation();
 			void updateModelPositions(std::map<std::string, Model*>* models);
 			void updateMonsterPositions(std::map<std::string, Monster*>* monsters, std::map<std::string, Model*>* models); // models required for collisions
 			void notifyKeyPress(char key, int x, int y);

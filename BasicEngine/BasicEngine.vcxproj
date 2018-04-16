@@ -137,6 +137,7 @@
     <ClCompile Include="Managers\MonsterManager.cpp" />
     <ClCompile Include="Models\Triangle.cpp" />
     <ClCompile Include="Monsters\Behaviour.cpp" />
+    <ClCompile Include="Monsters\Behaviours\KeepAway.cpp" />
     <ClCompile Include="Monsters\Mind.cpp" />
     <ClCompile Include="Monsters\Monster.cpp" />
     <ClCompile Include="Movement\MovementManager.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="Managers\MonsterManager.h" />
     <ClInclude Include="Models\Triangle.h" />
     <ClInclude Include="Monsters\Behaviour.h" />
+    <ClInclude Include="Monsters\Behaviours\KeepAway.h" />
     <ClInclude Include="Monsters\Mind.h" />
     <ClInclude Include="Monsters\Monster.h" />
     <ClInclude Include="Movement\MovementManager.h" />
