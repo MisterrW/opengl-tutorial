@@ -1,6 +1,6 @@
 /*
 =================
-The models manager maintains a list of models which make up the scene.
+The monsters manager maintains a list of monsters in the scene.
 In a draw cycle, it returns its model list to the scene manager,
 which passes them to the renderer to be drawn.
 =================
@@ -13,6 +13,7 @@ which passes them to the renderer to be drawn.
 #include "../Monsters/Mind.h"
 #include "../Monsters/Behaviour.h"
 #include "../Monsters/Behaviours/KeepAway.h"
+#include "../Monsters/Behaviours/Follow.h"
 #include "../Models/Model.h"
 
 using namespace BasicEngine::Monsters;
