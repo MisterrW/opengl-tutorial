@@ -18,7 +18,7 @@ bool KeepAway::checkIfAttacking()
 
 void KeepAway::behave(Monster* thisMonster, glm::vec3 playerPosition, glm::vec3 playerOrientation, std::map<std::string, Model*>* models, std::map<std::string, Monster*>* monsters)
 {
-	double minimumDistance = 100000;
+	double minimumDistance = 1000;
 	/*
 	The KeepAway behaviour causes a monster to attempt to maintain a minimum distance from the player.
     If the distance to the player is below the minimum distance, the behaviour creates a desired location,
@@ -27,10 +27,11 @@ void KeepAway::behave(Monster* thisMonster, glm::vec3 playerPosition, glm::vec3 
 
 	pseudocode:
 	*/
-	glm::vec3 thisPosition = glm::vec3( glm::vec4(0, 0, 0, 0) * (thisMonster->getPositionMatrix()));
+	glm::mat4 currentPositionMatrix = thisMonster->getPositionMatrix();
+	glm::vec3 currentPosition = glm::vec3(currentPositionMatrix * glm::vec4(0, 0, 0, 1));
 	
 
-	glm::vec3 relativePosition = getPositionRelativeToEntityPosition(thisPosition, playerPosition);
+	glm::vec3 relativePosition = getPositionRelativeToEntityPosition(currentPosition, playerPosition);
 	double distance = getVectorLength(relativePosition);
 	if (distance < minimumDistance) {
 		double ratio = minimumDistance / abs(distance);
@@ -38,6 +39,9 @@ void KeepAway::behave(Monster* thisMonster, glm::vec3 playerPosition, glm::vec3 
 		
 		glm::vec3 desiredPosition = getAbsolutePositionFromRelativePosition(desiredRelativePosition, playerPosition);
 		this->desiredPosition = desiredPosition;
+	}
+	else {
+		this->desiredPosition = currentPosition;
 	}
 	
 }

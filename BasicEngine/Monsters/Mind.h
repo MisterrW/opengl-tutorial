@@ -16,7 +16,7 @@ namespace BasicEngine
 			// the general aim is to abstract the goals of the monster (where to go and how quickly, whether to attack) from the implementation of movement etc, which will be properties of the model for now.
 			Mind();
 
-			Mind(std::vector<BasicEngine::Monsters::Behaviour> behaviours);
+			Mind(std::vector<BasicEngine::Monsters::Behaviour*> behaviours);
 
 
 			// the function which takes in all the gamestate and decides what to do
@@ -41,8 +41,8 @@ namespace BasicEngine
 			*/
 
 			// remember: teams, an int (player is 0, everything else typically 1). Every monster needs a team, and a uid.
-			std::vector<Behaviour> behaviours;
-			Behaviour activeBehaviour;
+			std::vector<Behaviour*> behaviours;
+			Behaviour* activeBehaviour;
 
 
 			void setActiveBehaviour(Monster* thisMonster, glm::vec3 playerPosition, glm::vec3 playerOrientation, std::map<std::string, Model*>* models, std::map<std::string, Monster*>* monsters);

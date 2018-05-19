@@ -24,12 +24,12 @@ MovementManager::MovementManager(){
 
 glm::vec3 MovementManager::getPlayerPosition()
 {
-	return glm::vec3(glm::vec4(0, 0, 0, 0) * this->oldPositionMatrix);
+	return glm::vec3(this->oldPositionMatrix * glm::vec4(0, 0, 0, 1));
 };
 
 glm::vec3 MovementManager::getPlayerOrientation()
 {
-	return glm::vec3(glm::vec4(0, 0, 0, 0) * this->oldOrientationMatrix);
+	return glm::vec3(this->oldOrientationMatrix * glm::vec4(0, 0, 0, 1));
 };
 
 MovementManager::~MovementManager()
@@ -113,7 +113,8 @@ glm::mat4 MovementManager::getViewMatrix(const std::map<std::string, Model*>* mo
 		glm::mat4 orientationMatrix = positionManager.GetOrientationMatrix();
 
 		// lame gravity
-	    glm::mat4 gravityMatrix = getGravityMatrix();
+		// glm::mat4 gravityMatrix = getGravityMatrix();
+		glm::mat4 gravityMatrix = glm::mat4(1);
 
 		//TimePoint tMid = std::chrono::time_point_cast<ms>(clock::now());
 

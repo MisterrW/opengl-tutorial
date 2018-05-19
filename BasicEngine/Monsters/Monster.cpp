@@ -33,7 +33,15 @@ glm::mat4 Monster::getPositionMatrix()
 
 glm::mat4 Monster::getThisFrameMoveMatrix()
 {
-	return this->model->getThisFrameMoveMatrix();
+	glm::mat4 moveMatrix = glm::mat4(1);
+	// get the desired position from the mind
+	glm::vec3 desiredPosition = this->mind->getDesiredPosition();
+	// pass this desired position (a vec3) to the model's move function
+	moveMatrix = this->model->moveToward(desiredPosition);
+	// the move function returns a matrix moving it as far as it can go towards that vector
+
+	// we return that matrix to the movement manager for collision determining. The movement manager will set the adjusted position matrix in this->model.
+	return moveMatrix;
 }
 
 void Monster::setThisFrameMoveMatrix(glm::mat4 thisFrameMoveMatrix)

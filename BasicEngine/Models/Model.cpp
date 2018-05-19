@@ -119,6 +119,35 @@ std::vector<Triangle> Model::getBoundingBoxTriangles() {
 
 ////////movement section
 
+glm::mat4 Model::moveToward(glm::vec3 desiredPosition)
+{
+	double speed = 10; // todo make this a property set in ctor
+	
+	// find current position as vector
+	glm::vec3 currentPosition = glm::vec3(this->positionMatrix * glm::vec4(0, 0, 0, 1));
+	
+	// glm::vec3 moveThisRound = scale length of desiredPosition - currentPosition to be length Speed
+	glm::vec3 toDesPos = desiredPosition - currentPosition;
+	
+	double desLength = toDesPos.length();
+
+	glm::vec3 moveThisRound = toDesPos;
+
+	if (desLength > speed) {
+		double ratio = toDesPos.length() / speed;
+		moveThisRound = glm::vec3(toDesPos.x / ratio, toDesPos.y / ratio, toDesPos.z / ratio);
+	}
+
+	// create a movement matrix that transforms a matrix by moveThisRound (just fourth columns)
+	glm::mat4 moveMatrix = glm::mat4(1.0);
+
+	moveMatrix[3][0] = moveThisRound[0];
+	moveMatrix[3][1] = moveThisRound[1];
+	moveMatrix[3][2] = moveThisRound[2];
+
+	return moveMatrix;
+}
+
 glm::mat4 Model::getThisFrameMoveMatrix() {
 	return this->eachFrameMoveMatrix;
 };
@@ -141,14 +170,14 @@ void Model::setInitialPositionMatrix(glm::mat4 positionMatrix) {
 };
 
 void Model::makeMoveable() {
-	if (!this->canMove) {
+	/*if (!this->canMove) {
 		this->eachFrameMoveMatrix = glm::mat4(
 			1.0f, 0.0f, 0.0f, 0.0f,
 			0.0f, 1.0f, 0.0f, 0.0f,
 			0.0f, 0.0f, 1.0f, 0.0f,
 			0.0f, 0.0f, 0.0f, 1.0f);
 		this->canMove = true;
-	}
+	}*/
 }
 
 void Model::setEachFrameMoveMatrix(glm::mat4 positionMatrix) {
