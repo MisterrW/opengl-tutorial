@@ -1,9 +1,12 @@
 #include "keepaway.h"
 using namespace BasicEngine::Monsters;
 
+
 void KeepAway::behave(Monster* thisMonster, glm::vec3 playerPosition, glm::vec3 playerOrientation, std::map<std::string, Model*>* models, std::map<std::string, Monster*>* monsters)
 {
 	double minimumDistance = 1000;
+	double desiredDistance = 2000;
+
 	/*
 	The KeepAway behaviour causes a monster to attempt to maintain a minimum distance from the player.
     If the distance to the player is below the minimum distance, the behaviour creates a desired location,
@@ -16,16 +19,21 @@ void KeepAway::behave(Monster* thisMonster, glm::vec3 playerPosition, glm::vec3 
 	
 	double distance = getVectorLength(relativePosition);
 
-	if (distance < minimumDistance)
+	if (distance >= desiredDistance) {
+		IsFleeing = false;
+	}
+
+	if (distance < minimumDistance && !IsFleeing)
 	{
-		double ratio = minimumDistance / abs(distance);
+		IsFleeing = true;
+		double ratio = desiredDistance / abs(distance);
 		glm::vec3 desiredRelativePosition = glm::vec3(relativePosition.x * ratio, relativePosition.y * ratio, relativePosition.z * ratio);
 		glm::vec3 desiredPosition = getAbsolutePositionFromRelativePosition(desiredRelativePosition, playerPosition);
 		this->desiredPosition = desiredPosition;
 	}
-	else
+	/*else if (!desiredPosition)
 	{
 		this->desiredPosition = currentPosition;
-	}
+	}*/
 	
 }

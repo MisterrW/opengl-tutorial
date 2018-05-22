@@ -121,7 +121,7 @@ std::vector<Triangle> Model::getBoundingBoxTriangles() {
 
 glm::mat4 Model::moveToward(glm::vec3 desiredPosition)
 {
-	double speed = 10; // todo make this a property set in ctor
+	double speed = 0.07; // todo make this a property set in ctor
 	
 	// find current position as vector
 	glm::vec3 currentPosition = glm::vec3(this->positionMatrix * glm::vec4(0, 0, 0, 1));

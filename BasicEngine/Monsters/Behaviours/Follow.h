@@ -15,6 +15,11 @@ namespace BasicEngine
 		{
 		public:
 			void behave(Monster* thisMonster, glm::vec3 playerPosition, glm::vec3 playerOrientation, std::map<std::string, Model*>* models, std::map<std::string, Monster*>* monsters) override final;
+		
+		private:
+			bool IsClosing = false;
 		};
+
+
 	}
 }

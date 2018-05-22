@@ -241,7 +241,7 @@ void makeFallingCube(Engine* engine) {
 	// create the monster with that mind
 
 	//BasicEngine::Monsters::KeepAway keepAway
-	BasicEngine::Monsters::KeepAway* keepAway = new BasicEngine::Monsters::KeepAway();
+	BasicEngine::Monsters::Follow* keepAway = new BasicEngine::Monsters::Follow();
 
 	std::vector<Behaviour*> behaviours = std::vector<Behaviour*>();
 	behaviours.push_back(keepAway);
